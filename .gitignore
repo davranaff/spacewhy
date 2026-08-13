@@ -1,0 +1,30 @@
+# Operating-system files
+.DS_Store
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+*.sqlite3
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Local configuration and secrets
+**/.env
+**/.env.*
+!**/.env.example
+deployment/keys/*
+!deployment/keys/.gitignore
+!deployment/keys/.gitkeep
+!deployment/keys/README.md
+
+# Build artefacts
+dist/
+build/
+*.egg-info/
+
+# Editor files
+.idea/
+.vscode/

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Obsidian Project Memory"
+  short_description: "Persistent Obsidian memory for every project"
+  default_prompt: "Use $obsidian-project-memory to load or initialize this project’s persistent context before continuing."

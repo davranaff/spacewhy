@@ -1,0 +1,4 @@
+interface:
+  display_name: "RuFlo Django Backend"
+  short_description: "Build senior-grade Django services with clear boundaries"
+  default_prompt: "Use $ruflo-django-backend to implement or review this Django backend change with explicit boundaries, validation, transactions, and tests."
