@@ -1,7 +1,7 @@
 ---
 type: architecture
 tags: [project, architecture]
-updated: 2026-08-13
+updated: 2026-08-15
 ---
 
 # Architecture overview
@@ -10,7 +10,8 @@ updated: 2026-08-13
 
 - `backend/` is one deployable Django service boundary with an ASGI-only HTTP runtime.
 - `deployment/` owns infrastructure composition and configuration templates; real secret values are outside version control.
-- `frontend/admin/` and `frontend/uikit/` are reserved empty frontend boundaries and have no framework initialized yet.
+- `frontend/admin/` remains a reserved empty frontend boundary.
+- `frontend/uikit/` now contains the complete Spacewhy liquid-glass UI kit, implemented as a standalone Next.js/TypeScript application derived from the Minimals component demo.
 - `tools/obsidian-vault/` is the explicitly requested project-scoped filesystem memory vault. Obsidian is not required or started.
 - `tools/skills/` contains the supplied RuFlo backend and project-memory instructions.
 
@@ -27,5 +28,5 @@ The deployment composition reserves service-owned PostgreSQL 17, RabbitMQ 4.3, a
 ## Initial architecture decisions
 
 1. No product domain or schema was invented before a feature contract and owner were supplied.
-2. Frontend framework initialization is intentionally deferred.
+2. The shared UI kit boundary was initialized only after the user's explicit request; the admin frontend remains deferred.
 3. The project memory vault is kept inside the repository because that location was explicitly requested; its secret notes must still never contain values in the repository.
