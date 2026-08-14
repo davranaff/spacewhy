@@ -1,5 +1,5 @@
 // sections
-import { JobEditView } from 'src/sections/job/view';
+import JobEditView from 'src/sections/job/view/job-edit-view';
 
 // ----------------------------------------------------------------------
 

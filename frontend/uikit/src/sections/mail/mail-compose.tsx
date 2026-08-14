@@ -15,7 +15,6 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
 // components
 import Iconify from 'src/components/iconify';
-import Editor from 'src/components/editor';
 
 // ----------------------------------------------------------------------
 
@@ -108,23 +107,24 @@ export default function MailCompose({ onCloseCompose }: Props) {
           }}
         />
 
-        <Stack spacing={2} flexGrow={1} sx={{ p: 2 }}>
-          <Editor
-            simple
-            id="compose-mail"
+        <Stack spacing={2} flexGrow={1} sx={{ p: 2, minHeight: 0 }}>
+          <InputBase
+            multiline
+            minRows={8}
             value={message}
-            onChange={handleChangeMessage}
+            onChange={(event) => handleChangeMessage(event.target.value)}
             placeholder="Type a message"
+            inputProps={{ 'aria-label': 'Message body' }}
             sx={{
-              '& .ql-editor': {},
+              px: 2,
+              py: 1.5,
+              flexGrow: 1,
+              minHeight: 180,
+              alignItems: 'flex-start',
+              border: (theme) => `solid 1px ${theme.palette.divider}`,
+              borderRadius: 1.5,
               ...(fullScreen.value && {
-                height: 1,
-                '& .quill': {
-                  height: 1,
-                },
-                '& .ql-editor': {
-                  maxHeight: 'unset',
-                },
+                minHeight: 0,
               }),
             }}
           />

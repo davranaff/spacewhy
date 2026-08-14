@@ -1,5 +1,5 @@
 // sections
-import { InvoiceCreateView } from 'src/sections/invoice/view';
+import InvoiceCreateView from 'src/sections/invoice/view/invoice-create-view';
 
 // ----------------------------------------------------------------------
 

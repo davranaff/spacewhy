@@ -1,5 +1,5 @@
 // sections
-import { PostEditView } from 'src/sections/blog/view';
+import PostEditView from 'src/sections/blog/view/post-edit-view';
 
 // ----------------------------------------------------------------------
 

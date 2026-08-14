@@ -1,5 +1,5 @@
 // sections
-import { TourDetailsView } from 'src/sections/tour/view';
+import TourDetailsView from 'src/sections/tour/view/tour-details-view';
 
 // ----------------------------------------------------------------------
 

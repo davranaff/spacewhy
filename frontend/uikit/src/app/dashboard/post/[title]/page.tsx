@@ -1,5 +1,5 @@
 // sections
-import { PostDetailsView } from 'src/sections/blog/view';
+import PostDetailsView from 'src/sections/blog/view/post-details-view';
 
 // ----------------------------------------------------------------------
 
