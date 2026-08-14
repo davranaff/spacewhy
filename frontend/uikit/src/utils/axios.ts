@@ -1,10 +1,38 @@
 import axios from 'axios';
 // config
 import { HOST_API } from 'src/config-global';
+// mock
+import { getDemoApiResponse } from 'src/_mock/_demo-api';
 
 // ----------------------------------------------------------------------
 
 const axiosInstance = axios.create({ baseURL: HOST_API });
+
+const useLocalDemoApi = process.env.NEXT_PUBLIC_USE_REMOTE_DEMO_API !== 'true';
+
+if (useLocalDemoApi) {
+  axiosInstance.interceptors.request.use((config) => {
+    const data = getDemoApiResponse(
+      config.url,
+      config.method,
+      config.params,
+      config.data
+    );
+
+    if (data !== undefined) {
+      config.adapter = async () => ({
+        data,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+        request: null,
+      });
+    }
+
+    return config;
+  });
+}
 
 axiosInstance.interceptors.response.use(
   (response) => response,

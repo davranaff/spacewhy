@@ -22,3 +22,12 @@ The complete Minimals-based Spacewhy UI kit is present and verified under `front
 - `npm ci`
 - `npm run lint`
 - `npm run build` generated 121 routes.
+
+## Performance
+
+- Client navigation has a single delegated listener with cleanup; it does not rescan the DOM or patch `history.pushState` repeatedly.
+- Route loading uses a 3px progress indicator instead of a fullscreen animated splash.
+- Framer Motion loads the smaller `domAnimation` feature set because the UI kit does not use motion drag/layout features.
+- Static glass surfaces do not animate paint-heavy shadow, background and radius properties; interactive feedback remains within 160–180ms.
+- Demo data is local-first through the Axios adapter, eliminating broken or slow requests to the retired Minimals demo API.
+- Performance implementation commit: `fa08f4b`.
