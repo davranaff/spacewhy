@@ -1,5 +1,5 @@
 // sections
-import { OrderDetailsView } from 'src/sections/order/view';
+import OrderDetailsView from 'src/sections/order/view/order-details-view';
 
 // ----------------------------------------------------------------------
 

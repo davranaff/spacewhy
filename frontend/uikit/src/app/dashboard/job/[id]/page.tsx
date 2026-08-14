@@ -1,5 +1,5 @@
 // sections
-import { JobDetailsView } from 'src/sections/job/view';
+import JobDetailsView from 'src/sections/job/view/job-details-view';
 
 // ----------------------------------------------------------------------
 

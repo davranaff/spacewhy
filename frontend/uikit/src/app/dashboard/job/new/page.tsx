@@ -1,5 +1,5 @@
 // sections
-import { JobCreateView } from 'src/sections/job/view';
+import JobCreateView from 'src/sections/job/view/job-create-view';
 
 // ----------------------------------------------------------------------
 

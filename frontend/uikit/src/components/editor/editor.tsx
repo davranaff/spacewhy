@@ -1,4 +1,3 @@
-import 'src/utils/highlight';
 import dynamic from 'next/dynamic';
 // @mui
 import { alpha } from '@mui/material/styles';
@@ -8,22 +7,28 @@ import { EditorProps } from './types';
 import { StyledEditor } from './styles';
 import Toolbar, { formats } from './toolbar';
 
-const ReactQuill = dynamic(() => import('react-quill'), {
-  ssr: false,
-  loading: () => (
-    <Skeleton
-      sx={{
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        height: 1,
-        position: 'absolute',
-        borderRadius: 1,
-      }}
-    />
-  ),
-});
+const ReactQuill = dynamic(
+  async () => {
+    await import('src/utils/highlight');
+    return (await import('react-quill')).default;
+  },
+  {
+    ssr: false,
+    loading: () => (
+      <Skeleton
+        sx={{
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: 1,
+          position: 'absolute',
+          borderRadius: 1,
+        }}
+      />
+    ),
+  }
+);
 
 // ----------------------------------------------------------------------
 

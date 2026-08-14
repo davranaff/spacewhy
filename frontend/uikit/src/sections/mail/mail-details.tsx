@@ -8,6 +8,7 @@ import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import Collapse from '@mui/material/Collapse';
 import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import ButtonBase from '@mui/material/ButtonBase';
 import Typography from '@mui/material/Typography';
@@ -18,9 +19,7 @@ import { fDateTime } from 'src/utils/format-time';
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import Label from 'src/components/label';
-import Editor from 'src/components/editor';
 import Iconify from 'src/components/iconify';
-import Markdown from 'src/components/markdown';
 import Scrollbar from 'src/components/scrollbar';
 import TextMaxLine from 'src/components/text-max-line';
 import EmptyContent from 'src/components/empty-content';
@@ -230,15 +229,16 @@ export default function MailDetails({ mail, renderLabel }: Props) {
   const renderContent = (
     <Box sx={{ py: 3, overflow: 'hidden', flexGrow: 1 }}>
       <Scrollbar>
-        <Markdown
-          children={mail.message}
+        <Typography
+          variant="body2"
           sx={{
             px: 2,
-            '& p': {
-              typography: 'body2',
-            },
+            whiteSpace: 'pre-wrap',
+            overflowWrap: 'anywhere',
           }}
-        />
+        >
+          {mail.message}
+        </Typography>
       </Scrollbar>
     </Box>
   );
@@ -250,7 +250,13 @@ export default function MailDetails({ mail, renderLabel }: Props) {
         p: (theme) => theme.spacing(0, 2, 2, 2),
       }}
     >
-      <Editor simple id="reply-mail" />
+      <TextField
+        fullWidth
+        multiline
+        minRows={3}
+        placeholder="Write a reply..."
+        inputProps={{ 'aria-label': 'Reply message' }}
+      />
 
       <Stack direction="row" alignItems="center">
         <Stack direction="row" alignItems="center" flexGrow={1}>

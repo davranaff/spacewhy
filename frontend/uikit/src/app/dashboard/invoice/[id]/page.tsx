@@ -1,5 +1,5 @@
 // sections
-import { InvoiceDetailsView } from 'src/sections/invoice/view';
+import InvoiceDetailsView from 'src/sections/invoice/view/invoice-details-view';
 
 // ----------------------------------------------------------------------
 

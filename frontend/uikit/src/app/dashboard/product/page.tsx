@@ -1,5 +1,5 @@
 // sections
-import { ProductListView } from 'src/sections/product/view';
+import ProductListView from 'src/sections/product/view/product-list-view';
 
 // ----------------------------------------------------------------------
 

@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import FullCalendar from '@fullcalendar/react'; // => request placed at the top
 import { EventInput } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -37,10 +38,14 @@ import { isDateError } from 'src/components/custom-date-range-picker';
 //
 import { useCalendar } from '../hooks';
 import { StyledCalendar } from '../styles';
-import CalendarForm from '../calendar-form';
 import CalendarToolbar from '../calendar-toolbar';
-import CalendarFilters from '../calendar-filters';
 import CalendarFiltersResult from '../calendar-filters-result';
+
+// ----------------------------------------------------------------------
+
+const CalendarForm = dynamic(() => import('../calendar-form'));
+
+const CalendarFilters = dynamic(() => import('../calendar-filters'));
 
 // ----------------------------------------------------------------------
 
@@ -214,46 +219,50 @@ export default function CalendarView() {
         </Card>
       </Container>
 
-      <Dialog
-        fullWidth
-        maxWidth="xs"
-        open={openForm}
-        onClose={onCloseForm}
-        transitionDuration={{
-          enter: theme.transitions.duration.shortest,
-          exit: theme.transitions.duration.shortest - 80,
-        }}
-      >
-        <DialogTitle>{currentEventId ? 'Edit' : 'Add'} Event</DialogTitle>
-
-        <CalendarForm
-          openForm={openForm}
+      {openForm && (
+        <Dialog
+          fullWidth
+          maxWidth="xs"
+          open
           onClose={onCloseForm}
-          event={initialEvent()}
-          onDeleteEvent={onDeleteEvent}
-          onCreateEvent={onCreateEvent}
-          onUpdateEvent={onUpdateEvent}
-          currentEventId={currentEventId}
-          colorOptions={CALENDAR_COLOR_OPTIONS}
-        />
-      </Dialog>
+          transitionDuration={{
+            enter: theme.transitions.duration.shortest,
+            exit: theme.transitions.duration.shortest - 80,
+          }}
+        >
+          <DialogTitle>{currentEventId ? 'Edit' : 'Add'} Event</DialogTitle>
 
-      <CalendarFilters
-        open={openFilters.value}
-        onClose={openFilters.onFalse}
-        //
-        filters={filters}
-        onFilters={handleFilters}
-        //
-        canReset={canReset}
-        onResetFilters={handleResetFilters}
-        //
-        dateError={dateError}
-        //
-        events={events}
-        colorOptions={CALENDAR_COLOR_OPTIONS}
-        onClickEvent={onClickEventInFilters}
-      />
+          <CalendarForm
+            openForm={openForm}
+            onClose={onCloseForm}
+            event={initialEvent()}
+            onDeleteEvent={onDeleteEvent}
+            onCreateEvent={onCreateEvent}
+            onUpdateEvent={onUpdateEvent}
+            currentEventId={currentEventId}
+            colorOptions={CALENDAR_COLOR_OPTIONS}
+          />
+        </Dialog>
+      )}
+
+      {openFilters.value && (
+        <CalendarFilters
+          open
+          onClose={openFilters.onFalse}
+          //
+          filters={filters}
+          onFilters={handleFilters}
+          //
+          canReset={canReset}
+          onResetFilters={handleResetFilters}
+          //
+          dateError={dateError}
+          //
+          events={events}
+          colorOptions={CALENDAR_COLOR_OPTIONS}
+          onClickEvent={onClickEventInFilters}
+        />
+      )}
     </>
   );
 }

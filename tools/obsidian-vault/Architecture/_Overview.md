@@ -32,3 +32,6 @@ The deployment composition reserves service-owned PostgreSQL 17, RabbitMQ 4.3, a
 2. The shared UI kit boundary was initialized only after the user's explicit request; the admin frontend remains deferred.
 3. The project memory vault is kept inside the repository because that location was explicitly requested; its secret notes must still never contain values in the repository.
 4. Client navigation uses one delegated progress listener and lightweight route feedback; DOM-wide mutation observers are prohibited for link instrumentation.
+5. App pages import their concrete view module instead of multi-view barrel indexes so unrelated editors, PDF renderers and detail screens do not enter the route graph.
+6. Internal links disable viewport-wide automatic prefetch and warm only on explicit pointer or keyboard intent; this prevents the dense component catalog and dashboard sidebar from saturating the preview with concurrent route downloads.
+7. Syntax highlighting uses `highlight.js/lib/core` with an explicit language set, while optional editors and calendar dialogs remain lazy boundaries.
