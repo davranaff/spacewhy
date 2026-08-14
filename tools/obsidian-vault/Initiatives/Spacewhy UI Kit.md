@@ -31,3 +31,5 @@ The complete Minimals-based Spacewhy UI kit is present and verified under `front
 - Static glass surfaces do not animate paint-heavy shadow, background and radius properties; interactive feedback remains within 160–180ms.
 - Demo data is local-first through the Axios adapter, eliminating broken or slow requests to the retired Minimals demo API.
 - Performance implementation commit: `fa08f4b`.
+- Follow-up bundle profiling removed view-barrel overfetch, full-library syntax highlighting and viewport-wide route prefetch. Top-level dashboard route bundles are now roughly 37–65% smaller, with Mail reduced from 715 to 274 kB.
+- Bundle/navigation follow-up implementation commit: `3e33bca`.
