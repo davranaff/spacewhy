@@ -52,13 +52,10 @@ export default function Button(theme: Theme) {
         ? '0 7px 20px rgba(26,32,44,var(--spacewhy-glass-shadow-alpha-light))'
         : '0 8px 22px rgba(0,0,0,var(--spacewhy-glass-shadow-alpha-dark))',
       transform: 'translateY(0) scale(1)',
-      transition: theme.transitions.create(
-        ['transform', 'box-shadow', 'background-color', 'border-color'],
-        {
-          duration: 180,
-          easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
-        }
-      ),
+      transition: theme.transitions.create(['transform', 'border-color'], {
+        duration: 160,
+        easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+      }),
       '@media (hover: hover) and (pointer: fine)': {
         '&:hover': {
           transform: 'translateY(-1px) scale(1.01)',

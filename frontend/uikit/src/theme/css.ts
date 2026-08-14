@@ -48,11 +48,11 @@ export const liquidGlass = ({
       WebkitBackdropFilter: `blur(${blurVariable}) saturate(var(--spacewhy-glass-saturation))`,
     }),
     boxShadow: elevated ? elevatedShadow : 'none',
-    transition: theme.transitions.create(
-      ['transform', 'box-shadow', 'border-color', 'background-color', 'border-radius'],
-      { duration: 300, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
-    ),
     ...(interactive && {
+      transition: theme.transitions.create(['transform', 'border-color'], {
+        duration: 180,
+        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      }),
       '&:hover': {
         borderColor: isDark ? 'rgba(255,255,255,0.20)' : 'rgba(18,24,33,0.18)',
         transform: 'translateY(-1px) scale(1.006)',

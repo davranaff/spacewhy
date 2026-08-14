@@ -1,40 +1,66 @@
-/* eslint-disable no-restricted-globals */
-
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import NProgress from 'nprogress';
 import StyledProgressBar from './styles';
 
-type PushStateInput = [data: any, unused: string, url?: string | URL | null | undefined];
-
 export default function ProgressBar() {
+  const pathname = usePathname();
+
   useEffect(() => {
-    NProgress.configure({ showSpinner: false });
+    NProgress.configure({
+      showSpinner: false,
+      minimum: 0.16,
+      speed: 180,
+      trickleSpeed: 180,
+    });
 
     const handleAnchorClick = (event: MouseEvent) => {
-      const targetUrl = (event.currentTarget as HTMLAnchorElement).href;
-      const currentUrl = location.href;
-      if (targetUrl !== currentUrl) {
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      const target = event.target instanceof Element ? event.target : null;
+      const anchor = target?.closest<HTMLAnchorElement>('a[href]');
+
+      if (!anchor || anchor.target === '_blank' || anchor.hasAttribute('download')) {
+        return;
+      }
+
+      const currentUrl = new URL(window.location.href);
+      const targetUrl = new URL(anchor.href, currentUrl);
+
+      const isSameDocument =
+        targetUrl.pathname === currentUrl.pathname && targetUrl.search === currentUrl.search;
+
+      if (targetUrl.origin === currentUrl.origin && !isSameDocument) {
         NProgress.start();
       }
     };
 
-    const handleMutation: MutationCallback = () => {
-      const anchorElements = document.querySelectorAll('a');
-      anchorElements.forEach((anchor) => anchor.addEventListener('click', handleAnchorClick));
+    const handleHistoryNavigation = () => NProgress.start();
+
+    document.addEventListener('click', handleAnchorClick, true);
+    window.addEventListener('popstate', handleHistoryNavigation);
+
+    return () => {
+      document.removeEventListener('click', handleAnchorClick, true);
+      window.removeEventListener('popstate', handleHistoryNavigation);
+      NProgress.remove();
     };
+  }, []);
 
-    const mutationObserver = new MutationObserver(handleMutation);
-    mutationObserver.observe(document, { childList: true, subtree: true });
-
-    window.history.pushState = new Proxy(window.history.pushState, {
-      apply: (target, thisArg, argArray: PushStateInput) => {
-        NProgress.done();
-        return target.apply(thisArg, argArray);
-      },
-    });
-  });
+  useEffect(() => {
+    NProgress.done();
+  }, [pathname]);
 
   return <StyledProgressBar />;
 }
