@@ -267,16 +267,16 @@ export default function HomeHero() {
       component={m.div}
       variants={varFade().in}
       sx={{
-        top: '13%',
-        right: '-18%',
-        width: '118%',
+        top: '50%',
+        right: 0,
+        width: '92%',
         position: 'absolute',
         isolation: 'isolate',
         opacity: opacity > 0 ? opacity : 0,
-        transform: `perspective(1400px) rotateY(${
-          -12 - percent / 40
-        }deg) rotateZ(-3deg) translate3d(0, ${-percent * 0.35}px, 0)`,
-        transformOrigin: 'center right',
+        transform: `translate3d(0, calc(-50% - ${
+          percent * 0.35
+        }px), 0) perspective(1600px) rotateY(${-7 - percent / 48}deg) rotateZ(-1.5deg)`,
+        transformOrigin: 'center',
         '&::before, &::after': {
           content: "''",
           inset: 0,
@@ -336,7 +336,11 @@ export default function HomeHero() {
                 {renderDescription}
               </Grid>
 
-              {mdUp && <Grid md={6}>{renderSlides}</Grid>}
+              {mdUp && (
+                <Grid md={6} sx={{ minWidth: 0, position: 'relative' }}>
+                  {renderSlides}
+                </Grid>
+              )}
             </Grid>
           </Container>
 

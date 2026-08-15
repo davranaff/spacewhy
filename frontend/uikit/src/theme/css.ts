@@ -13,12 +13,14 @@ export const liquidGlass = ({
   interactive = false,
   blurred = false,
   blurStrength = 'full',
+  positioned = true,
 }: {
   theme: Theme;
   elevated?: boolean;
   interactive?: boolean;
   blurred?: boolean;
   blurStrength?: 'full' | 'surface' | 'control';
+  positioned?: boolean;
 }) => {
   const isDark = theme.palette.mode === 'dark';
 
@@ -49,13 +51,15 @@ export const liquidGlass = ({
     : '0 var(--spacewhy-glass-shadow-offset) var(--spacewhy-glass-shadow-blur) var(--spacewhy-glass-shadow-spread) rgba(26,32,44,var(--spacewhy-glass-shadow-alpha-light))';
 
   return {
-    position: 'relative',
+    ...(positioned && { position: 'relative' }),
     overflow: 'hidden',
     border: isDark
       ? '1px solid rgba(255,255,255,var(--spacewhy-glass-edge-alpha-dark))'
       : '1px solid rgba(18,24,33,var(--spacewhy-glass-edge-alpha-light))',
     borderRadius: radiusVariable,
-    backgroundColor: isDark ? `rgba(9, 9, 12, ${alphaVariable})` : `rgba(255, 255, 255, ${alphaVariable})`,
+    backgroundColor: isDark
+      ? `rgba(9, 9, 12, ${alphaVariable})`
+      : `rgba(255, 255, 255, ${alphaVariable})`,
     backgroundImage: 'none',
     ...(blurred && {
       backdropFilter: `blur(${blurVariable}) saturate(var(--spacewhy-glass-saturation))`,

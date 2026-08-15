@@ -3,11 +3,11 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "android": "react-native run-android --port 8082",
+    "ios": "react-native run-ios --port 8082",
     "lint": "eslint .",
-    "start": "react-native start",
-    "start:reset-cache": "react-native start --reset-cache",
+    "start": "react-native start --port 8082",
+    "start:reset-cache": "react-native start --port 8082 --reset-cache",
     "test": "jest",
     "typecheck": "tsc --noEmit"
   },
