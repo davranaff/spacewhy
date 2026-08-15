@@ -104,15 +104,7 @@ export default function JwtRegisterView() {
       component="div"
       sx={{ color: 'text.secondary', mt: 2.5, typography: 'caption', textAlign: 'center' }}
     >
-      {'By signing up, I agree to '}
-      <Link underline="always" color="text.primary">
-        Terms of Service
-      </Link>
-      {' and '}
-      <Link underline="always" color="text.primary">
-        Privacy Policy
-      </Link>
-      .
+      By signing up, I agree to use this account as a local UI Kit demo.
     </Typography>
   );
 
@@ -135,7 +127,11 @@ export default function JwtRegisterView() {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
+                <IconButton
+                  aria-label={password.value ? 'Hide password' : 'Show password'}
+                  onClick={password.onToggle}
+                  edge="end"
+                >
                   <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
                 </IconButton>
               </InputAdornment>

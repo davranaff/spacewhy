@@ -99,7 +99,7 @@ const htmlContent = `
 
 <br/>
 
-<img alt='cover' src='https://res.cloudinary.com/trinhmai/image/upload/v1660897321/_minimal_mock/_Cover/cover_19.jpg'>
+<img alt='Spacewhy editorial cover' src='/assets/images/cover/cover_19.jpg'>
 
 <blockquote> <p>A block quote with <s>strikethrough</s> and a URL: <a href='https://reactjs.org'>https://reactjs.org</a>.</p> </blockquote>
 `;
@@ -160,7 +160,7 @@ ReactDOM.render(
 
 <br/>
 
-![cover](https://res.cloudinary.com/trinhmai/image/upload/v1660897321/_minimal_mock/_Cover/cover_19.jpg)
+![Spacewhy editorial cover](/assets/images/cover/cover_19.jpg)
 
 > A block quote with ~~strikethrough~~ and a URL: [https://reactjs.org](https://reactjs.org).
 `;

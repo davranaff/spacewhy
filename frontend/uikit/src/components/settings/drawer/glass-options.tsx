@@ -111,11 +111,11 @@ export default function GlassOptions({ values, onCommit }: Props) {
               theme.palette.mode === 'dark'
                 ? '1px solid rgba(255,255,255,var(--spacewhy-glass-edge-alpha-dark))'
                 : '1px solid rgba(18,24,33,var(--spacewhy-glass-edge-alpha-light))',
-            borderRadius: 'var(--spacewhy-glass-radius)',
+            borderRadius: 'var(--spacewhy-glass-floating-radius)',
             bgcolor:
               theme.palette.mode === 'dark'
-                ? 'rgba(9,9,12,var(--spacewhy-glass-alpha))'
-                : 'rgba(255,255,255,var(--spacewhy-glass-alpha-light))',
+                ? 'rgba(9,9,12,var(--spacewhy-glass-floating-alpha))'
+                : 'rgba(255,255,255,var(--spacewhy-glass-floating-alpha-light))',
             backgroundImage: 'none',
             backdropFilter:
               'blur(var(--spacewhy-glass-blur)) saturate(var(--spacewhy-glass-saturation))',
@@ -123,8 +123,8 @@ export default function GlassOptions({ values, onCommit }: Props) {
               'blur(var(--spacewhy-glass-blur)) saturate(var(--spacewhy-glass-saturation))',
             boxShadow:
               theme.palette.mode === 'dark'
-                ? '0 var(--spacewhy-glass-shadow-offset) var(--spacewhy-glass-shadow-blur) rgba(0,0,0,var(--spacewhy-glass-shadow-alpha-dark))'
-                : '0 var(--spacewhy-glass-shadow-offset) var(--spacewhy-glass-shadow-blur) rgba(26,32,44,var(--spacewhy-glass-shadow-alpha-light))',
+                ? '0 var(--spacewhy-glass-shadow-offset) var(--spacewhy-glass-shadow-blur) var(--spacewhy-glass-shadow-spread) rgba(0,0,0,var(--spacewhy-glass-shadow-alpha-dark))'
+                : '0 var(--spacewhy-glass-shadow-offset) var(--spacewhy-glass-shadow-blur) var(--spacewhy-glass-shadow-spread) rgba(26,32,44,var(--spacewhy-glass-shadow-alpha-light))',
           }}
         >
           <Typography variant="subtitle2">Live material</Typography>
@@ -163,6 +163,7 @@ export default function GlassOptions({ values, onCommit }: Props) {
             onChange={(_, nextValue) => handlePreview(control.name, nextValue as number)}
             onChangeCommitted={(_, nextValue) => onCommit(control.name, nextValue as number)}
             aria-label={control.label}
+            valueLabelDisplay="auto"
             sx={{ mt: 1 }}
           />
 

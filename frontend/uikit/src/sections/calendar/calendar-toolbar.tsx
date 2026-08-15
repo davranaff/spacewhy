@@ -60,6 +60,9 @@ export default function CalendarToolbar({
       >
         {smUp && (
           <Button
+            aria-haspopup="menu"
+            aria-controls={popover.open ? 'calendar-view-menu' : undefined}
+            aria-expanded={popover.open ? true : undefined}
             size="small"
             color="inherit"
             onClick={popover.onOpen}
@@ -71,13 +74,13 @@ export default function CalendarToolbar({
         )}
 
         <Stack direction="row" alignItems="center" spacing={1}>
-          <IconButton onClick={onPrevDate}>
+          <IconButton aria-label="Previous date" onClick={onPrevDate}>
             <Iconify icon="eva:arrow-ios-back-fill" />
           </IconButton>
 
           <Typography variant="h6">{fDate(date)}</Typography>
 
-          <IconButton onClick={onNextDate}>
+          <IconButton aria-label="Next date" onClick={onNextDate}>
             <Iconify icon="eva:arrow-ios-forward-fill" />
           </IconButton>
         </Stack>
@@ -87,7 +90,7 @@ export default function CalendarToolbar({
             Today
           </Button>
 
-          <IconButton onClick={onOpenFilters}>
+          <IconButton aria-label="Open calendar filters" onClick={onOpenFilters}>
             <Iconify icon="ic:round-filter-list" />
           </IconButton>
         </Stack>
@@ -97,6 +100,7 @@ export default function CalendarToolbar({
         open={popover.open}
         onClose={popover.onClose}
         arrow="top-left"
+        PaperProps={{ id: 'calendar-view-menu', role: 'menu', 'aria-label': 'Calendar view' }}
         sx={{ width: 160 }}
       >
         {VIEW_OPTIONS.map((viewOption) => (

@@ -1,3 +1,4 @@
+import { useId } from 'react';
 // @mui
 import { Theme, SxProps } from '@mui/material/styles';
 import Card from '@mui/material/Card';
@@ -22,6 +23,7 @@ type Props = {
 
 export default function StandardNode({ node, onEdit, onDelete, sx }: Props) {
   const popover = usePopover();
+  const menuId = useId();
 
   return (
     <>
@@ -39,6 +41,10 @@ export default function StandardNode({ node, onEdit, onDelete, sx }: Props) {
         }}
       >
         <IconButton
+          aria-label={`Open actions for ${node.name}`}
+          aria-haspopup="menu"
+          aria-controls={popover.open ? menuId : undefined}
+          aria-expanded={popover.open ? true : undefined}
           color={popover.open ? 'inherit' : 'default'}
           onClick={popover.onOpen}
           sx={{ position: 'absolute', top: 8, right: 8 }}
@@ -65,6 +71,7 @@ export default function StandardNode({ node, onEdit, onDelete, sx }: Props) {
         open={popover.open}
         onClose={popover.onClose}
         arrow="left-center"
+        PaperProps={{ id: menuId, role: 'menu', 'aria-label': `Actions for ${node.name}` }}
         sx={{ width: 160 }}
       >
         {onDelete && (

@@ -11,7 +11,12 @@ import { NavItemDesktopProps } from '../types';
 
 // ----------------------------------------------------------------------
 
-type ListItemProps = Omit<NavItemDesktopProps, 'item'>;
+type ListItemProps = Omit<NavItemDesktopProps, 'item'> & {
+  component?: React.ElementType;
+  href?: string;
+  target?: React.HTMLAttributeAnchorTarget;
+  rel?: string;
+};
 
 export const ListItem = styled(ListItemButton, {
   shouldForwardProp: (prop) =>

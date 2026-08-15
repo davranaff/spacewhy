@@ -177,7 +177,7 @@ export default function OverviewBankingView() {
               price="$50"
               title={`Invite friends \n and earn`}
               description="Praesent egestas tristique nibh. Duis lobortis massa imperdiet quam."
-              img="/assets/illustrations/characters/character_11.png"
+              img="/assets/illustrations/spacewhy/collaboration-console.svg"
             />
           </Stack>
         </Grid>

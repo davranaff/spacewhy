@@ -34,7 +34,6 @@ export default function CssBaseline(theme: Theme) {
                  radial-gradient(62% 54% at 4% 58%, rgba(122,130,143,0.17) 0%, rgba(122,130,143,0) 72%),
                  radial-gradient(70% 48% at 72% 100%, rgba(180,186,196,0.22) 0%, rgba(180,186,196,0) 72%),
                  linear-gradient(180deg, #FFFFFF 0%, #F1F2F4 46%, #E8EAED 100%)`,
-          backgroundAttachment: 'fixed',
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
         },

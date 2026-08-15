@@ -96,7 +96,7 @@ export default function TextField(theme: Theme) {
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: 'calc(var(--spacewhy-glass-radius) * 0.72)',
+          borderRadius: 'var(--spacewhy-glass-control-radius)',
           backgroundColor:
             theme.palette.mode === 'dark'
               ? 'rgba(9,9,12,var(--spacewhy-glass-control-alpha))'

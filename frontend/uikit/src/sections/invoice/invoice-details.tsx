@@ -20,6 +20,8 @@ import { fCurrency } from 'src/utils/format-number';
 import { INVOICE_STATUS_OPTIONS } from 'src/_mock';
 // types
 import { IInvoice } from 'src/types/invoice';
+// brand
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
 // components
 import Label from 'src/components/label';
 import Scrollbar from 'src/components/scrollbar';
@@ -109,7 +111,7 @@ export default function InvoiceDetails({ invoice }: Props) {
       <Grid xs={12} md={3} sx={{ py: 3, textAlign: 'right' }}>
         <Typography variant="subtitle2">Have a Question?</Typography>
 
-        <Typography variant="body2">hello@spacewhy.com</Typography>
+        <Typography variant="body2">{SPACEWHY_BRAND.contactEmail}</Typography>
       </Grid>
     </Grid>
   );

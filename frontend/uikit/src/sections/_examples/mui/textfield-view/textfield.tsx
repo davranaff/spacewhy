@@ -70,7 +70,7 @@ export default function Textfield({ variant }: Props) {
           required
           fullWidth
           label="Activated"
-          defaultValue="Hello Minimal"
+          defaultValue="Hello Spacewhy"
         />
 
         <TextField
@@ -86,7 +86,7 @@ export default function Textfield({ variant }: Props) {
           disabled
           fullWidth
           label="Disabled"
-          defaultValue="Hello Minimal"
+          defaultValue="Hello Spacewhy"
         />
       </ComponentBlock>
 
@@ -109,7 +109,7 @@ export default function Textfield({ variant }: Props) {
           disabled
           fullWidth
           label="Disabled"
-          defaultValue="Hello Minimal"
+          defaultValue="Hello Spacewhy"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -176,7 +176,7 @@ export default function Textfield({ variant }: Props) {
           variant={variant}
           fullWidth
           label="Error"
-          defaultValue="Hello Minimal"
+          defaultValue="Hello Spacewhy"
           helperText="Incorrect entry."
         />
 
@@ -185,7 +185,7 @@ export default function Textfield({ variant }: Props) {
           error
           fullWidth
           label="Error"
-          defaultValue="Hello Minimal"
+          defaultValue="Hello Spacewhy"
           helperText="Incorrect entry."
         />
       </ComponentBlock>

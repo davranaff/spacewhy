@@ -20,8 +20,8 @@ import { MotionViewport, varFade } from 'src/components/animate';
 // ----------------------------------------------------------------------
 
 export const SKILLS = [...Array(3)].map((_, index) => ({
-  label: ['Development', 'Design', 'Marketing'][index],
-  value: [20, 40, 60][index],
+  label: ['Product engineering', 'System design', 'Visual language'][index],
+  value: [92, 88, 84][index],
 }));
 
 // ----------------------------------------------------------------------
@@ -52,7 +52,7 @@ export default function AboutWhat() {
             <Grid xs={6}>
               <m.div variants={varFade().inUp}>
                 <Image
-                  alt="our office 2"
+                  alt="Spacewhy desktop product system"
                   src="/assets/images/about/what_2.png"
                   ratio="1/1"
                   sx={{ borderRadius: 3, boxShadow: shadow }}
@@ -63,7 +63,7 @@ export default function AboutWhat() {
             <Grid xs={6}>
               <m.div variants={varFade().inUp}>
                 <Image
-                  alt="our office 1"
+                  alt="Spacewhy mobile product system"
                   src="/assets/images/about/what_1.png"
                   ratio="3/4"
                   sx={{ borderRadius: 3, boxShadow: shadow }}
@@ -86,10 +86,9 @@ export default function AboutWhat() {
                 color: theme.palette.mode === 'light' ? 'text.secondary' : 'common.white',
               }}
             >
-              Our theme is the most advanced and user-friendly theme you will find on the market, we
-              have documentation and video to help set your site really easily, pre-installed demos
-              you can import in one click and everything from the theme options to page content can
-              be edited from the front-end. This is the theme you are looking for.
+              Spacewhy is a production-ready UI system that brings dashboards, application flows,
+              responsive layouts and a complete component catalog into one coherent foundation.
+              Every example is designed to be inspected, adapted and shipped.
             </Typography>
           </m.div>
 
@@ -122,7 +121,7 @@ export default function AboutWhat() {
               size="large"
               endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
             >
-              Our Work
+              Explore the system
             </Button>
           </m.div>
         </Grid>

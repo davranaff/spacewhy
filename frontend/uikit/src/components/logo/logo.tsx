@@ -27,7 +27,7 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(
           color: 'text.primary',
           border: '1px solid',
           borderColor: 'divider',
-          borderRadius: 'calc(var(--spacewhy-glass-radius) * 0.62)',
+          borderRadius: 'var(--spacewhy-glass-control-radius)',
           bgcolor: 'background.neutral',
           backgroundImage: 'none',
           boxShadow: 'none',
@@ -35,25 +35,15 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(
         }}
         {...other}
       >
-        <svg width="18" height="26" viewBox="0 0 48 64" aria-hidden="true">
+        <svg width="27" height="27" viewBox="0 0 48 48" aria-hidden="true">
           <path
-            d="M24 3 C29.5 9 33 18.5 33 28 C33 33.5 33 38 33 41 C36 44 39.5 46.5 41.5 50 C37.5 48.5 34.5 47.5 33 46 C33 47.5 33 48.5 32.5 49 L15.5 49 C15 48.5 15 47.5 15 46 C13.5 47.5 10.5 48.5 6.5 50 C8.5 46.5 12 44 15 41 C15 38 15 33.5 15 28 C15 18.5 18.5 9 24 3 Z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinejoin="round"
+            d="M25.946 45.938c-.664.845-2.021.375-2.021-.698V34.937a2.26 2.26 0 0 0-2.262-2.262H10.287c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.497 0-3.578-1.842-3.578H1.237c-.92 0-1.456-1.04-.92-1.788L10.013 1.474c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.579 1.842 3.579h11.377c.943 0 1.473 1.088.89 1.83L25.947 45.94z"
+            fill="#863BFF"
           />
           <path
-            d="M24 51 C25.6 54.5 25.6 59.5 24 63 C22.4 59.5 22.4 54.5 24 51 Z"
-            fill="currentColor"
-          />
-          <path
-            d="M15.5 51 C16.8 54 16.8 57.5 15.5 60.5 C14.2 57.5 14.2 54 15.5 51 Z"
-            fill="currentColor"
-          />
-          <path
-            d="M32.5 51 C33.8 54 33.8 57.5 32.5 60.5 C31.2 57.5 31.2 54 32.5 51 Z"
-            fill="currentColor"
+            d="M32.8 13.26c-1.07 1.498 0 3.578 1.842 3.578h4.18L28.5 27.45l-4.575 6.487v-7.15L32.8 13.26z"
+            fill="#47BFFF"
+            opacity=".72"
           />
         </svg>
       </Box>

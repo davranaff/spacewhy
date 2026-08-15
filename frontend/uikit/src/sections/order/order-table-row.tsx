@@ -41,7 +41,7 @@ export default function OrderTableRow({
   onSelectRow,
   onDeleteRow,
 }: Props) {
-  const { items, status, orderNumber, createdAt, customer, totalQuantity, subTotal } = row;
+  const { id, items, status, orderNumber, createdAt, customer, totalQuantity, subTotal } = row;
 
   const confirm = useBoolean();
 
@@ -52,13 +52,24 @@ export default function OrderTableRow({
   const renderPrimary = (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
-        <Checkbox checked={selected} onClick={onSelectRow} />
+        <Checkbox
+          checked={selected}
+          onClick={onSelectRow}
+          inputProps={{ 'aria-label': `Select order ${orderNumber}` }}
+        />
       </TableCell>
 
       <TableCell>
         <Box
+          component="button"
+          type="button"
           onClick={onViewRow}
           sx={{
+            p: 0,
+            border: 0,
+            font: 'inherit',
+            color: 'inherit',
+            bgcolor: 'transparent',
             cursor: 'pointer',
             '&:hover': {
               textDecoration: 'underline',
@@ -113,6 +124,9 @@ export default function OrderTableRow({
 
       <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <IconButton
+          aria-label={`${collapse.value ? 'Hide' : 'Show'} items for order ${orderNumber}`}
+          aria-controls={`order-${id}-details`}
+          aria-expanded={collapse.value}
           color={collapse.value ? 'inherit' : 'default'}
           onClick={collapse.onToggle}
           sx={{
@@ -124,7 +138,14 @@ export default function OrderTableRow({
           <Iconify icon="eva:arrow-ios-downward-fill" />
         </IconButton>
 
-        <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+        <IconButton
+          aria-label={`Open actions for order ${orderNumber}`}
+          aria-haspopup="menu"
+          aria-controls={popover.open ? `order-${id}-actions` : undefined}
+          aria-expanded={popover.open ? true : undefined}
+          color={popover.open ? 'inherit' : 'default'}
+          onClick={popover.onOpen}
+        >
           <Iconify icon="eva:more-vertical-fill" />
         </IconButton>
       </TableCell>
@@ -135,6 +156,7 @@ export default function OrderTableRow({
     <TableRow>
       <TableCell sx={{ p: 0, border: 'none' }} colSpan={8}>
         <Collapse
+          id={`order-${id}-details`}
           in={collapse.value}
           timeout="auto"
           unmountOnExit
@@ -193,6 +215,11 @@ export default function OrderTableRow({
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
+        PaperProps={{
+          id: `order-${id}-actions`,
+          role: 'menu',
+          'aria-label': `Actions for order ${orderNumber}`,
+        }}
         sx={{ width: 140 }}
       >
         <MenuItem

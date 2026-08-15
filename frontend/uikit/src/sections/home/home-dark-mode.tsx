@@ -1,15 +1,14 @@
 import { m } from 'framer-motion';
 // @mui
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 // components
-import Image from 'src/components/image';
 import { useSettingsContext } from 'src/components/settings';
 import { MotionViewport, varFade } from 'src/components/animate';
+import HomeInterfacePreview from './home-interface-preview';
 
 // ----------------------------------------------------------------------
 
@@ -39,7 +38,8 @@ export default function HomeDarkMode() {
       <m.div variants={varFade().inUp}>
         <Switch
           checked={settings.themeMode === 'dark'}
-          onClick={() =>
+          inputProps={{ 'aria-label': 'Toggle dark mode preview' }}
+          onChange={() =>
             settings.onUpdate('themeMode', settings.themeMode === 'light' ? 'dark' : 'light')
           }
         />
@@ -47,18 +47,18 @@ export default function HomeDarkMode() {
     </Stack>
   );
 
-  const renderImg = (
-    <m.div variants={varFade().inUp}>
-      <Image
-        alt="darkmode"
-        src="/assets/images/home/darkmode.webp"
-        sx={{
-          borderRadius: 2,
-          my: { xs: 5, md: 10 },
-          boxShadow: (theme) => `-40px 40px 80px ${alpha(theme.palette.common.black, 0.24)}`,
-        }}
+  const renderPreview = (
+    <Box
+      component={m.div}
+      variants={varFade().inUp}
+      sx={{ maxWidth: 1040, mx: 'auto', my: { xs: 5, md: 10 } }}
+    >
+      <HomeInterfacePreview
+        mode={settings.themeMode}
+        variant="overview"
+        label={`Spacewhy mission control interface in ${settings.themeMode} mode`}
       />
-    </m.div>
+    </Box>
   );
 
   return (
@@ -73,7 +73,7 @@ export default function HomeDarkMode() {
       <Container component={MotionViewport}>
         {renderDescription}
 
-        {renderImg}
+        {renderPreview}
       </Container>
     </Box>
   );

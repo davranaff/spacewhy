@@ -25,10 +25,11 @@ import {
 // ----------------------------------------------------------------------
 
 type Props = {
+  openNav?: boolean;
   onOpenNav?: VoidFunction;
 };
 
-export default function Header({ onOpenNav }: Props) {
+export default function Header({ openNav, onOpenNav }: Props) {
   const theme = useTheme();
 
   const settings = useSettingsContext();
@@ -48,7 +49,12 @@ export default function Header({ onOpenNav }: Props) {
       {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />}
 
       {!lgUp && (
-        <IconButton onClick={onOpenNav}>
+        <IconButton
+          aria-label="Open navigation"
+          aria-expanded={openNav}
+          aria-controls="dashboard-navigation-drawer"
+          onClick={onOpenNav}
+        >
           <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
         </IconButton>
       )}

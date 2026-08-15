@@ -39,13 +39,13 @@ export default function AboutVision() {
         py: { xs: 1.5, md: 2.5 },
       }}
     >
-      {['ibm', 'lya', 'spotify', 'netflix', 'hbo', 'amazon'].map((logo) => (
+      {['orbit', 'data', 'interfaces', 'native', 'automation', 'launch'].map((module) => (
         <Box
           component={m.img}
-          key={logo}
+          key={module}
           variants={varFade().in}
-          alt={logo}
-          src={`/assets/icons/brands/ic_brand_${logo}.svg`}
+          alt={`${module} capability`}
+          src={`/assets/icons/spacewhy/ic_module_${module}.svg`}
           sx={{
             m: { xs: 1.5, md: 2.5 },
             height: { xs: 20, md: 32 },
@@ -95,8 +95,7 @@ export default function AboutVision() {
 
         <m.div variants={varFade().inUp}>
           <Typography variant="h3" sx={{ textAlign: 'center', maxWidth: 800, mx: 'auto' }}>
-            Our vision offering the best product nulla vehicula tortor scelerisque ultrices
-            malesuada.
+            One adaptive system for product teams building clear, fast and dependable interfaces.
           </Typography>
         </m.div>
       </Container>

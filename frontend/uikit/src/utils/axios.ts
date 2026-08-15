@@ -3,12 +3,13 @@ import axios from 'axios';
 import { HOST_API } from 'src/config-global';
 // mock
 import { getDemoApiResponse } from 'src/_mock/_demo-api';
+import { shouldUseLocalDemoApi } from 'src/utils/demo-api-mode';
 
 // ----------------------------------------------------------------------
 
 const axiosInstance = axios.create({ baseURL: HOST_API });
 
-const useLocalDemoApi = process.env.NEXT_PUBLIC_USE_REMOTE_DEMO_API !== 'true';
+const useLocalDemoApi = shouldUseLocalDemoApi(process.env.NEXT_PUBLIC_USE_REMOTE_DEMO_API);
 
 if (useLocalDemoApi) {
   axiosInstance.interceptors.request.use((config) => {

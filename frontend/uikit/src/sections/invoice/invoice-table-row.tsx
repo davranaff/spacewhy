@@ -42,7 +42,7 @@ export default function InvoiceTableRow({
   onEditRow,
   onDeleteRow,
 }: Props) {
-  const { sent, invoiceNumber, createDate, dueDate, status, invoiceTo, totalAmount } = row;
+  const { id, sent, invoiceNumber, createDate, dueDate, status, invoiceTo, totalAmount } = row;
 
   const confirm = useBoolean();
 
@@ -52,7 +52,11 @@ export default function InvoiceTableRow({
     <>
       <TableRow hover selected={selected}>
         <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
+          <Checkbox
+            checked={selected}
+            onClick={onSelectRow}
+            inputProps={{ 'aria-label': `Select invoice ${invoiceNumber}` }}
+          />
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
@@ -69,10 +73,18 @@ export default function InvoiceTableRow({
             }
             secondary={
               <Link
+                component="button"
+                type="button"
                 noWrap
                 variant="body2"
                 onClick={onViewRow}
-                sx={{ color: 'text.disabled', cursor: 'pointer' }}
+                sx={{
+                  p: 0,
+                  border: 0,
+                  bgcolor: 'transparent',
+                  color: 'text.disabled',
+                  cursor: 'pointer',
+                }}
               >
                 {invoiceNumber}
               </Link>
@@ -125,7 +137,14 @@ export default function InvoiceTableRow({
         </TableCell>
 
         <TableCell align="right" sx={{ px: 1 }}>
-          <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+          <IconButton
+            aria-label={`Open actions for invoice ${invoiceNumber}`}
+            aria-haspopup="menu"
+            aria-controls={popover.open ? `invoice-${id}-actions` : undefined}
+            aria-expanded={popover.open ? true : undefined}
+            color={popover.open ? 'inherit' : 'default'}
+            onClick={popover.onOpen}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -135,6 +154,11 @@ export default function InvoiceTableRow({
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
+        PaperProps={{
+          id: `invoice-${id}-actions`,
+          role: 'menu',
+          'aria-label': `Actions for invoice ${invoiceNumber}`,
+        }}
         sx={{ width: 160 }}
       >
         <MenuItem

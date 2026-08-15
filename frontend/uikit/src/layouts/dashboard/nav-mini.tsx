@@ -31,7 +31,7 @@ export default function NavMini() {
       <NavToggleButton
         sx={{
           top: 22,
-          left: NAV.W_MINI - 12,
+          insetInlineStart: NAV.W_MINI - 12,
         }}
       />
 
@@ -40,6 +40,8 @@ export default function NavMini() {
           pb: 2,
           height: 1,
           position: 'fixed',
+          top: 0,
+          insetInlineStart: 0,
           width: NAV.W_MINI,
           borderRight: '1px solid',
           borderColor: 'divider',

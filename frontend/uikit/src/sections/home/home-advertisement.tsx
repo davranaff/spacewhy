@@ -11,6 +11,7 @@ import { bgGradient } from 'src/theme/css';
 import { paths } from 'src/routes/paths';
 // components
 import Iconify from 'src/components/iconify';
+import { RouterLink } from 'src/routes/components';
 import { MotionViewport, varFade } from 'src/components/animate';
 
 // ----------------------------------------------------------------------
@@ -48,28 +49,27 @@ export default function HomeAdvertisement() {
             variant="contained"
             target="_blank"
             rel="noopener"
-            href={paths.minimalUI}
+            href={paths.website}
             sx={{
               color: 'grey.800',
               bgcolor: 'common.white',
             }}
           >
-            Purchase Now
+            Visit Spacewhy
           </Button>
         </m.div>
 
         <m.div variants={varFade().inRight}>
           <Button
+            component={RouterLink}
             color="inherit"
             size="large"
             variant="outlined"
-            target="_blank"
-            rel="noopener"
-            href={paths.freeUI}
-            endIcon={<Iconify icon="eva:external-link-fill" width={16} sx={{ mr: 0.5 }} />}
+            href={paths.uiKit}
+            endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={16} sx={{ mr: 0.5 }} />}
             sx={{ color: 'common.white', '&:hover': { borderColor: 'currentColor' } }}
           >
-            Get Free Version
+            Explore Components
           </Button>
         </m.div>
       </Stack>
@@ -84,8 +84,8 @@ export default function HomeAdvertisement() {
           y: [-20, 0, -20],
         }}
         transition={{ duration: 4, repeat: Infinity }}
-        alt="rocket"
-        src="/assets/images/home/rocket.webp"
+        alt="Spacewhy rocket"
+        src="/assets/icons/home/ic_spacewhy_rocket.svg"
         sx={{ maxWidth: 460 }}
       />
     </Stack>

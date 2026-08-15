@@ -186,7 +186,7 @@ export default function CalendarForm({
       <DialogActions>
         {update && (
           <Tooltip title="Delete Event">
-            <IconButton onClick={onDelete}>
+            <IconButton aria-label="Delete event" onClick={onDelete}>
               <Iconify icon="solar:trash-bin-trash-bold" />
             </IconButton>
           </Tooltip>

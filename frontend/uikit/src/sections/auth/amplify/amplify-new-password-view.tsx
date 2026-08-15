@@ -120,7 +120,11 @@ export default function AmplifyNewPasswordView() {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={password.onToggle} edge="end">
+              <IconButton
+                aria-label={password.value ? 'Hide password' : 'Show password'}
+                onClick={password.onToggle}
+                edge="end"
+              >
                 <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
               </IconButton>
             </InputAdornment>
@@ -135,7 +139,13 @@ export default function AmplifyNewPasswordView() {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={password.onToggle} edge="end">
+              <IconButton
+                aria-label={
+                  password.value ? 'Hide password confirmation' : 'Show password confirmation'
+                }
+                onClick={password.onToggle}
+                edge="end"
+              >
                 <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
               </IconButton>
             </InputAdornment>

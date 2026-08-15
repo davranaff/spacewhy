@@ -2,8 +2,8 @@ import { m } from 'framer-motion';
 import { forwardRef } from 'react';
 // @mui
 import Box from '@mui/material/Box';
-import Link, { LinkProps } from '@mui/material/Link';
 import CardActionArea from '@mui/material/CardActionArea';
+import { SxProps, Theme } from '@mui/material/styles';
 // routes
 import { RouterLink } from 'src/routes/components';
 // components
@@ -19,80 +19,92 @@ export const NavItem = forwardRef<HTMLDivElement, NavItemDesktopProps>(
     const { title, path, children } = item;
 
     const renderContent = (
-      <ListItem
-        ref={ref}
-        disableRipple
-        offsetTop={offsetTop}
-        subItem={subItem}
-        active={active}
-        open={open}
-        {...other}
-      >
+      <>
         {title}
 
         {!!children && <Iconify width={16} icon="eva:arrow-ios-downward-fill" sx={{ ml: 1 }} />}
-      </ListItem>
+      </>
     );
+
+    const itemProps = {
+      ref,
+      disableRipple: true,
+      offsetTop,
+      subItem,
+      active,
+      open,
+      ...other,
+    };
 
     // External link
     if (externalLink) {
       return (
-        <Link href={path} target="_blank" rel="noopener" underline="none">
+        <ListItem
+          {...itemProps}
+          component="a"
+          href={path}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {renderContent}
-        </Link>
+        </ListItem>
       );
     }
 
     // Has child
     if (children) {
-      return renderContent;
+      return <ListItem {...itemProps}>{renderContent}</ListItem>;
     }
 
     // Default
     return (
-      <Link component={RouterLink} href={path} underline="none">
+      <ListItem {...itemProps} component={RouterLink} href={path}>
         {renderContent}
-      </Link>
+      </ListItem>
     );
   }
 );
 
 // ----------------------------------------------------------------------
 
-interface NavItemDashboardProps extends LinkProps {
+interface NavItemDashboardProps {
   item: NavItemProps;
+  sx?: SxProps<Theme>;
+  onClick?: VoidFunction;
 }
 
-export function NavItemDashboard({ item, sx, ...other }: NavItemDashboardProps) {
+export function NavItemDashboard({ item, sx, onClick }: NavItemDashboardProps) {
   return (
-    <Link component={RouterLink} href={item.path} sx={{ width: 1 }} {...other}>
-      <CardActionArea
-        sx={{
-          py: 5,
-          px: 10,
-          minHeight: 400,
-          borderRadius: 1.5,
-          color: 'text.disabled',
-          bgcolor: 'background.neutral',
+    <CardActionArea
+      component={RouterLink}
+      href={item.path}
+      sx={{
+        py: 5,
+        px: 10,
+        width: 1,
+        minHeight: 400,
+        borderRadius: 1.5,
+        color: 'text.disabled',
+        bgcolor: 'background.neutral',
 
-          ...sx,
+        ...sx,
+      }}
+      onClick={onClick}
+    >
+      <m.div
+        whileTap="tap"
+        whileHover="hover"
+        variants={{
+          hover: { scale: 1.02 },
+          tap: { scale: 0.98 },
         }}
       >
-        <m.div
-          whileTap="tap"
-          whileHover="hover"
-          variants={{
-            hover: { scale: 1.02 },
-            tap: { scale: 0.98 },
-          }}
-        >
-          <Box
-            component="img"
-            alt="illustration_dashboard"
-            src="/assets/illustrations/illustration_dashboard.png"
-          />
-        </m.div>
-      </CardActionArea>
-    </Link>
+        <Box
+          component="img"
+          alt="Spacewhy dashboard preview"
+          src="/assets/illustrations/illustration_dashboard.png"
+        />
+      </m.div>
+    </CardActionArea>
   );
 }

@@ -6,13 +6,14 @@ import { IChatConversation, IChatParticipant } from 'src/types/chat';
 import { IKanbanBoard } from 'src/types/kanban';
 import { IMail, IMailLabel } from 'src/types/mail';
 import { IProduct } from 'src/types/product';
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
 
 import { CALENDAR_COLOR_OPTIONS } from './_calendar';
 import { _mock } from './_mock';
 
 // ----------------------------------------------------------------------
 
-const PRODUCT_COLORS = ['#00AB55', '#1890FF', '#FFC107', '#FF4842'];
+const PRODUCT_COLORS = ['#863BFF', '#47BFFF', '#FFC107', '#FF4842'];
 const PRODUCT_SIZES = ['7', '8', '9', '10', '11'];
 
 const products: IProduct[] = [...Array(16)].map((_, index) => {
@@ -110,7 +111,7 @@ const mails: IMail[] = [...Array(12)].map((_, index) => ({
   to: [
     {
       name: 'Spacewhy Demo',
-      email: 'demo@minimals.cc',
+      email: SPACEWHY_BRAND.demoEmail,
       avatarUrl: _mock.image.avatar(24),
     },
   ],

@@ -67,8 +67,8 @@ export default function ComponentHero() {
           <m.div variants={varFade().inDown}>
             <Box
               component="img"
-              alt="illustrations characters"
-              src="/assets/illustrations/characters/character_7.png"
+              alt="Spacewhy component system"
+              src="/assets/illustrations/spacewhy/component-array.svg"
               sx={{ maxWidth: 320 }}
             />
           </m.div>

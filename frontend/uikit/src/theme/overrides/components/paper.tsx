@@ -11,7 +11,10 @@ export default function Paper(theme: Theme) {
       },
       styleOverrides: {
         root: {
-          ...liquidGlass({ theme, elevated: false, blurred: true, blurStrength: 'surface' }),
+          // Generic Paper appears hundreds of times in data-heavy demos. It keeps the
+          // liquid color and edge treatment without creating a backdrop-filter layer
+          // for every nested menu, table cell and utility surface.
+          ...liquidGlass({ theme, elevated: false, blurred: false, blurStrength: 'surface' }),
           contain: 'paint',
         },
         outlined: {

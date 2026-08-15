@@ -24,17 +24,23 @@ export default function NavToggleButton({ sx, ...other }: IconButtonProps) {
     return null;
   }
 
+  const isVertical = settings.themeLayout === 'vertical';
+
+  const label = isVertical ? 'Switch to compact navigation' : 'Switch to expanded navigation';
+
   return (
     <IconButton
+      aria-label={label}
+      title={label}
       size="small"
       onClick={() =>
-        settings.onUpdate('themeLayout', settings.themeLayout === 'vertical' ? 'mini' : 'vertical')
+        settings.onUpdate('themeLayout', isVertical ? 'mini' : 'vertical')
       }
       sx={{
         p: 0.5,
         top: 32,
         position: 'fixed',
-        left: NAV.W_VERTICAL - 12,
+        insetInlineStart: NAV.W_VERTICAL - 12,
         zIndex: theme.zIndex.appBar + 1,
         border: `dashed 1px ${theme.palette.divider}`,
         ...bgBlur({ opacity: 0.48, color: theme.palette.background.default }),
@@ -48,9 +54,7 @@ export default function NavToggleButton({ sx, ...other }: IconButtonProps) {
       <Iconify
         width={16}
         icon={
-          settings.themeLayout === 'vertical'
-            ? 'eva:arrow-ios-back-fill'
-            : 'eva:arrow-ios-forward-fill'
+          isVertical ? 'eva:arrow-ios-back-fill' : 'eva:arrow-ios-forward-fill'
         }
       />
     </IconButton>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useId, useState, useEffect, useCallback } from 'react';
 // @mui
 import Collapse from '@mui/material/Collapse';
 // routes
@@ -18,13 +18,15 @@ type NavListRootProps = {
 };
 
 export default function NavList({ data, depth, hasChild, config }: NavListRootProps) {
+  const childrenId = useId();
+
   const pathname = usePathname();
 
   const active = useActiveLink(data.path, hasChild);
 
   const externalLink = data.path.includes('http');
 
-  const [open, setOpen] = useState(active);
+  const [open, setOpen] = useState(active && hasChild);
 
   useEffect(() => {
     if (!active) {
@@ -49,12 +51,15 @@ export default function NavList({ data, depth, hasChild, config }: NavListRootPr
         open={open}
         active={active}
         externalLink={externalLink}
-        onClick={handleToggle}
+        aria-controls={hasChild ? childrenId : undefined}
+        aria-expanded={hasChild ? open : undefined}
+        aria-haspopup={hasChild ? true : undefined}
+        onClick={hasChild ? handleToggle : undefined}
         config={config}
       />
 
       {hasChild && (
-        <Collapse in={open} unmountOnExit>
+        <Collapse id={childrenId} in={open} unmountOnExit>
           <NavSubList data={data.children} depth={depth} config={config} />
         </Collapse>
       )}

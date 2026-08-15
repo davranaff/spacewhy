@@ -9,6 +9,7 @@ import { localStorageGetItem } from 'src/utils/storage-available';
 //
 import { SettingsValueProps } from '../types';
 import { SettingsContext } from './settings-context';
+import { mergeSettings, updateSettingsValue } from './settings-helpers';
 
 // ----------------------------------------------------------------------
 
@@ -32,17 +33,15 @@ export function SettingsProvider({ children, defaultSettings }: SettingsProvider
   }, [isArabic]);
 
   const mergedSettings = useMemo(
-    () => ({ ...defaultSettings, ...settings }),
+    () => mergeSettings(defaultSettings, settings),
     [defaultSettings, settings]
   );
 
   const onUpdate = useCallback(
     (name: string, value: string | boolean | number) => {
-      setSettings((prevState: SettingsValueProps) => ({
-        ...defaultSettings,
-        ...prevState,
-        [name]: value,
-      }));
+      setSettings((prevState: SettingsValueProps) =>
+        updateSettingsValue(defaultSettings, prevState, name, value)
+      );
     },
     [defaultSettings, setSettings]
   );

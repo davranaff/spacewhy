@@ -4,6 +4,8 @@ import { useEffect, useReducer, useCallback, useMemo } from 'react';
 // utils
 import axios, { API_ENDPOINTS } from 'src/utils/axios';
 import { _mock } from 'src/_mock';
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
+import { shouldUseLocalDemoApi } from 'src/utils/demo-api-mode';
 //
 import { AuthContext } from './auth-context';
 import { isValidToken, setSession } from './utils';
@@ -77,9 +79,11 @@ const reducer = (state: AuthStateType, action: ActionsType) => {
 // ----------------------------------------------------------------------
 
 const STORAGE_KEY = 'accessToken';
+const DEMO_USER_STORAGE_KEY = 'spacewhyDemoUser';
+const useLocalDemoAuth = shouldUseLocalDemoApi(process.env.NEXT_PUBLIC_USE_REMOTE_DEMO_API);
 
 const DEMO_CREDENTIALS = {
-  email: 'demo@minimals.cc',
+  email: SPACEWHY_BRAND.demoEmail,
   password: 'demo1234',
 };
 
@@ -106,6 +110,27 @@ const createDemoToken = () => {
   return `${encode({ alg: 'none', typ: 'JWT' })}.${encode({ exp: expiresInSevenDays })}.demo`;
 };
 
+const getStoredDemoUser = (): AuthUserType | null => {
+  try {
+    const storedUser = sessionStorage.getItem(DEMO_USER_STORAGE_KEY);
+
+    if (!storedUser) {
+      return null;
+    }
+
+    const user = JSON.parse(storedUser) as AuthUserType;
+
+    return user?.id && user?.email ? user : null;
+  } catch {
+    sessionStorage.removeItem(DEMO_USER_STORAGE_KEY);
+    return null;
+  }
+};
+
+const storeDemoUser = (user: AuthUserType) => {
+  sessionStorage.setItem(DEMO_USER_STORAGE_KEY, JSON.stringify(user));
+};
+
 type Props = {
   children: React.ReactNode;
 };
@@ -124,7 +149,7 @@ export function AuthProvider({ children }: Props) {
           dispatch({
             type: Types.INITIAL,
             payload: {
-              user: DEMO_USER,
+              user: getStoredDemoUser() || DEMO_USER,
             },
           });
 
@@ -157,11 +182,16 @@ export function AuthProvider({ children }: Props) {
       console.error(error);
 
       const accessToken = sessionStorage.getItem(STORAGE_KEY);
+      const demoUser = accessToken?.endsWith('.demo') ? getStoredDemoUser() || DEMO_USER : null;
+
+      if (!demoUser) {
+        setSession(null);
+      }
 
       dispatch({
         type: Types.INITIAL,
         payload: {
-          user: accessToken && isValidToken(accessToken) ? DEMO_USER : null,
+          user: accessToken && isValidToken(accessToken) ? demoUser : null,
         },
       });
     }
@@ -179,6 +209,10 @@ export function AuthProvider({ children }: Props) {
     if (email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
       accessToken = createDemoToken();
       user = DEMO_USER;
+    } else if (useLocalDemoAuth) {
+      throw new Error(
+        `Use ${DEMO_CREDENTIALS.email} with password ${DEMO_CREDENTIALS.password}, or create a local demo account.`
+      );
     } else {
       const response = await axios.post(API_ENDPOINTS.auth.login, { email, password });
 
@@ -190,6 +224,7 @@ export function AuthProvider({ children }: Props) {
     }
 
     setSession(accessToken);
+    storeDemoUser(user);
 
     dispatch({
       type: Types.LOGIN,
@@ -202,18 +237,36 @@ export function AuthProvider({ children }: Props) {
   // REGISTER
   const register = useCallback(
     async (email: string, password: string, firstName: string, lastName: string) => {
-      const data = {
-        email,
-        password,
-        firstName,
-        lastName,
-      };
+      let accessToken: string;
+      let user: AuthUserType;
 
-      const response = await axios.post(API_ENDPOINTS.auth.register, data);
+      if (useLocalDemoAuth) {
+        accessToken = createDemoToken();
+        user = {
+          ...DEMO_USER,
+          id: 'spacewhy-local-user',
+          displayName: `${firstName} ${lastName}`.trim(),
+          email,
+          role: 'user',
+          about: 'Local Spacewhy UI Kit demo account.',
+        };
+      } else {
+        const response = await axios.post(API_ENDPOINTS.auth.register, {
+          email,
+          password,
+          firstName,
+          lastName,
+        });
 
-      const { accessToken, user } = response.data;
+        ({ accessToken, user } = response.data);
 
-      sessionStorage.setItem(STORAGE_KEY, accessToken);
+        if (!accessToken || !user) {
+          throw new Error('Invalid authentication response');
+        }
+      }
+
+      setSession(accessToken);
+      storeDemoUser(user);
 
       dispatch({
         type: Types.REGISTER,
@@ -228,6 +281,7 @@ export function AuthProvider({ children }: Props) {
   // LOGOUT
   const logout = useCallback(async () => {
     setSession(null);
+    sessionStorage.removeItem(DEMO_USER_STORAGE_KEY);
     dispatch({
       type: Types.LOGOUT,
     });

@@ -1,5 +1,6 @@
 // @mui
 import { menuItemClasses } from '@mui/material/MenuItem';
+import { SxProps, Theme } from '@mui/material/styles';
 import Popover, { PopoverOrigin } from '@mui/material/Popover';
 //
 import { getPosition } from './utils';
@@ -13,10 +14,36 @@ export default function CustomPopover({
   children,
   arrow = 'top-right',
   hiddenArrow,
+  PaperProps,
   sx,
   ...other
 }: MenuPopoverProps) {
   const { style, anchorOrigin, transformOrigin } = getPosition(arrow);
+
+  const normalizeSx = (value?: SxProps<Theme>) => {
+    if (!value) {
+      return [];
+    }
+
+    return Array.isArray(value) ? value : [value];
+  };
+
+  const paperSx: SxProps<Theme> = [
+    {
+      width: 'auto',
+      overflow: 'inherit',
+      contain: 'none',
+      ...style,
+      [`& .${menuItemClasses.root}`]: {
+        '& svg': {
+          mr: 2,
+          flexShrink: 0,
+        },
+      },
+    },
+    ...normalizeSx(sx),
+    ...normalizeSx(PaperProps?.sx),
+  ];
 
   return (
     <Popover
@@ -25,22 +52,12 @@ export default function CustomPopover({
       anchorOrigin={anchorOrigin as PopoverOrigin}
       transformOrigin={transformOrigin as PopoverOrigin}
       PaperProps={{
-        sx: {
-          width: 'auto',
-          overflow: 'inherit',
-          ...style,
-          [`& .${menuItemClasses.root}`]: {
-            '& svg': {
-              mr: 2,
-              flexShrink: 0,
-            },
-          },
-          ...sx,
-        },
+        ...PaperProps,
+        sx: paperSx,
       }}
       {...other}
     >
-      {!hiddenArrow && <StyledArrow arrow={arrow} />}
+      {!hiddenArrow && <StyledArrow aria-hidden="true" arrow={arrow} />}
 
       {children}
     </Popover>

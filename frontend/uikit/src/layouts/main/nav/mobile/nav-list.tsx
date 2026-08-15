@@ -1,4 +1,5 @@
 // @mui
+import { useId } from 'react';
 import Collapse from '@mui/material/Collapse';
 import { listClasses } from '@mui/material/List';
 import { listItemTextClasses } from '@mui/material/ListItemText';
@@ -19,6 +20,8 @@ type NavListProps = {
 };
 
 export default function NavList({ item }: NavListProps) {
+  const childrenId = useId();
+
   const pathname = usePathname();
 
   const { path, children } = item;
@@ -32,13 +35,16 @@ export default function NavList({ item }: NavListProps) {
       <NavItem
         item={item}
         open={nav.value}
-        onClick={nav.onToggle}
+        onClick={children ? nav.onToggle : undefined}
         active={pathname === path}
         externalLink={externalLink}
+        aria-controls={children ? childrenId : undefined}
+        aria-expanded={children ? nav.value : undefined}
+        aria-haspopup={children ? true : undefined}
       />
 
       {!!children && (
-        <Collapse in={nav.value} unmountOnExit>
+        <Collapse id={childrenId} in={nav.value} unmountOnExit>
           <NavSectionVertical
             data={children}
             sx={{

@@ -12,6 +12,8 @@ import Typography from '@mui/material/Typography';
 import { paths } from 'src/routes/paths';
 import { usePathname } from 'src/routes/hook';
 import { RouterLink } from 'src/routes/components';
+// brand
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
 // _mock
 import { _socials } from 'src/_mock';
 // components
@@ -38,7 +40,12 @@ const LINKS = [
   },
   {
     headline: 'Contact',
-    children: [{ name: 'hello@spacewhy.com', href: 'mailto:hello@spacewhy.com' }],
+    children: [
+      {
+        name: SPACEWHY_BRAND.contactEmail,
+        href: `mailto:${SPACEWHY_BRAND.contactEmail}`,
+      },
+    ],
   },
 ];
 
@@ -65,7 +72,7 @@ export default function Footer() {
         <Typography variant="caption" component="div">
           © All rights reserved
           <br /> made by
-          <Link href="https://spacewhy.uz/"> spacewhy.uz </Link>
+          <Link href={SPACEWHY_BRAND.websiteUrl}> spacewhy.uz </Link>
         </Typography>
       </Container>
     </Box>

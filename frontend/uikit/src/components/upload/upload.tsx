@@ -76,6 +76,7 @@ export default function Upload({
 
   const removeSinglePreview = hasFile && onDelete && (
     <IconButton
+      aria-label="Remove file"
       size="small"
       onClick={onDelete}
       sx={{

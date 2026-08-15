@@ -43,6 +43,7 @@ export default function ProductTableRow({
   onViewRow,
 }: Props) {
   const {
+    id,
     name,
     price,
     publish,
@@ -62,7 +63,11 @@ export default function ProductTableRow({
     <>
       <TableRow hover selected={selected}>
         <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
+          <Checkbox
+            checked={selected}
+            onClick={onSelectRow}
+            inputProps={{ 'aria-label': `Select ${name}` }}
+          />
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
@@ -77,11 +82,19 @@ export default function ProductTableRow({
             disableTypography
             primary={
               <Link
+                component="button"
+                type="button"
                 noWrap
                 color="inherit"
                 variant="subtitle2"
                 onClick={onViewRow}
-                sx={{ cursor: 'pointer' }}
+                sx={{
+                  p: 0,
+                  border: 0,
+                  bgcolor: 'transparent',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                }}
               >
                 {name}
               </Link>
@@ -130,7 +143,14 @@ export default function ProductTableRow({
         </TableCell>
 
         <TableCell align="right">
-          <IconButton color={popover.open ? 'primary' : 'default'} onClick={popover.onOpen}>
+          <IconButton
+            aria-label={`Open actions for ${name}`}
+            aria-haspopup="menu"
+            aria-controls={popover.open ? `product-${id}-actions` : undefined}
+            aria-expanded={popover.open ? true : undefined}
+            color={popover.open ? 'primary' : 'default'}
+            onClick={popover.onOpen}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -140,6 +160,11 @@ export default function ProductTableRow({
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
+        PaperProps={{
+          id: `product-${id}-actions`,
+          role: 'menu',
+          'aria-label': `Actions for ${name}`,
+        }}
         sx={{ width: 140 }}
       >
         <MenuItem

@@ -5,6 +5,8 @@ import { fDate } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
 // types
 import { IInvoice } from 'src/types/invoice';
+// brand
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
 
 // ----------------------------------------------------------------------
 
@@ -270,7 +272,7 @@ export default function InvoicePDF({ invoice, currentStatus }: Props) {
           </View>
           <View style={[styles.col4, styles.alignRight]}>
             <Text style={styles.subtitle2}>Have a Question?</Text>
-            <Text>support@abcapp.com</Text>
+            <Text>{SPACEWHY_BRAND.supportEmail}</Text>
           </View>
         </View>
       </Page>

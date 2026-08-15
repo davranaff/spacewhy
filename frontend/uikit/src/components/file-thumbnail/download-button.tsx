@@ -17,6 +17,7 @@ export default function DownloadButton({ onDownload }: Props) {
 
   return (
     <IconButton
+      aria-label="Download file"
       onClick={onDownload}
       sx={{
         p: 0,

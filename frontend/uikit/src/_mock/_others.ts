@@ -1,3 +1,5 @@
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
+
 import { _mock } from './_mock';
 
 // ----------------------------------------------------------------------
@@ -122,28 +124,28 @@ export const _socials = [
     name: 'FaceBook',
     icon: 'eva:facebook-fill',
     color: '#1877F2',
-    path: 'https://www.facebook.com/caitlyn.kerluke',
+    path: SPACEWHY_BRAND.websiteUrl,
   },
   {
     value: 'instagram',
     name: 'Instagram',
     icon: 'ant-design:instagram-filled',
     color: '#E02D69',
-    path: 'https://www.instagram.com/caitlyn.kerluke',
+    path: SPACEWHY_BRAND.websiteUrl,
   },
   {
     value: 'linkedin',
     name: 'Linkedin',
     icon: 'eva:linkedin-fill',
     color: '#007EBB',
-    path: 'https://www.linkedin.com/caitlyn.kerluke',
+    path: SPACEWHY_BRAND.websiteUrl,
   },
   {
     value: 'twitter',
     name: 'Twitter',
     icon: 'eva:twitter-fill',
     color: '#00AAEC',
-    path: 'https://www.twitter.com/caitlyn.kerluke',
+    path: SPACEWHY_BRAND.websiteUrl,
   },
 ];
 
@@ -213,41 +215,41 @@ export const _testimonials = [
     postedDate: _mock.time(1),
     ratingNumber: _mock.number.rating(1),
     avatarUrl: _mock.image.avatar(1),
-    content: `Excellent Work! Thanks a lot!`,
+    content: `The component coverage let our team move from prototype to a production dashboard without rebuilding the foundations.`,
   },
   {
     name: _mock.fullName(2),
     postedDate: _mock.time(2),
     ratingNumber: _mock.number.rating(2),
     avatarUrl: _mock.image.avatar(2),
-    content: `It's a very good dashboard and we are really liking the product . We've done some things, like migrate to TS and implementing a react useContext api, to fit our job methodology but the product is one of the best in terms of design and application architecture. The team did a really good job.`,
+    content: `The route structure is predictable, the TypeScript contracts are clear, and the visual system remains consistent across very different product flows.`,
   },
   {
     name: _mock.fullName(3),
     postedDate: _mock.time(3),
     ratingNumber: _mock.number.rating(3),
     avatarUrl: _mock.image.avatar(3),
-    content: `Customer support is realy fast and helpful the desgin of this theme is looks amazing also the code is very clean and readble realy good job !`,
+    content: `Dark and light modes feel equally considered. The liquid-glass controls add depth without getting in the way of dense data.`,
   },
   {
     name: _mock.fullName(4),
     postedDate: _mock.time(4),
     ratingNumber: _mock.number.rating(4),
     avatarUrl: _mock.image.avatar(4),
-    content: `Amazing, really good code quality and gives you a lot of examples for implementations.`,
+    content: `A rare UI kit where the examples are useful as implementation references, not only as polished screenshots.`,
   },
   {
     name: _mock.fullName(5),
     postedDate: _mock.time(5),
     ratingNumber: _mock.number.rating(5),
     avatarUrl: _mock.image.avatar(5),
-    content: `Got a few questions after purchasing the product. The owner responded very fast and very helpfull. Overall the code is excellent and works very good. 5/5 stars!`,
+    content: `The responsive layouts, empty states and application examples gave us a reliable baseline for every screen family.`,
   },
   {
     name: _mock.fullName(6),
     postedDate: _mock.time(6),
     ratingNumber: _mock.number.rating(6),
     avatarUrl: _mock.image.avatar(6),
-    content: `CEO of Codealy.io here. We’ve built a developer assessment platform that makes sense - tasks are based on git repositories and run in virtual machines. We automate the pain points - storing candidates code, running it and sharing test results with the whole team, remotely. Bought this template as we need to provide an awesome dashboard for our early customers. I am super happy with purchase. The code is just as good as the design. Thanks!`,
+    content: `Spacewhy gives design and engineering one shared system. We can inspect a pattern in the catalog and carry the same behavior into our product with confidence.`,
   },
 ];

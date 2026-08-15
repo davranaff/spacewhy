@@ -1,6 +1,7 @@
 // utils
 import { paramCase } from 'src/utils/change-case';
 import { _id, _postTitles } from 'src/_mock/assets';
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
 
 // ----------------------------------------------------------------------
 
@@ -28,13 +29,11 @@ export const paths = {
   page404: '/404',
   page500: '/500',
   components: '/components',
-  docs: 'https://docs.minimals.cc',
-  changelog: 'https://docs.minimals.cc/changelog',
-  zoneUI: 'https://mui.com/store/items/zone-landing-page/',
-  minimalUI: 'https://mui.com/store/items/minimal-dashboard/',
-  freeUI: 'https://mui.com/store/items/minimal-dashboard-free/',
-  figma:
-    'https://www.figma.com/file/kAYnYYdib0aQPNKZpgJT6J/%5BPreview%5D-Minimal-Web.v5.0.0?type=design&node-id=0%3A1&t=Al4jScQq97Aly0Mn-1',
+  docs: SPACEWHY_BRAND.documentationUrl,
+  changelog: SPACEWHY_BRAND.changelogUrl,
+  website: SPACEWHY_BRAND.websiteUrl,
+  uiKit: SPACEWHY_BRAND.documentationUrl,
+  designSystem: SPACEWHY_BRAND.designSystemUrl,
   product: {
     root: `/product`,
     checkout: `/product/checkout`,

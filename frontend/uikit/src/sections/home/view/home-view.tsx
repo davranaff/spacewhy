@@ -10,7 +10,7 @@ import MainLayout from 'src/layouts/main';
 import ScrollProgress from 'src/components/scroll-progress';
 //
 import HomeHero from '../home-hero';
-import HomeMinimal from '../home-minimal';
+import HomeShowcase from '../home-showcase';
 import HomePricing from '../home-pricing';
 import HomeDarkMode from '../home-dark-mode';
 import HomeLookingFor from '../home-looking-for';
@@ -64,7 +64,7 @@ export default function HomeView() {
           bgcolor: 'background.default',
         }}
       >
-        <HomeMinimal />
+        <HomeShowcase />
 
         <HomeHugePackElements />
 

@@ -1,7 +1,7 @@
 import { m, useScroll } from 'framer-motion';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // @mui
-import { styled, alpha, useTheme } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -24,6 +24,7 @@ import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
 import { RouterLink } from 'src/routes/components';
 import { MotionContainer, varFade } from 'src/components/animate';
+import HomeInterfacePreview from './home-interface-preview';
 
 // ----------------------------------------------------------------------
 
@@ -59,11 +60,16 @@ const StyledTextGradient = styled(m.h1)(({ theme }) => ({
   marginTop: 8,
   lineHeight: 1,
   marginBottom: 24,
-  letterSpacing: 8,
+  letterSpacing: 3,
   textAlign: 'center',
-  backgroundSize: '400%',
-  fontSize: `${64 / 16}rem`,
+  backgroundSize: '100%',
+  maxWidth: '100vw',
+  fontSize: `${48 / 16}rem`,
   fontFamily: secondaryFont.style.fontFamily,
+  [theme.breakpoints.up('sm')]: {
+    letterSpacing: 8,
+    fontSize: `${64 / 16}rem`,
+  },
   [theme.breakpoints.up('md')]: {
     fontSize: `${96 / 16}rem`,
   },
@@ -124,40 +130,22 @@ const StyledPolygon = styled('div')<StyledPolygonProps>(
 export default function HomeHero() {
   const mdUp = useResponsive('up', 'md');
 
-  const theme = useTheme();
-
   const heroRef = useRef<HTMLDivElement | null>(null);
 
   const { scrollY } = useScroll();
 
   const [percent, setPercent] = useState(0);
 
-  const isLight = theme.palette.mode === 'light';
-
-  const getScroll = useCallback(() => {
-    let heroHeight = 0;
-
-    if (heroRef.current) {
-      heroHeight = heroRef.current.offsetHeight;
-    }
-
-    scrollY.on('change', (scrollHeight) => {
+  useEffect(() => {
+    const unsubscribe = scrollY.on('change', (scrollHeight) => {
+      const heroHeight = heroRef.current?.offsetHeight || 1;
       const scrollPercent = (scrollHeight * 100) / heroHeight;
 
       setPercent(Math.floor(scrollPercent));
     });
+
+    return unsubscribe;
   }, [scrollY]);
-
-  useEffect(() => {
-    getScroll();
-  }, [getScroll]);
-
-  const transition = {
-    repeatType: 'loop',
-    ease: 'linear',
-    duration: 60 * 4,
-    repeat: Infinity,
-  } as const;
 
   const opacity = 1 - percent / 100;
 
@@ -190,23 +178,13 @@ export default function HomeHero() {
       </m.div>
 
       <m.div variants={varFade().in}>
-        <StyledTextGradient
-          animate={{ backgroundPosition: '200% center' }}
-          transition={{
-            repeatType: 'reverse',
-            ease: 'linear',
-            duration: 20,
-            repeat: Infinity,
-          }}
-        >
-          Spacewhy
-        </StyledTextGradient>
+        <StyledTextGradient>Spacewhy</StyledTextGradient>
       </m.div>
 
       <m.div variants={varFade().in}>
         <Typography variant="body2" sx={{ textAlign: 'center' }}>
-          The starting point for your next project is based on MUI.Easy customization Helps you
-          build apps faster and better.
+          A complete web and native interface system with production routes, adaptive layouts and
+          precise liquid-glass materials.
         </Typography>
       </m.div>
 
@@ -221,9 +199,9 @@ export default function HomeHero() {
           <Rating readOnly value={4.95} precision={0.1} max={5} />
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             <Box component="strong" sx={{ mr: 0.5, color: 'text.primary' }}>
-              4.96/5
+              5/5
             </Box>
-            (99+ reviews)
+            verified component coverage
           </Typography>
         </Stack>
       </m.div>
@@ -243,29 +221,27 @@ export default function HomeHero() {
             </Button>
 
             <Link
+              component={RouterLink}
               color="inherit"
               variant="caption"
-              target="_blank"
-              rel="noopener"
-              href={paths.freeUI}
+              href={paths.uiKit}
               sx={{ textDecoration: 'underline', display: 'inline-flex', alignItems: 'center' }}
             >
-              <Iconify icon="eva:external-link-fill" width={16} sx={{ mr: 0.5 }} />
-              Get Free Version
+              <Iconify icon="eva:arrow-ios-forward-fill" width={16} sx={{ mr: 0.5 }} />
+              Explore Components
             </Link>
           </Stack>
 
           <Button
+            component={RouterLink}
             color="inherit"
             size="large"
             variant="outlined"
-            startIcon={<Iconify icon="eva:external-link-fill" width={24} />}
-            target="_blank"
-            rel="noopener"
-            href={paths.figma}
+            startIcon={<Iconify icon="solar:palette-bold" width={24} />}
+            href={paths.designSystem}
             sx={{ borderColor: 'text.primary' }}
           >
-            Design Preview
+            Design System
           </Button>
         </Stack>
       </m.div>
@@ -287,81 +263,44 @@ export default function HomeHero() {
   );
 
   const renderSlides = (
-    <Stack
-      direction="row"
-      alignItems="flex-start"
+    <Box
+      component={m.div}
+      variants={varFade().in}
       sx={{
-        height: '150%',
+        top: '13%',
+        right: '-18%',
+        width: '118%',
         position: 'absolute',
+        isolation: 'isolate',
         opacity: opacity > 0 ? opacity : 0,
-        transform: `skew(${-16 - percent / 24}deg, ${4 - percent / 16}deg)`,
+        transform: `perspective(1400px) rotateY(${
+          -12 - percent / 40
+        }deg) rotateZ(-3deg) translate3d(0, ${-percent * 0.35}px, 0)`,
+        transformOrigin: 'center right',
+        '&::before, &::after': {
+          content: "''",
+          inset: 0,
+          zIndex: -1,
+          position: 'absolute',
+          border: '1px solid',
+          borderColor: 'divider',
+          borderRadius: 3,
+        },
+        '&::before': {
+          transform: 'translate3d(-28px, 24px, 0)',
+          opacity: 0.42,
+        },
+        '&::after': {
+          transform: 'translate3d(-54px, 46px, 0)',
+          opacity: 0.2,
+        },
       }}
     >
-      <Stack
-        component={m.div}
-        variants={varFade().in}
-        sx={{
-          width: 344,
-          position: 'relative',
-        }}
-      >
-        <Box
-          component={m.img}
-          animate={{ y: ['0%', '100%'] }}
-          transition={transition}
-          alt={isLight ? 'light_1' : 'dark_1'}
-          src={
-            isLight
-              ? `/assets/images/home/hero/light_1.webp`
-              : `/assets/images/home/hero/dark_1.webp`
-          }
-          sx={{ position: 'absolute', mt: -5 }}
-        />
-        <Box
-          component={m.img}
-          animate={{ y: ['-100%', '0%'] }}
-          transition={transition}
-          alt={isLight ? 'light_1' : 'dark_1'}
-          src={
-            isLight
-              ? `/assets/images/home/hero/light_1.webp`
-              : `/assets/images/home/hero/dark_1.webp`
-          }
-          sx={{ position: 'absolute' }}
-        />
-      </Stack>
-
-      <Stack
-        component={m.div}
-        variants={varFade().in}
-        sx={{ width: 720, position: 'relative', ml: -5 }}
-      >
-        <Box
-          component={m.img}
-          animate={{ y: ['100%', '0%'] }}
-          transition={transition}
-          alt={isLight ? 'light_2' : 'dark_2'}
-          src={
-            isLight
-              ? `/assets/images/home/hero/light_2.webp`
-              : `/assets/images/home/hero/dark_2.webp`
-          }
-          sx={{ position: 'absolute', mt: -5 }}
-        />
-        <Box
-          component={m.img}
-          animate={{ y: ['0%', '-100%'] }}
-          transition={transition}
-          alt={isLight ? 'light_2' : 'dark_2'}
-          src={
-            isLight
-              ? `/assets/images/home/hero/light_2.webp`
-              : `/assets/images/home/hero/dark_2.webp`
-          }
-          sx={{ position: 'absolute' }}
-        />
-      </Stack>
-    </Stack>
+      <HomeInterfacePreview
+        variant="overview"
+        label="Live Spacewhy mission control interface preview"
+      />
+    </Box>
   );
 
   const renderPolygons = (

@@ -34,23 +34,28 @@ export default function Button(theme: Theme) {
 
     const largeSize = ownerState.size === 'large';
 
+    const glassVariant = outlinedVariant || softVariant;
+
     const defaultStyle = {
       position: 'relative' as const,
       overflow: 'hidden',
-      borderRadius: 'calc(var(--spacewhy-glass-radius) * 0.72)',
-      border: isLight
-        ? '1px solid rgba(18,24,33,var(--spacewhy-glass-edge-alpha-light))'
-        : '1px solid rgba(255,255,255,var(--spacewhy-glass-edge-alpha-dark))',
-      backgroundColor: isLight
-        ? 'rgba(255,255,255,var(--spacewhy-glass-control-alpha-light))'
-        : 'rgba(9,9,12,var(--spacewhy-glass-control-alpha))',
-      backdropFilter:
-        'blur(var(--spacewhy-glass-control-blur)) saturate(var(--spacewhy-glass-saturation))',
-      WebkitBackdropFilter:
-        'blur(var(--spacewhy-glass-control-blur)) saturate(var(--spacewhy-glass-saturation))',
-      boxShadow: isLight
-        ? '0 7px 20px rgba(26,32,44,var(--spacewhy-glass-shadow-alpha-light))'
-        : '0 8px 22px rgba(0,0,0,var(--spacewhy-glass-shadow-alpha-dark))',
+      borderRadius: 'var(--spacewhy-glass-control-radius)',
+      border: '1px solid transparent',
+      ...(glassVariant && {
+        border: isLight
+          ? '1px solid rgba(18,24,33,var(--spacewhy-glass-edge-alpha-light))'
+          : '1px solid rgba(255,255,255,var(--spacewhy-glass-edge-alpha-dark))',
+        backgroundColor: isLight
+          ? 'rgba(255,255,255,var(--spacewhy-glass-control-alpha-light))'
+          : 'rgba(9,9,12,var(--spacewhy-glass-control-alpha))',
+        backdropFilter:
+          'blur(var(--spacewhy-glass-control-blur)) saturate(var(--spacewhy-glass-saturation))',
+        WebkitBackdropFilter:
+          'blur(var(--spacewhy-glass-control-blur)) saturate(var(--spacewhy-glass-saturation))',
+        boxShadow: isLight
+          ? '0 7px 20px rgba(26,32,44,var(--spacewhy-glass-shadow-alpha-light))'
+          : '0 8px 22px rgba(0,0,0,var(--spacewhy-glass-shadow-alpha-dark))',
+      }),
       transform: 'translateY(0) scale(1)',
       transition: theme.transitions.create(['transform', 'border-color'], {
         duration: 160,
@@ -65,6 +70,14 @@ export default function Button(theme: Theme) {
       '&:active': {
         transform: 'translateY(0) scale(0.975)',
       },
+      '&:focus-visible': {
+        outline: `2px solid ${theme.palette.primary.main}`,
+        outlineOffset: 2,
+      },
+      ...(containedVariant && {
+        backdropFilter: 'none',
+        WebkitBackdropFilter: 'none',
+      }),
       ...(inheritColor && {
         // CONTAINED
         ...(containedVariant && {
@@ -116,7 +129,10 @@ export default function Button(theme: Theme) {
       ...(ownerState.color === color && {
         // CONTAINED
         ...(containedVariant && {
+          color: theme.palette[color].contrastText,
+          backgroundColor: theme.palette[color].main,
           '&:hover': {
+            backgroundColor: theme.palette[color].dark,
             boxShadow: theme.customShadows[color],
           },
         }),

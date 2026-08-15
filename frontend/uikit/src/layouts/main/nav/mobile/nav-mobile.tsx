@@ -34,6 +34,9 @@ export default function NavMobile({ offsetTop, data }: NavProps) {
   return (
     <>
       <IconButton
+        aria-label="Open navigation"
+        aria-expanded={nav.value}
+        aria-controls="main-navigation-drawer"
         onClick={nav.onTrue}
         sx={{
           ml: 1,
@@ -49,6 +52,7 @@ export default function NavMobile({ offsetTop, data }: NavProps) {
         open={nav.value}
         onClose={nav.onFalse}
         PaperProps={{
+          id: 'main-navigation-drawer',
           sx: {
             pb: 5,
             width: 260,

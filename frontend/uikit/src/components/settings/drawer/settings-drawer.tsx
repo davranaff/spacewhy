@@ -48,14 +48,14 @@ export default function SettingsDrawer() {
       </Typography>
 
       <Tooltip title="Reset">
-        <IconButton onClick={settings.onReset}>
+        <IconButton aria-label="Reset appearance settings" onClick={settings.onReset}>
           <Badge color="error" variant="dot" invisible={!settings.canReset}>
             <Iconify icon="solar:restart-bold" />
           </Badge>
         </IconButton>
       </Tooltip>
 
-      <IconButton onClick={settings.onClose}>
+      <IconButton aria-label="Close appearance settings" onClick={settings.onClose}>
         <Iconify icon="mingcute:close-line" />
       </IconButton>
     </Stack>
