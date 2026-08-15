@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Monitor, Moon, RotateCcw, Sparkles, Sun } from 'lucide-react-native';
 
 import { useAppSettingsStore, type GlassSettings } from '@/shared/settings';
 import { useAppTheme, type ThemeMode } from '@/shared/theme';
 import { GlassSlider, GlassView } from '@/shared/ui';
+import type { SettingsStackParamList } from '@/app/navigation/types';
 import {
   CatalogBackdrop,
   CatalogScreenHeader,
@@ -56,6 +59,8 @@ const glassControls = [
 
 export function SettingsScreen() {
   const theme = useAppTheme();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<SettingsStackParamList>>();
   const insets = useSafeAreaInsets();
   const settings = useAppSettingsStore(state => state.settings);
   const setThemeMode = useAppSettingsStore(state => state.setThemeMode);
@@ -157,6 +162,17 @@ export function SettingsScreen() {
         </DemoSurface>
 
         <DemoSurface
+          title="Dock material"
+          description="Customize the dock surface and its draggable selection blob separately."
+        >
+          <DemoButton
+            label="Customize dock"
+            onPress={() => navigation.navigate('DockSettings')}
+            variant="secondary"
+          />
+        </DemoSurface>
+
+        <DemoSurface
           title="Live material"
           description="Each control changes one visible dimension of the glass."
         >
@@ -254,15 +270,13 @@ export function SettingsScreen() {
                 accessibilityLabel={control.label}
                 maximumValue={100}
                 minimumValue={0}
-                onSlidingComplete={value =>
-                  setGlassSettings({ [control.key]: value })
-                }
-                onValueChange={value =>
+                onValueChange={value => {
                   setDraftGlass(current => ({
                     ...current,
                     [control.key]: value,
-                  }))
-                }
+                  }));
+                  setGlassSettings({ [control.key]: value });
+                }}
                 step={1}
                 value={draftGlass[control.key]}
               />

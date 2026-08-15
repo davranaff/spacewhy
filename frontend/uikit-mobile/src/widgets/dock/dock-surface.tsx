@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 
 import { GlassView } from '@/shared/ui';
+import { useAppSettingsStore } from '@/shared/settings';
+import { useAppTheme } from '@/shared/theme';
 import {
   DOCK_EDGE_GAP,
   DOCK_HORIZONTAL_GUTTER,
@@ -37,10 +39,22 @@ export const DockSurface = ({
   children,
 }: DockSurfaceProps) => {
   const reduceMotion = useReducedMotion();
+  const theme = useAppTheme();
+  const dock = useAppSettingsStore(state => state.settings.dock);
   const opacity = useRef(new Animated.Value(1)).current;
   const translateY = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(1)).current;
   const reservedHeight = getDockContentInset(mode, bottomSafeArea);
+  const dockIsDark =
+    dock.tone === 'dark' || (dock.tone === 'adaptive' && theme.isDark);
+  const overlayAlpha = (dock.backgroundOpacity / 100) * 0.52;
+  const tone = dock.tone === 'adaptive' ? 'theme' : dock.tone;
+  const surfaceMaterialStyle = {
+    backgroundColor: dockIsDark
+      ? `rgba(3,3,5,${overlayAlpha})`
+      : `rgba(255,255,255,${overlayAlpha})`,
+    borderColor: dockIsDark ? 'rgba(255,255,255,0.22)' : 'rgba(17,18,22,0.18)',
+  };
 
   useEffect(() => {
     if (reduceMotion) {
@@ -91,7 +105,10 @@ export const DockSurface = ({
       accessibilityLabel={accessibilityLabel}
       accessibilityRole={accessibilityRole}
       pointerEvents="box-none"
-      style={[styles.reservedArea, { height: reservedHeight }]}
+      style={[
+        styles.reservedArea,
+        { backgroundColor: theme.colors.canvas, height: reservedHeight },
+      ]}
     >
       <Animated.View
         style={[
@@ -105,16 +122,15 @@ export const DockSurface = ({
         ]}
       >
         <GlassView
-          effect="regular"
           interactive
           materialSettings={{
-            opticalIntensity: 72,
-            transparency: 64,
-            surfaceLiquidity: 100,
+            opticalIntensity: dock.opticalIntensity,
+            transparency: dock.transparency,
+            surfaceLiquidity: dock.surfaceLiquidity,
           }}
-          tone="dark"
+          tone={tone}
           variant="floating"
-          style={[styles.surface, style]}
+          style={[styles.surface, surfaceMaterialStyle, style]}
         >
           {children}
         </GlassView>
@@ -125,7 +141,6 @@ export const DockSurface = ({
 
 const styles = StyleSheet.create({
   reservedArea: {
-    backgroundColor: '#050505',
     justifyContent: 'flex-end',
     width: '100%',
   },
@@ -135,8 +150,6 @@ const styles = StyleSheet.create({
     right: DOCK_HORIZONTAL_GUTTER,
   },
   surface: {
-    backgroundColor: 'rgba(2,2,3,0.22)',
-    borderColor: 'rgba(255,255,255,0.24)',
     borderRadius: 999,
     flex: 1,
   },

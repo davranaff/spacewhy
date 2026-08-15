@@ -1,6 +1,7 @@
 import type { PropsWithChildren, ReactNode } from 'react';
 import {
   Pressable,
+  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -9,38 +10,13 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import {
-  ChevronRight,
-  CircleAlert,
-  Component,
-  Layers3,
-  ListTree,
-  MousePointer2,
-  Palette,
-  PanelsTopLeft,
-  Search,
-  TextCursorInput,
-  X,
-  type LucideIcon,
-} from 'lucide-react-native';
+import { ChevronRight, Search, X } from 'lucide-react-native';
 
 import { useAppTheme } from '@/shared/theme';
 import { GlassView } from '@/shared/ui/glass-view';
 
-import type {
-  CatalogExample,
-  CatalogGroup,
-} from '@/features/catalog/types/catalog.types';
-
-const GROUP_ICONS: Record<CatalogGroup, LucideIcon> = {
-  foundations: Palette,
-  controls: MousePointer2,
-  forms: TextCursorInput,
-  feedback: CircleAlert,
-  'data-display': ListTree,
-  surfaces: Layers3,
-  patterns: PanelsTopLeft,
-};
+import { CATALOG_ICON_REGISTRY } from '@/features/catalog/data/catalog-icon-registry';
+import type { CatalogExample } from '@/features/catalog/types/catalog.types';
 
 type CatalogScreenHeaderProps = Readonly<{
   eyebrow?: string;
@@ -98,7 +74,7 @@ export function CatalogExampleCard({
   onPress,
 }: CatalogExampleCardProps) {
   const theme = useAppTheme();
-  const Icon = GROUP_ICONS[example.group] ?? Component;
+  const iconSource = CATALOG_ICON_REGISTRY[example.id];
 
   return (
     <Pressable
@@ -109,16 +85,8 @@ export function CatalogExampleCard({
       style={({ pressed }) => [styles.cardPressable, pressed && styles.pressed]}
     >
       <GlassView variant="surface" interactive style={styles.cardGlass}>
-        <View
-          style={[
-            styles.iconBox,
-            {
-              backgroundColor: theme.colors.surfaceElevated,
-              borderColor: theme.colors.border,
-            },
-          ]}
-        >
-          <Icon color={theme.colors.accent} size={20} strokeWidth={1.8} />
+        <View style={styles.iconBox}>
+          <Image source={iconSource} style={styles.componentIcon} />
         </View>
         <View style={styles.cardCopy}>
           <Text
@@ -352,6 +320,9 @@ export function CatalogBackdrop({ children }: PropsWithChildren) {
   const bottomOrbStyle = {
     backgroundColor: theme.isDark ? '#111419' : '#E0E2E6',
   };
+  const focusOrbStyle = {
+    backgroundColor: theme.isDark ? '#C4C8D0' : '#6D727D',
+  };
 
   return (
     <View style={[styles.backdrop, { backgroundColor: theme.colors.canvas }]}>
@@ -362,6 +333,10 @@ export function CatalogBackdrop({ children }: PropsWithChildren) {
       <View
         pointerEvents="none"
         style={[styles.backdropOrb, styles.orbBottom, bottomOrbStyle]}
+      />
+      <View
+        pointerEvents="none"
+        style={[styles.backdropOrb, styles.orbFocus, focusOrbStyle]}
       />
       {children}
     </View>
@@ -390,6 +365,14 @@ const styles = StyleSheet.create({
   },
   orbTop: { right: -120, top: -80 },
   orbBottom: { left: -140, bottom: 40 },
+  orbFocus: {
+    borderRadius: 260,
+    height: 520,
+    opacity: 0.05,
+    right: -410,
+    top: '38%',
+    width: 520,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -415,13 +398,14 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   iconBox: {
-    width: 44,
-    height: 44,
-    borderRadius: 15,
-    borderWidth: StyleSheet.hairlineWidth,
+    width: 58,
+    height: 58,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
+  componentIcon: { height: 54, width: 54 },
   cardCopy: { flex: 1, gap: 3 },
   cardTitle: { fontSize: 17, lineHeight: 22 },
   cardDescription: { fontSize: 14, lineHeight: 19 },

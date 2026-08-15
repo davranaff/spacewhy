@@ -11,14 +11,10 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   ArrowUpRight,
-  CircleAlert,
-  Layers3,
-  ListTree,
-  MousePointer2,
+  Boxes,
+  Component,
   Palette,
-  PanelsTopLeft,
   Sparkles,
-  TextCursorInput,
   type LucideIcon,
 } from 'lucide-react-native';
 
@@ -38,12 +34,8 @@ import { ShowcaseRouteLauncher } from '@/screens/catalog/showcase-route-launcher
 
 const groupIcons: Record<CatalogSection['id'], LucideIcon> = {
   foundations: Palette,
-  controls: MousePointer2,
-  forms: TextCursorInput,
-  feedback: CircleAlert,
-  'data-display': ListTree,
-  surfaces: Layers3,
-  patterns: PanelsTopLeft,
+  mui: Component,
+  extra: Boxes,
 };
 
 export function OverviewScreen() {
@@ -54,8 +46,8 @@ export function OverviewScreen() {
 
   const openFeatured = useCallback(() => {
     navigation.navigate('OverviewPreview', {
-      exampleId: 'glass-material',
-      title: 'Liquid glass',
+      exampleId: 'shadows',
+      title: 'Shadows',
     });
   }, [navigation]);
 
@@ -140,7 +132,7 @@ export function OverviewScreen() {
               <Text
                 style={[theme.typography.title, { color: theme.colors.text }]}
               >
-                Truthful liquid glass
+                Complete native component kit
               </Text>
               <Text
                 style={[
@@ -148,10 +140,10 @@ export function OverviewScreen() {
                   { color: theme.colors.textMuted },
                 ]}
               >
-                Native material where available, graceful fallbacks everywhere,
-                and independent optical controls.
+                The same Foundations, 29 MUI components and 20 Extra examples as
+                the web catalog, adapted for touch and native platforms.
               </Text>
-              <DemoButton label="Explore material" onPress={openFeatured} />
+              <DemoButton label="Explore foundations" onPress={openFeatured} />
             </GlassView>
             <View style={styles.statsRow}>
               <Stat value={String(CATALOG_EXAMPLES.length)} label="examples" />

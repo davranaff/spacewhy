@@ -20,6 +20,12 @@ export interface GlassMaterial {
   shadowRadius: number;
 }
 
+export function resolveGlassEffect(
+  opticalIntensity: number,
+): 'clear' | 'regular' {
+  return clamp(opticalIntensity) >= 78 ? 'regular' : 'clear';
+}
+
 const variantDepth = {
   surface: 0,
   control: -3,
@@ -42,18 +48,16 @@ export function resolveGlassMaterial(
   const transparency = clamp(input.transparency) / 100;
   const liquidity = clamp(input.surfaceLiquidity) / 100;
   const depth = variantDepth[input.variant];
-  const baseChannel = theme.isDark ? 255 : 12;
+  const baseChannel = theme.isDark ? 255 : 17;
   const matteAlpha = theme.isDark
-    ? 0.5 - transparency * 0.32
-    : 0.26 - transparency * 0.18;
+    ? 0.46 - transparency * 0.3
+    : 0.42 - transparency * 0.28;
+  // iOS 26 exposes clear/regular as discrete optics. Tint strength therefore
+  // carries the continuous part of optical depth while transparency remains an
+  // independent background-reveal axis.
   const nativeTintAlpha = theme.isDark
-    ? 0.3 - transparency * 0.2
-    : 0.22 - transparency * 0.14;
-  // Native iOS glass exposes discrete clear/regular optics. A continuous neutral
-  // tint depth keeps the optical slider visibly progressive without changing alpha.
-  const tintChannel = Math.round(
-    theme.isDark ? 24 - intensity * 20 : 28 - intensity * 12,
-  );
+    ? 0.18 - transparency * 0.1 + intensity * 0.03
+    : 0.16 - transparency * 0.1 + intensity * 0.08;
 
   return {
     blurAmount: Math.round(8 + intensity * 18 + depth),
@@ -66,11 +70,11 @@ export function resolveGlassMaterial(
     ),
     matteColor: theme.isDark
       ? rgba(15, 16, 19, matteAlpha)
-      : rgba(18, 20, 24, matteAlpha),
+      : rgba(255, 255, 255, matteAlpha),
     nativeTintColor: rgba(
-      tintChannel,
-      tintChannel,
-      tintChannel,
+      theme.isDark ? 8 : 255,
+      theme.isDark ? 8 : 255,
+      theme.isDark ? 10 : 255,
       nativeTintAlpha,
     ),
     reducedTransparencyColor: theme.colors.surface,

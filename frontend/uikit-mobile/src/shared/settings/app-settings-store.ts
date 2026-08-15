@@ -7,6 +7,7 @@ import {
   defaultAppSettings,
   normalizeAppSettings,
   type AppSettings,
+  type DockSettings,
   type GlassSettings,
 } from './settings-model';
 
@@ -18,6 +19,7 @@ interface AppSettingsStore {
   setThemeMode: (themeMode: AppSettings['themeMode']) => void;
   setLocale: (locale: AppSettings['locale']) => void;
   setGlassSettings: (glass: Partial<GlassSettings>) => void;
+  setDockSettings: (dock: Partial<DockSettings>) => void;
   resetSettings: () => void;
   markHydrated: () => void;
 }
@@ -40,6 +42,13 @@ export const useAppSettingsStore = create<AppSettingsStore>()(
           settings: normalizeAppSettings({
             ...state.settings,
             glass: { ...state.settings.glass, ...glass },
+          }),
+        })),
+      setDockSettings: dock =>
+        set(state => ({
+          settings: normalizeAppSettings({
+            ...state.settings,
+            dock: { ...state.settings.dock, ...dock },
           }),
         })),
       resetSettings: () => set({ settings: defaultAppSettings }),

@@ -45,8 +45,37 @@ import {
   DemoSurface,
 } from '@/features/catalog/components/catalog-primitives';
 import type { CatalogExampleId } from '@/features/catalog/types/catalog.types';
+import { CatalogParityPreview } from './catalog-parity-preview';
 
 type Props = Readonly<{ exampleId: CatalogExampleId }>;
+
+const PARITY_EXAMPLES = new Set<CatalogExampleId>([
+  'accordion',
+  'animate',
+  'autocomplete',
+  'breadcrumbs',
+  'carousel',
+  'copy-to-clipboard',
+  'editor',
+  'image',
+  'lightbox',
+  'map',
+  'markdown',
+  'navigation-bar',
+  'organization-chart',
+  'pagination',
+  'pickers',
+  'rating',
+  'scroll',
+  'scroll-progress',
+  'stepper',
+  'table',
+  'text-max-line',
+  'timeline',
+  'transfer-list',
+  'tree-view',
+  'upload',
+]);
 
 const people = [
   { id: '1', name: 'Amelia Stone', role: 'Product designer', initials: 'AS' },
@@ -55,51 +84,88 @@ const people = [
 ] as const;
 
 export function CatalogExamplePreview({ exampleId }: Props) {
+  if (PARITY_EXAMPLES.has(exampleId)) {
+    return <CatalogParityPreview exampleId={exampleId} />;
+  }
+
   switch (exampleId) {
     case 'colors':
       return <ColorPreview />;
     case 'typography':
       return <TypographyPreview />;
-    case 'spacing':
+    case 'grid':
       return <SpacingPreview />;
     case 'icons':
       return <IconsPreview />;
-    case 'glass-material':
+    case 'shadows':
       return <GlassPreview />;
     case 'buttons':
       return <ButtonsPreview />;
-    case 'selection-controls':
+    case 'checkbox':
+    case 'radio-button':
+    case 'switch':
       return <SelectionPreview />;
-    case 'chips-badges':
+    case 'badge':
+    case 'chip':
+    case 'label':
       return <ChipsPreview />;
-    case 'text-fields':
+    case 'autocomplete':
+    case 'editor':
+    case 'textfield':
       return <FieldsPreview />;
-    case 'slider-progress':
+    case 'rating':
+    case 'slider':
       return <SliderPreview />;
-    case 'form-flow':
+    case 'form-validation':
       return <FormPreview />;
-    case 'alerts':
+    case 'alert':
+    case 'snackbar':
       return <AlertsPreview />;
-    case 'loading-states':
+    case 'animate':
+    case 'progress':
+    case 'scroll-progress':
       return <LoadingPreview />;
-    case 'empty-error':
+    case 'upload':
       return <EmptyPreview />;
-    case 'avatars-lists':
+    case 'avatar':
+    case 'list':
+    case 'organization-chart':
       return <PeoplePreview />;
-    case 'metrics':
+    case 'chart':
       return <MetricsPreview />;
-    case 'virtualized-list':
+    case 'data-grid':
+    case 'table':
+    case 'transfer-list':
+    case 'tree-view':
       return <VirtualizedPreview />;
-    case 'cards':
+    case 'carousel':
+    case 'image':
+    case 'lightbox':
+    case 'map':
       return <CardsPreview />;
-    case 'dialogs':
+    case 'dialog':
+    case 'menu':
+    case 'popover':
+    case 'tooltip':
       return <DialogPreview />;
-    case 'dock-indicators':
+    case 'breadcrumbs':
+    case 'navigation-bar':
+    case 'pagination':
+    case 'stepper':
       return <DockIndicatorsPreview />;
-    case 'contextual-dock':
+    case 'mega-menu':
       return <ContextualDockPreview />;
-    case 'tabs-segments':
+    case 'multi-language':
+    case 'tabs':
       return <SegmentsPreview />;
+    case 'accordion':
+    case 'copy-to-clipboard':
+    case 'markdown':
+    case 'pickers':
+    case 'scroll':
+    case 'text-max-line':
+    case 'timeline':
+      return <CardsPreview />;
   }
 }
 

@@ -42,10 +42,10 @@ export const DOCK_DESTINATIONS = [
   },
   {
     route: 'PatternsTab',
-    label: 'Patterns',
-    accessibilityHint: 'Opens mobile layout and interaction patterns',
+    label: 'Extra',
+    accessibilityHint: 'Opens advanced components from the complete UI kit',
     icon: 'layout',
-    path: 'patterns',
+    path: 'extra',
   },
   {
     route: 'SettingsTab',

@@ -22,12 +22,12 @@ export function ComponentsScreen() {
 
   return (
     <CatalogListScreen
-      description="Reachable controls, forms, feedback, data display and surface primitives."
+      description="All 29 MUI component routes rebuilt as native interactive examples."
       emptyLabel="No native component matches that search."
       examples={examples}
       headerAccessory={<CatalogSearch onChangeText={setQuery} value={query} />}
       previewRoute="ComponentPreview"
-      title="Components"
+      title="MUI components"
     />
   );
 }

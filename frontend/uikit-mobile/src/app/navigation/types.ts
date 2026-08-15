@@ -27,6 +27,7 @@ export type PatternsStackParamList = {
 
 export type SettingsStackParamList = {
   Settings: undefined;
+  DockSettings: undefined;
   SettingsPreview: CatalogPreviewParams;
 };
 

@@ -1,6 +1,8 @@
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { DockDestination } from '@/app/navigation/navigation-contracts';
+import { useAppSettingsStore } from '@/shared/settings';
+import { useAppTheme } from '@/shared/theme';
 import { DockIcon } from '@/widgets/dock/dock-icon';
 import { DOCK_MIN_TARGET } from '@/widgets/dock/dock-layout';
 
@@ -19,6 +21,15 @@ export const DockItem = ({
   onPress,
   onLongPress,
 }: DockItemProps) => {
+  const theme = useAppTheme();
+  const dockTone = useAppSettingsStore(state => state.settings.dock.tone);
+  const dockIsDark =
+    dockTone === 'dark' || (dockTone === 'adaptive' && theme.isDark);
+  const selectedColor = dockIsDark ? '#FFFFFF' : '#111216';
+  const idleColor = dockIsDark
+    ? 'rgba(255,255,255,0.58)'
+    : 'rgba(17,18,22,0.58)';
+
   return (
     <Pressable
       accessibilityHint={destination.accessibilityHint}
@@ -39,7 +50,7 @@ export const DockItem = ({
         <DockIcon
           name={destination.icon}
           size={20}
-          color={selected ? '#FFFFFF' : 'rgba(255,255,255,0.56)'}
+          color={selected ? selectedColor : idleColor}
         />
         {!compact ? (
           <Text
@@ -47,7 +58,8 @@ export const DockItem = ({
             numberOfLines={1}
             style={[
               styles.label,
-              selected ? styles.labelSelected : styles.labelIdle,
+              { color: selected ? selectedColor : idleColor },
+              selected && styles.labelSelected,
             ]}
           >
             {destination.label}
@@ -83,14 +95,10 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 10,
+    fontWeight: '500',
     lineHeight: 12,
   },
   labelSelected: {
-    color: '#FFFFFF',
     fontWeight: '700',
-  },
-  labelIdle: {
-    color: 'rgba(255,255,255,0.56)',
-    fontWeight: '500',
   },
 });

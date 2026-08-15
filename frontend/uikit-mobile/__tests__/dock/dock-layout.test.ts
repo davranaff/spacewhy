@@ -60,4 +60,14 @@ describe('dock layout contracts', () => {
     expect(getNearestDockBlobIndex(350, 5, -999)).toBe(0);
     expect(getNearestDockBlobIndex(350, 5, 999)).toBe(4);
   });
+
+  it('keeps custom blob sizes inside the dock bounds', () => {
+    const compact = getDockBlobLayout(350, 5, 4, 40);
+    const wide = getDockBlobLayout(350, 5, 4, 100);
+
+    expect(compact.width).toBeGreaterThanOrEqual(44);
+    expect(wide.width).toBeGreaterThan(compact.width);
+    expect(wide.x + wide.width).toBeLessThanOrEqual(350);
+    expect(getNearestDockBlobIndex(350, 5, wide.x, 100)).toBe(4);
+  });
 });

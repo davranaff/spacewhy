@@ -25,11 +25,27 @@ describe('normalizeAppSettings', () => {
       schemaVersion: APP_SETTINGS_VERSION,
       themeMode: 'light',
       locale: 'uz',
+      dock: defaultAppSettings.dock,
       glass: {
         opticalIntensity: 100,
         transparency: 0,
         surfaceLiquidity: defaultAppSettings.glass.surfaceLiquidity,
       },
     });
+  });
+
+  it('normalizes persisted dock material independently', () => {
+    const settings = normalizeAppSettings({
+      dock: {
+        ...defaultAppSettings.dock,
+        tone: 'neon',
+        backgroundOpacity: -5,
+        blobSize: 130,
+      },
+    });
+
+    expect(settings.dock.tone).toBe('adaptive');
+    expect(settings.dock.backgroundOpacity).toBe(0);
+    expect(settings.dock.blobSize).toBe(100);
   });
 });

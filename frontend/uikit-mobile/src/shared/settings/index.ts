@@ -5,4 +5,5 @@ export {
   defaultAppSettings,
   normalizeAppSettings,
 } from './settings-model';
+export type { DockSettings } from './settings-model';
 export type { AppSettings, GlassSettings } from './settings-model';

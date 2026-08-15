@@ -5,242 +5,325 @@ import type {
   CatalogSection,
 } from '@/features/catalog/types/catalog.types';
 
-const examples = [
-  {
-    id: 'colors',
-    group: 'foundations',
-    title: 'Color system',
-    description: 'Semantic color roles for light and dark interfaces.',
-    keywords: ['palette', 'semantic', 'contrast', 'theme'],
-  },
-  {
-    id: 'typography',
-    group: 'foundations',
-    title: 'Typography',
-    description: 'Native type ramp with predictable rhythm and scaling.',
-    keywords: ['text', 'font', 'dynamic type', 'hierarchy'],
-  },
-  {
-    id: 'spacing',
-    group: 'foundations',
-    title: 'Spacing & shape',
-    description: 'Spacing, radius and touch-target primitives.',
-    keywords: ['grid', 'radius', 'layout', 'touch'],
-  },
-  {
-    id: 'icons',
-    group: 'foundations',
-    title: 'Iconography',
-    description: 'Consistent Lucide icons aligned to native controls.',
-    keywords: ['icons', 'symbols', 'glyph'],
-  },
-  {
-    id: 'glass-material',
-    group: 'foundations',
-    title: 'Liquid glass',
-    description: 'Native material with intentional, bounded fallbacks.',
-    keywords: ['glass', 'blur', 'material', 'surface'],
-  },
-  {
-    id: 'buttons',
-    group: 'controls',
-    title: 'Buttons',
-    description: 'Primary, secondary, quiet and icon actions.',
-    keywords: ['button', 'action', 'pressable', 'cta'],
-  },
-  {
-    id: 'selection-controls',
-    group: 'controls',
-    title: 'Selection controls',
-    description: 'Switch, checkbox and radio behavior.',
-    keywords: ['switch', 'checkbox', 'radio', 'toggle'],
-  },
-  {
-    id: 'chips-badges',
-    group: 'controls',
-    title: 'Chips & badges',
-    description: 'Compact status, filter and count controls.',
-    keywords: ['chip', 'badge', 'filter', 'status'],
-  },
-  {
-    id: 'dock-indicators',
-    group: 'controls',
-    title: 'Dock indicators',
-    description: 'Dot, glass pill, segmented and progress page markers.',
-    keywords: ['dock', 'indicator', 'pagination', 'progress', 'glass pill'],
-  },
-  {
-    id: 'text-fields',
-    group: 'forms',
-    title: 'Text fields',
-    description: 'Labels, hints, validation and secure entry.',
-    keywords: ['input', 'field', 'validation', 'form'],
-  },
-  {
-    id: 'slider-progress',
-    group: 'forms',
-    title: 'Slider & progress',
-    description: 'Continuous input with clear current-value feedback.',
-    keywords: ['slider', 'range', 'progress', 'value'],
-  },
-  {
-    id: 'form-flow',
-    group: 'forms',
-    title: 'Form flow',
-    description: 'A complete validation and submission example.',
-    keywords: ['form', 'submit', 'validation', 'keyboard'],
-  },
-  {
-    id: 'alerts',
-    group: 'feedback',
-    title: 'Alerts & notices',
-    description: 'Success, information, warning and error feedback.',
-    keywords: ['alert', 'notice', 'success', 'error'],
-  },
-  {
-    id: 'loading-states',
-    group: 'feedback',
-    title: 'Loading states',
-    description: 'Progress, skeleton and non-blocking loading patterns.',
-    keywords: ['loading', 'skeleton', 'spinner', 'progress'],
-  },
-  {
-    id: 'empty-error',
-    group: 'feedback',
-    title: 'Empty & error states',
-    description: 'Actionable recovery states with human copy.',
-    keywords: ['empty', 'error', 'retry', 'offline'],
-  },
-  {
-    id: 'avatars-lists',
-    group: 'data-display',
-    title: 'Avatars & lists',
-    description: 'Dense and comfortable rows with metadata.',
-    keywords: ['avatar', 'list', 'row', 'metadata'],
-  },
-  {
-    id: 'metrics',
-    group: 'data-display',
-    title: 'Metrics',
-    description: 'Compact dashboard values and trend semantics.',
-    keywords: ['metric', 'stats', 'dashboard', 'trend'],
-  },
-  {
-    id: 'virtualized-list',
-    group: 'data-display',
-    title: 'Virtualized list',
-    description: 'Large native collections with stable rendering.',
-    keywords: ['flatlist', 'performance', 'pagination', 'list'],
-  },
-  {
-    id: 'cards',
-    group: 'surfaces',
-    title: 'Cards & surfaces',
-    description: 'Matte, elevated and glass information containers.',
-    keywords: ['card', 'surface', 'paper', 'glass'],
-  },
-  {
-    id: 'dialogs',
-    group: 'surfaces',
-    title: 'Dialogs',
-    description: 'Focused confirmation without losing context.',
-    keywords: ['dialog', 'modal', 'confirm', 'focus'],
-  },
-  {
-    id: 'contextual-dock',
-    group: 'patterns',
-    title: 'Contextual dock',
-    description: 'Stable bottom actions that adapt to the current selection.',
-    keywords: ['dock', 'contextual', 'morphing', 'actions', 'selection'],
-  },
-  {
-    id: 'tabs-segments',
-    group: 'patterns',
-    title: 'Tabs & segments',
-    description: 'Small-scope view switching with persistent context.',
-    keywords: ['tabs', 'segment', 'navigation', 'filter'],
-  },
-] as const satisfies readonly CatalogExample[];
-
-const groupCopy: Record<CatalogGroup, { title: string; description: string }> =
-  {
-    foundations: {
-      title: 'Foundations',
-      description: 'Tokens and principles behind every native component.',
-    },
-    controls: {
-      title: 'Controls',
-      description: 'Clear, reachable actions and selection patterns.',
-    },
-    forms: {
-      title: 'Forms',
-      description: 'Input, validation and continuous values.',
-    },
-    feedback: {
-      title: 'Feedback',
-      description: 'Progress and recovery states that keep context.',
-    },
-    'data-display': {
-      title: 'Data display',
-      description: 'Readable rows, values and scalable collections.',
-    },
-    surfaces: {
-      title: 'Surfaces',
-      description: 'Material hierarchy from matte panels to liquid glass.',
-    },
-    patterns: {
-      title: 'Patterns',
-      description: 'Composed interactions for real mobile flows.',
-    },
-  };
-
-const groupOrder: readonly CatalogGroup[] = [
-  'foundations',
-  'controls',
-  'forms',
-  'feedback',
-  'data-display',
-  'surfaces',
-  'patterns',
+type ExampleInput = readonly [
+  id: CatalogExampleId,
+  title: string,
+  description: string,
+  keywords?: readonly string[],
 ];
 
-export const CATALOG_EXAMPLES = examples;
+const foundationInputs: readonly ExampleInput[] = [
+  [
+    'colors',
+    'Colors',
+    'Theme palette, semantic roles and accessible tonal scales.',
+  ],
+  [
+    'typography',
+    'Typography',
+    'Display, heading, body, caption and responsive native text styles.',
+  ],
+  [
+    'shadows',
+    'Shadows',
+    'Elevation levels, ambient shadows and glass surface depth.',
+  ],
+  [
+    'grid',
+    'Grid',
+    'Responsive columns, gutters, spacing and layout proportions.',
+  ],
+  [
+    'icons',
+    'Icons',
+    'The original component icon family and native glyph sizing.',
+  ],
+];
 
-export const CATALOG_SECTIONS: readonly CatalogSection[] = groupOrder.map(
-  id => ({
+const muiInputs: readonly ExampleInput[] = [
+  [
+    'accordion',
+    'Accordion',
+    'Expandable content panels with one or multiple open sections.',
+  ],
+  [
+    'alert',
+    'Alert',
+    'Success, information, warning and error messages with actions.',
+  ],
+  [
+    'autocomplete',
+    'Autocomplete',
+    'Searchable suggestions, single select and multi-value input.',
+  ],
+  [
+    'avatar',
+    'Avatar',
+    'Image, initials, grouped and status-aware identity treatments.',
+  ],
+  [
+    'badge',
+    'Badge',
+    'Notification counts, dots, maximum values and placement variants.',
+  ],
+  [
+    'breadcrumbs',
+    'Breadcrumbs',
+    'Compact hierarchy trails adapted to mobile navigation.',
+  ],
+  [
+    'buttons',
+    'Buttons',
+    'Contained, outlined, text, icon, loading and disabled actions.',
+  ],
+  [
+    'checkbox',
+    'Checkbox',
+    'Selected, indeterminate, disabled and grouped selection states.',
+  ],
+  ['chip', 'Chip', 'Filled, outlined, selectable, deletable and avatar chips.'],
+  ['dialog', 'Dialog', 'Alert, confirmation and full-screen modal patterns.'],
+  [
+    'list',
+    'List',
+    'Dense rows, leading media, metadata, actions and nested items.',
+  ],
+  [
+    'menu',
+    'Menu',
+    'Anchored action menus, selected items and contextual commands.',
+  ],
+  [
+    'pagination',
+    'Pagination',
+    'Page navigation, compact counters and boundary states.',
+  ],
+  [
+    'pickers',
+    'Pickers',
+    'Native date and time selection with formatted values.',
+  ],
+  ['popover', 'Popover', 'Contextual floating content anchored to a trigger.'],
+  [
+    'progress',
+    'Progress',
+    'Circular, linear, determinate and indeterminate progress.',
+  ],
+  [
+    'radio-button',
+    'Radio Button',
+    'Exclusive selection, grouped options and disabled states.',
+  ],
+  [
+    'rating',
+    'Rating',
+    'Read-only and editable rating with precision feedback.',
+  ],
+  [
+    'slider',
+    'Slider',
+    'Single-value, stepped and disabled continuous controls.',
+  ],
+  ['stepper', 'Stepper', 'Horizontal and vertical multi-step task progress.'],
+  ['switch', 'Switch', 'On, off, disabled and labelled preference controls.'],
+  [
+    'table',
+    'Table',
+    'Sortable data rows, selection and compact mobile presentation.',
+  ],
+  ['tabs', 'Tabs', 'Scrollable, fixed and icon-assisted content tabs.'],
+  [
+    'textfield',
+    'Textfield',
+    'Standard, filled, multiline, secure and validation fields.',
+  ],
+  [
+    'timeline',
+    'Timeline',
+    'Status history with connectors, timestamps and metadata.',
+  ],
+  ['tooltip', 'Tooltip', 'Accessible contextual hints for compact controls.'],
+  [
+    'transfer-list',
+    'Transfer List',
+    'Move selected items between available and chosen sets.',
+  ],
+  [
+    'tree-view',
+    'Tree View',
+    'Expandable hierarchical navigation and selection.',
+  ],
+  [
+    'data-grid',
+    'Data Grid',
+    'Virtualized records, sorting, filtering and row selection.',
+  ],
+];
+
+const extraInputs: readonly ExampleInput[] = [
+  ['chart', 'Chart', 'Line, area, bar, mixed and radial data visualization.'],
+  [
+    'map',
+    'Map',
+    'Native map-style markers, selected places and location sheets.',
+  ],
+  [
+    'editor',
+    'Editor',
+    'Rich-text toolbar, editable document and formatting state.',
+  ],
+  [
+    'copy-to-clipboard',
+    'Copy to clipboard',
+    'Copy actions with immediate success feedback.',
+  ],
+  [
+    'upload',
+    'Upload',
+    'File selection, image preview, progress, errors and removal.',
+  ],
+  [
+    'carousel',
+    'Carousel',
+    'Swipeable media, pagination dots and previous/next actions.',
+  ],
+  [
+    'multi-language',
+    'Multi language',
+    'Locale selection and live translated interface copy.',
+  ],
+  [
+    'animate',
+    'Animate',
+    'Purposeful enter, press and layout transitions with reduced motion.',
+  ],
+  [
+    'mega-menu',
+    'Mega Menu',
+    'Grouped navigation adapted to a native expandable sheet.',
+  ],
+  [
+    'form-validation',
+    'Form Validation',
+    'Complete labelled form with inline validation and submit state.',
+  ],
+  [
+    'lightbox',
+    'Lightbox',
+    'Full-screen media browsing with dismiss and paging controls.',
+  ],
+  [
+    'image',
+    'Image',
+    'Aspect ratios, placeholders, loading and fallback states.',
+  ],
+  [
+    'label',
+    'Label',
+    'Filled, outlined and status labels with semantic colors.',
+  ],
+  [
+    'scroll',
+    'Scroll',
+    'Directional scroll affordances and position-aware actions.',
+  ],
+  [
+    'scroll-progress',
+    'Scroll Progress',
+    'Document reading progress tied to content position.',
+  ],
+  [
+    'snackbar',
+    'Snackbar',
+    'Temporary success, information and recovery messages.',
+  ],
+  [
+    'text-max-line',
+    'Text Max Line',
+    'Predictable line clamping with expand and collapse.',
+  ],
+  [
+    'navigation-bar',
+    'Navigation Bar',
+    'Native top bar, bottom bar and active location states.',
+  ],
+  [
+    'organization-chart',
+    'Organization Chart',
+    'Expandable people hierarchy and reporting lines.',
+  ],
+  [
+    'markdown',
+    'Markdown',
+    'Structured headings, lists, quotes, links and code blocks.',
+  ],
+];
+
+function toExamples(
+  group: CatalogGroup,
+  inputs: readonly ExampleInput[],
+): readonly CatalogExample[] {
+  return inputs.map(([id, title, description, keywords = []]) => ({
     id,
-    ...groupCopy[id],
-    examples: examples.filter(example => example.group === id),
-  }),
-);
+    group,
+    title,
+    description,
+    keywords: [id, title, group, ...keywords],
+  }));
+}
 
-export const FOUNDATION_EXAMPLES = examples.filter(
-  example => example.group === 'foundations',
-);
+export const FOUNDATION_EXAMPLES = toExamples('foundations', foundationInputs);
+export const COMPONENT_EXAMPLES = toExamples('mui', muiInputs);
+export const EXTRA_EXAMPLES = toExamples('extra', extraInputs);
 
-export const COMPONENT_EXAMPLES = examples.filter(example =>
-  ['controls', 'forms', 'feedback', 'data-display', 'surfaces'].includes(
-    example.group,
-  ),
-);
+// Kept as a compatibility export for the existing Patterns stack while its
+// visible contract now matches the original UI kit's Extra section.
+export const PATTERN_EXAMPLES = EXTRA_EXAMPLES;
 
-export const PATTERN_EXAMPLES = examples.filter(
-  example => example.group === 'patterns' || example.id === 'form-flow',
-);
+export const CATALOG_EXAMPLES = [
+  ...FOUNDATION_EXAMPLES,
+  ...COMPONENT_EXAMPLES,
+  ...EXTRA_EXAMPLES,
+] as const;
+
+const sectionCopy: Record<
+  CatalogGroup,
+  Readonly<{ title: string; description: string }>
+> = {
+  foundations: {
+    title: 'Foundations',
+    description: 'The same visual foundations exposed by the web UI kit.',
+  },
+  mui: {
+    title: 'MUI components',
+    description:
+      'Native counterparts for every component route in the web kit.',
+  },
+  extra: {
+    title: 'Extra components',
+    description: 'Advanced and third-party patterns adapted for mobile.',
+  },
+};
+
+export const CATALOG_SECTIONS: readonly CatalogSection[] = (
+  ['foundations', 'mui', 'extra'] as const
+).map(id => ({
+  id,
+  ...sectionCopy[id],
+  examples: CATALOG_EXAMPLES.filter(example => example.group === id),
+}));
 
 export const getCatalogExample = (id: string): CatalogExample | undefined =>
-  examples.find(example => example.id === (id as CatalogExampleId));
+  CATALOG_EXAMPLES.find(example => example.id === (id as CatalogExampleId));
 
 export const filterCatalogExamples = (
   query: string,
 ): readonly CatalogExample[] => {
   const normalized = query.trim().toLocaleLowerCase();
 
-  if (!normalized) {
-    return examples;
-  }
+  if (!normalized) return CATALOG_EXAMPLES;
 
-  return examples.filter(example =>
+  return CATALOG_EXAMPLES.filter(example =>
     [example.title, example.description, example.group, ...example.keywords]
       .join(' ')
       .toLocaleLowerCase()

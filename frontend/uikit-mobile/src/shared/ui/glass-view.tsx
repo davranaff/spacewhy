@@ -17,11 +17,15 @@ import { useReducedTransparency } from '@/shared/accessibility/use-reduced-trans
 import { useAppSettingsStore, type GlassSettings } from '@/shared/settings';
 import { createAppTheme, useAppTheme } from '@/shared/theme';
 
-import { resolveGlassMaterial, type GlassVariant } from './glass-material';
+import {
+  resolveGlassEffect,
+  resolveGlassMaterial,
+  type GlassVariant,
+} from './glass-material';
 
 export interface GlassViewProps extends ViewProps {
   variant?: GlassVariant;
-  tone?: 'theme' | 'dark';
+  tone?: 'theme' | 'light' | 'dark';
   interactive?: boolean;
   effect?: 'clear' | 'regular';
   reducedTransparency?: boolean;
@@ -178,7 +182,7 @@ export const GlassView = forwardRef<View, PropsWithChildren<GlassViewProps>>(
     ref,
   ) {
     const theme = useAppTheme();
-    const materialTheme = tone === 'dark' ? createAppTheme('dark') : theme;
+    const materialTheme = tone === 'theme' ? theme : createAppTheme(tone);
     const glassSettings = useAppSettingsStore(state => state.settings.glass);
     const systemReducedTransparency = useReducedTransparency();
     const shouldReduceTransparency =
@@ -221,10 +225,7 @@ export const GlassView = forwardRef<View, PropsWithChildren<GlassViewProps>>(
           <LiquidGlassView
             colorScheme={materialTheme.mode}
             effect={
-              effect ??
-              (resolvedGlassSettings.opticalIntensity >= 55
-                ? 'regular'
-                : 'clear')
+              effect ?? resolveGlassEffect(resolvedGlassSettings.opticalIntensity)
             }
             interactive={initialInteractive}
             style={sharedSurfaceStyle}

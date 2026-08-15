@@ -1,5 +1,8 @@
 import { createAppTheme } from '@/shared/theme/tokens';
-import { resolveGlassMaterial } from '@/shared/ui/glass-material';
+import {
+  resolveGlassEffect,
+  resolveGlassMaterial,
+} from '@/shared/ui/glass-material';
 
 const baseInput = {
   variant: 'surface' as const,
@@ -9,6 +12,13 @@ const baseInput = {
 };
 
 describe('resolveGlassMaterial', () => {
+  it('keeps the native material clear through the everyday range', () => {
+    expect(resolveGlassEffect(0)).toBe('clear');
+    expect(resolveGlassEffect(77)).toBe('clear');
+    expect(resolveGlassEffect(78)).toBe('regular');
+    expect(resolveGlassEffect(100)).toBe('regular');
+  });
+
   it('keeps every numeric material value finite', () => {
     const material = resolveGlassMaterial(createAppTheme('dark'), baseInput);
 

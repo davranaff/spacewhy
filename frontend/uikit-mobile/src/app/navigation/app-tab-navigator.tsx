@@ -15,6 +15,7 @@ import type {
 import {
   CatalogPreviewScreen,
   ComponentsScreen,
+  DockSettingsScreen,
   FoundationsScreen,
   OverviewScreen,
   PatternsScreen,
@@ -78,6 +79,7 @@ const PatternsStackNavigator = () => (
 const SettingsStackNavigator = () => (
   <SettingsStack.Navigator screenOptions={stackScreenOptions}>
     <SettingsStack.Screen component={SettingsScreen} name="Settings" />
+    <SettingsStack.Screen component={DockSettingsScreen} name="DockSettings" />
     <SettingsStack.Screen
       component={CatalogPreviewScreen}
       name="SettingsPreview"

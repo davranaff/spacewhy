@@ -143,6 +143,7 @@ export function GlassSlider({
   return (
     <GestureDetector gesture={gesture}>
       <View
+        accessible
         accessibilityActions={[
           { name: 'increment', label: `Increase ${accessibilityLabel}` },
           { name: 'decrement', label: `Decrease ${accessibilityLabel}` },

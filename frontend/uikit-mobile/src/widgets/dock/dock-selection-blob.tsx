@@ -16,6 +16,8 @@ import {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 import { GlassView } from '@/shared/ui';
+import { useAppSettingsStore } from '@/shared/settings';
+import { useAppTheme } from '@/shared/theme';
 import {
   getDockBlobLayout,
   getNearestDockBlobIndex,
@@ -36,12 +38,28 @@ export function DockSelectionBlob({
   children,
 }: DockSelectionBlobProps) {
   const reduceMotion = useReducedMotion();
+  const theme = useAppTheme();
+  const dock = useAppSettingsStore(state => state.settings.dock);
   const [width, setWidth] = useState(0);
   const translateX = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(1)).current;
   const dragOrigin = useRef(0);
   const latestX = useRef(0);
-  const layout = getDockBlobLayout(width, itemCount, activeIndex);
+  const layout = getDockBlobLayout(
+    width,
+    itemCount,
+    activeIndex,
+    dock.blobSize,
+  );
+  const dockIsDark =
+    dock.tone === 'dark' || (dock.tone === 'adaptive' && theme.isDark);
+  const tone = dock.tone === 'adaptive' ? 'theme' : dock.tone;
+  const blobGlassStyle = {
+    backgroundColor: dockIsDark
+      ? 'rgba(255,255,255,0.07)'
+      : 'rgba(255,255,255,0.34)',
+    borderColor: dockIsDark ? 'rgba(255,255,255,0.30)' : 'rgba(17,18,22,0.22)',
+  };
 
   const moveTo = useCallback(
     (x: number, immediate = false) => {
@@ -104,13 +122,15 @@ export function DockSelectionBlob({
             width,
             itemCount,
             latestX.current,
+            dock.blobSize,
           );
-          moveTo(getDockBlobLayout(width, itemCount, index).x);
+          moveTo(getDockBlobLayout(width, itemCount, index, dock.blobSize).x);
           if (index !== activeIndex) onSelect(index);
         })
         .onFinalize(() => setPressed(false)),
     [
       activeIndex,
+      dock.blobSize,
       itemCount,
       maxX,
       moveTo,
@@ -141,16 +161,15 @@ export function DockSelectionBlob({
             ]}
           >
             <GlassView
-              effect="regular"
               interactive
               materialSettings={{
-                opticalIntensity: 82,
-                transparency: 72,
-                surfaceLiquidity: 100,
+                opticalIntensity: dock.blobIntensity,
+                transparency: dock.blobTransparency,
+                surfaceLiquidity: dock.blobLiquidity,
               }}
-              tone="dark"
+              tone={tone}
               variant="control"
-              style={styles.blobGlass}
+              style={[styles.blobGlass, blobGlassStyle]}
             />
           </Animated.View>
         ) : null}
@@ -175,8 +194,6 @@ const styles = StyleSheet.create({
     zIndex: 0,
   },
   blobGlass: {
-    backgroundColor: 'rgba(255,255,255,0.085)',
-    borderColor: 'rgba(255,255,255,0.30)',
     borderRadius: 999,
     flex: 1,
   },

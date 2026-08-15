@@ -1,35 +1,69 @@
-export type CatalogGroup =
-  | 'foundations'
-  | 'controls'
-  | 'forms'
-  | 'feedback'
-  | 'data-display'
-  | 'surfaces'
-  | 'patterns';
+export type CatalogGroup = 'foundations' | 'mui' | 'extra';
 
-export type CatalogExampleId =
+export type FoundationExampleId =
   | 'colors'
   | 'typography'
-  | 'spacing'
-  | 'icons'
-  | 'glass-material'
+  | 'shadows'
+  | 'grid'
+  | 'icons';
+
+export type MuiExampleId =
+  | 'accordion'
+  | 'alert'
+  | 'autocomplete'
+  | 'avatar'
+  | 'badge'
+  | 'breadcrumbs'
   | 'buttons'
-  | 'selection-controls'
-  | 'chips-badges'
-  | 'text-fields'
-  | 'slider-progress'
-  | 'alerts'
-  | 'loading-states'
-  | 'avatars-lists'
-  | 'metrics'
-  | 'cards'
-  | 'dialogs'
-  | 'dock-indicators'
-  | 'contextual-dock'
-  | 'tabs-segments'
-  | 'empty-error'
-  | 'virtualized-list'
-  | 'form-flow';
+  | 'checkbox'
+  | 'chip'
+  | 'dialog'
+  | 'list'
+  | 'menu'
+  | 'pagination'
+  | 'pickers'
+  | 'popover'
+  | 'progress'
+  | 'radio-button'
+  | 'rating'
+  | 'slider'
+  | 'stepper'
+  | 'switch'
+  | 'table'
+  | 'tabs'
+  | 'textfield'
+  | 'timeline'
+  | 'tooltip'
+  | 'transfer-list'
+  | 'tree-view'
+  | 'data-grid';
+
+export type ExtraExampleId =
+  | 'chart'
+  | 'map'
+  | 'editor'
+  | 'copy-to-clipboard'
+  | 'upload'
+  | 'carousel'
+  | 'multi-language'
+  | 'animate'
+  | 'mega-menu'
+  | 'form-validation'
+  | 'lightbox'
+  | 'image'
+  | 'label'
+  | 'scroll'
+  | 'scroll-progress'
+  | 'snackbar'
+  | 'text-max-line'
+  | 'navigation-bar'
+  | 'organization-chart'
+  | 'markdown';
+
+export type CatalogExampleId =
+  | FoundationExampleId
+  | MuiExampleId
+  | ExtraExampleId;
 
 export type CatalogExample = Readonly<{
   id: CatalogExampleId;

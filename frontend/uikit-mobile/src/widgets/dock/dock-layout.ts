@@ -21,11 +21,16 @@ export const getDockBlobLayout = (
   containerWidth: number,
   itemCount: number,
   activeIndex: number,
+  size = 100,
 ): DockBlobLayout => {
   const safeCount = Math.max(1, itemCount);
   const safeWidth = Math.max(0, containerWidth);
   const slotWidth = safeWidth / safeCount;
-  const width = Math.max(DOCK_MIN_TARGET, slotWidth - DOCK_BLOB_EDGE_INSET * 2);
+  const normalizedSize = Math.min(100, Math.max(0, size)) / 100;
+  const width = Math.max(
+    DOCK_MIN_TARGET,
+    (slotWidth - DOCK_BLOB_EDGE_INSET * 2) * normalizedSize,
+  );
   const index = Math.min(safeCount - 1, Math.max(0, activeIndex));
 
   return {
@@ -39,8 +44,9 @@ export const getNearestDockBlobIndex = (
   containerWidth: number,
   itemCount: number,
   blobX: number,
+  size = 100,
 ): number => {
-  const layout = getDockBlobLayout(containerWidth, itemCount, 0);
+  const layout = getDockBlobLayout(containerWidth, itemCount, 0, size);
   const offset = (layout.slotWidth - layout.width) / 2;
   const rawIndex = Math.round((blobX - offset) / Math.max(1, layout.slotWidth));
 
