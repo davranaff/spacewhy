@@ -42,17 +42,17 @@ export function resolveGlassMaterial(
   const transparency = clamp(input.transparency) / 100;
   const liquidity = clamp(input.surfaceLiquidity) / 100;
   const depth = variantDepth[input.variant];
-  const baseChannel = theme.isDark ? 255 : 18;
+  const baseChannel = theme.isDark ? 255 : 12;
   const matteAlpha = theme.isDark
-    ? 0.8 - transparency * 0.62
-    : 0.94 - transparency * 0.52;
+    ? 0.5 - transparency * 0.32
+    : 0.26 - transparency * 0.18;
   const nativeTintAlpha = theme.isDark
-    ? 0.34 - transparency * 0.29
-    : 0.48 - transparency * 0.38;
+    ? 0.3 - transparency * 0.2
+    : 0.22 - transparency * 0.14;
   // Native iOS glass exposes discrete clear/regular optics. A continuous neutral
   // tint depth keeps the optical slider visibly progressive without changing alpha.
   const tintChannel = Math.round(
-    theme.isDark ? 26 - intensity * 22 : 255 - intensity * 27,
+    theme.isDark ? 24 - intensity * 20 : 28 - intensity * 12,
   );
 
   return {
@@ -62,11 +62,11 @@ export function resolveGlassMaterial(
       baseChannel,
       baseChannel,
       baseChannel,
-      0.16 - liquidity * 0.08,
+      0.22 - liquidity * 0.08,
     ),
     matteColor: theme.isDark
       ? rgba(15, 16, 19, matteAlpha)
-      : rgba(248, 249, 251, matteAlpha),
+      : rgba(18, 20, 24, matteAlpha),
     nativeTintColor: rgba(
       tintChannel,
       tintChannel,

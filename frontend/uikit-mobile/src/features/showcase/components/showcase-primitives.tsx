@@ -31,6 +31,22 @@ export function ShowcasePage({
       }
       style={[styles.safeArea, { backgroundColor: theme.colors.canvas }]}
     >
+      <View
+        pointerEvents="none"
+        style={[
+          styles.backdropOrb,
+          styles.backdropOrbTop,
+          theme.isDark ? styles.backdropTopDark : styles.backdropTopLight,
+        ]}
+      />
+      <View
+        pointerEvents="none"
+        style={[
+          styles.backdropOrb,
+          styles.backdropOrbBottom,
+          theme.isDark ? styles.backdropBottomDark : styles.backdropBottomLight,
+        ]}
+      />
       <ScrollView
         contentContainerStyle={styles.pageContent}
         keyboardShouldPersistTaps="handled"
@@ -79,15 +95,10 @@ export function ShowcaseHeader({
 export function ShowcaseNotice({ children }: PropsWithChildren) {
   const theme = useAppTheme();
   return (
-    <View
+    <GlassView
       accessibilityRole="summary"
-      style={[
-        styles.notice,
-        {
-          backgroundColor: theme.colors.surface,
-          borderColor: theme.colors.border,
-        },
-      ]}
+      style={styles.notice}
+      variant="control"
     >
       <CircleAlert color={theme.colors.accent} size={18} />
       <Text
@@ -99,7 +110,7 @@ export function ShowcaseNotice({ children }: PropsWithChildren) {
       >
         {children}
       </Text>
-    </View>
+    </GlassView>
   );
 }
 
@@ -125,15 +136,20 @@ export function ShowcaseButton({
         styles.button,
         {
           backgroundColor:
-            variant === 'primary'
-              ? theme.colors.accent
-              : theme.colors.surfaceElevated,
+            variant === 'primary' ? theme.colors.accent : 'transparent',
           borderColor: theme.colors.border,
         },
         pressed && styles.pressed,
         disabled && styles.disabled,
       ]}
     >
+      {variant === 'secondary' ? (
+        <GlassView
+          pointerEvents="none"
+          style={StyleSheet.absoluteFill}
+          variant="control"
+        />
+      ) : null}
       <Text
         style={[
           theme.typography.label,
@@ -164,24 +180,30 @@ export function ShowcaseField({
       <Text style={[theme.typography.label, { color: theme.colors.text }]}>
         {label}
       </Text>
-      <TextInput
-        accessibilityLabel={label}
-        accessibilityHint={error}
-        aria-describedby={error ? errorId : undefined}
-        multiline={multiline}
-        placeholderTextColor={theme.colors.textMuted}
+      <GlassView
+        interactive
         style={[
-          theme.typography.body,
-          styles.input,
+          styles.inputGlass,
           multiline && styles.multiline,
-          {
-            backgroundColor: theme.colors.surface,
-            borderColor: error ? theme.colors.negative : theme.colors.border,
-            color: theme.colors.text,
-          },
+          { borderColor: error ? theme.colors.negative : theme.colors.border },
         ]}
-        {...props}
-      />
+        variant="control"
+      >
+        <TextInput
+          accessibilityLabel={label}
+          accessibilityHint={error}
+          aria-describedby={error ? errorId : undefined}
+          multiline={multiline}
+          placeholderTextColor={theme.colors.textMuted}
+          style={[
+            theme.typography.body,
+            styles.input,
+            multiline && styles.multilineInput,
+            { color: theme.colors.text },
+          ]}
+          {...props}
+        />
+      </GlassView>
       {error ? (
         <Text
           nativeID={errorId}
@@ -330,6 +352,19 @@ export const showcaseStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+  backdropOrb: {
+    borderRadius: 180,
+    height: 360,
+    opacity: 0.38,
+    position: 'absolute',
+    width: 360,
+  },
+  backdropOrbTop: { right: -210, top: -150 },
+  backdropOrbBottom: { bottom: 120, left: -230, opacity: 0.28 },
+  backdropTopDark: { backgroundColor: '#2B2D32' },
+  backdropTopLight: { backgroundColor: '#C5C8CE' },
+  backdropBottomDark: { backgroundColor: '#111419' },
+  backdropBottomLight: { backgroundColor: '#E0E2E6' },
   safeArea: { flex: 1 },
   pageContent: { gap: 22, padding: 20, paddingBottom: 120 },
   header: { alignItems: 'flex-start', flexDirection: 'row', gap: 12 },
@@ -356,13 +391,14 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.45 },
   field: { gap: 7 },
   input: {
-    borderRadius: 15,
-    borderWidth: StyleSheet.hairlineWidth,
+    flex: 1,
     minHeight: 48,
     paddingHorizontal: 14,
     paddingVertical: 11,
   },
-  multiline: { minHeight: 112, textAlignVertical: 'top' },
+  inputGlass: { borderRadius: 15, minHeight: 48 },
+  multiline: { minHeight: 112 },
+  multilineInput: { minHeight: 112, textAlignVertical: 'top' },
   errorText: { fontSize: 12, lineHeight: 17 },
   stateStrip: { gap: 8 },
   chip: {

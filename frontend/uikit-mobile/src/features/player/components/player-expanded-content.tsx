@@ -7,7 +7,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import Slider from '@react-native-community/slider';
 import {
   ChevronDown,
   Clock3,
@@ -24,7 +23,7 @@ import {
 } from 'lucide-react-native';
 
 import { useAppTheme } from '@/shared/theme';
-import { GlassView } from '@/shared/ui/glass-view';
+import { GlassSlider, GlassView } from '@/shared/ui';
 import { PLAYER_DEMO_QUEUE } from '@/features/player/data/demo-queue';
 import { formatPlayerTime } from '@/features/player/lib/format-time';
 import { usePlayerReducedMotion } from '@/features/player/hooks/use-player-reduced-motion';
@@ -214,20 +213,13 @@ export function PlayerExpandedContent({ onCollapse, onClose }: Props) {
       ) : null}
 
       <View style={styles.seekGroup}>
-        <Slider
+        <GlassSlider
           accessibilityLabel="Playback position"
-          accessibilityValue={{
-            min: 0,
-            max: Math.round(duration),
-            now: Math.round(seekValue),
-            text: `${formatPlayerTime(seekValue)} of ${formatPlayerTime(
-              duration,
-            )}`,
-          }}
+          accessibilityText={`${formatPlayerTime(
+            seekValue,
+          )} of ${formatPlayerTime(duration)}`}
           disabled={!canSeek}
-          maximumTrackTintColor={theme.colors.border}
           maximumValue={Math.max(duration, 1)}
-          minimumTrackTintColor={theme.colors.accent}
           minimumValue={0}
           onSlidingComplete={value => {
             setIsSeeking(false);
@@ -236,7 +228,6 @@ export function PlayerExpandedContent({ onCollapse, onClose }: Props) {
           onSlidingStart={() => setIsSeeking(true)}
           onValueChange={setSeekValue}
           step={0.1}
-          thumbTintColor={theme.colors.text}
           value={seekValue}
         />
         <View style={styles.timeRow}>

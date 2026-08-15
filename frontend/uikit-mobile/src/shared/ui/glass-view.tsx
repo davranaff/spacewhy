@@ -3,11 +3,7 @@ import {
   isLiquidGlassSupported,
 } from '@callstack/liquid-glass';
 import { BlurView } from '@react-native-community/blur';
-import {
-  forwardRef,
-  useRef,
-  type PropsWithChildren,
-} from 'react';
+import { forwardRef, useRef, type PropsWithChildren } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -19,12 +15,13 @@ import {
 
 import { useReducedTransparency } from '@/shared/accessibility/use-reduced-transparency';
 import { useAppSettingsStore, type GlassSettings } from '@/shared/settings';
-import { useAppTheme } from '@/shared/theme';
+import { createAppTheme, useAppTheme } from '@/shared/theme';
 
 import { resolveGlassMaterial, type GlassVariant } from './glass-material';
 
 export interface GlassViewProps extends ViewProps {
   variant?: GlassVariant;
+  tone?: 'theme' | 'dark';
   interactive?: boolean;
   effect?: 'clear' | 'regular';
   reducedTransparency?: boolean;
@@ -165,117 +162,118 @@ function splitGlassStyle(style: StyleProp<ViewStyle>): {
   };
 }
 
-export const GlassView = forwardRef<
-  View,
-  PropsWithChildren<GlassViewProps>
->(function GlassViewImpl(
-  {
-    children,
-    variant = 'surface',
-    interactive = false,
-    effect,
-    reducedTransparency,
-    materialSettings,
-    style,
-    ...viewProps
-  },
-  ref,
-) {
-  const theme = useAppTheme();
-  const glassSettings = useAppSettingsStore(state => state.settings.glass);
-  const systemReducedTransparency = useReducedTransparency();
-  const shouldReduceTransparency =
-    reducedTransparency ?? systemReducedTransparency;
-  const initialInteractive = useRef(interactive).current;
-  const resolvedGlassSettings = {
-    ...glassSettings,
-    ...materialSettings,
-  };
-  const material = resolveGlassMaterial(theme, {
-    variant,
-    ...resolvedGlassSettings,
-  });
-  const { outerStyle, surfaceStyle } = splitGlassStyle(style);
-  const hostStyle = [
-    styles.shadowHost,
+export const GlassView = forwardRef<View, PropsWithChildren<GlassViewProps>>(
+  function GlassViewImpl(
     {
-      shadowColor: '#000000',
-      shadowOpacity: material.shadowOpacity,
-      shadowRadius: material.shadowRadius,
+      children,
+      variant = 'surface',
+      tone = 'theme',
+      interactive = false,
+      effect,
+      reducedTransparency,
+      materialSettings,
+      style,
+      ...viewProps
     },
-    outerStyle,
-  ];
-  const sharedSurfaceStyle = [
-    styles.container,
-    {
-      borderColor: material.borderColor,
-      borderRadius: material.borderRadius,
-    },
-    surfaceStyle,
-  ];
-
-  if (
-    Platform.OS === 'ios' &&
-    isLiquidGlassSupported &&
-    !shouldReduceTransparency
+    ref,
   ) {
+    const theme = useAppTheme();
+    const materialTheme = tone === 'dark' ? createAppTheme('dark') : theme;
+    const glassSettings = useAppSettingsStore(state => state.settings.glass);
+    const systemReducedTransparency = useReducedTransparency();
+    const shouldReduceTransparency =
+      reducedTransparency ?? systemReducedTransparency;
+    const initialInteractive = useRef(interactive).current;
+    const resolvedGlassSettings = {
+      ...glassSettings,
+      ...materialSettings,
+    };
+    const material = resolveGlassMaterial(materialTheme, {
+      variant,
+      ...resolvedGlassSettings,
+    });
+    const { outerStyle, surfaceStyle } = splitGlassStyle(style);
+    const hostStyle = [
+      styles.shadowHost,
+      {
+        shadowColor: '#000000',
+        shadowOpacity: material.shadowOpacity,
+        shadowRadius: material.shadowRadius,
+      },
+      outerStyle,
+    ];
+    const sharedSurfaceStyle = [
+      styles.container,
+      {
+        borderColor: material.borderColor,
+        borderRadius: material.borderRadius,
+      },
+      surfaceStyle,
+    ];
+
+    if (
+      Platform.OS === 'ios' &&
+      isLiquidGlassSupported &&
+      !shouldReduceTransparency
+    ) {
+      return (
+        <View ref={ref} {...viewProps} style={hostStyle}>
+          <LiquidGlassView
+            colorScheme={materialTheme.mode}
+            effect={
+              effect ??
+              (resolvedGlassSettings.opticalIntensity >= 55
+                ? 'regular'
+                : 'clear')
+            }
+            interactive={initialInteractive}
+            style={sharedSurfaceStyle}
+            tintColor={material.nativeTintColor}
+          >
+            {children}
+          </LiquidGlassView>
+        </View>
+      );
+    }
+
     return (
       <View ref={ref} {...viewProps} style={hostStyle}>
-        <LiquidGlassView
-          colorScheme={theme.mode}
-          effect={
-            effect ??
-            (resolvedGlassSettings.opticalIntensity >= 55
-              ? 'regular'
-              : 'clear')
-          }
-          interactive={initialInteractive}
-          style={sharedSurfaceStyle}
-          tintColor={material.nativeTintColor}
+        <View
+          style={[
+            sharedSurfaceStyle,
+            shouldReduceTransparency && {
+              backgroundColor: material.reducedTransparencyColor,
+            },
+          ]}
         >
+          {!shouldReduceTransparency && Platform.OS === 'ios' ? (
+            <BlurView
+              blurAmount={material.blurAmount}
+              blurType={materialTheme.isDark ? 'dark' : 'light'}
+              pointerEvents="none"
+              reducedTransparencyFallbackColor={
+                material.reducedTransparencyColor
+              }
+              style={StyleSheet.absoluteFill}
+            />
+          ) : null}
+
+          {!shouldReduceTransparency && Platform.OS === 'android' ? (
+            <View
+              pointerEvents="none"
+              style={[
+                StyleSheet.absoluteFill,
+                { backgroundColor: material.matteColor },
+              ]}
+            />
+          ) : null}
+
           {children}
-        </LiquidGlassView>
+        </View>
       </View>
     );
-  }
-
-  return (
-    <View ref={ref} {...viewProps} style={hostStyle}>
-      <View
-        style={[
-          sharedSurfaceStyle,
-          shouldReduceTransparency && {
-            backgroundColor: material.reducedTransparencyColor,
-          },
-        ]}
-      >
-        {!shouldReduceTransparency && Platform.OS === 'ios' ? (
-          <BlurView
-            blurAmount={material.blurAmount}
-            blurType={theme.isDark ? 'dark' : 'light'}
-            pointerEvents="none"
-            reducedTransparencyFallbackColor={
-              material.reducedTransparencyColor
-            }
-            style={StyleSheet.absoluteFill}
-          />
-        ) : null}
-
-        {!shouldReduceTransparency && Platform.OS === 'android' ? (
-          <View
-            pointerEvents="none"
-            style={[
-              StyleSheet.absoluteFill,
-              { backgroundColor: material.matteColor },
-            ]}
-          />
-        ) : null}
-
-        {children}
-      </View>
-    </View>
-  );
-});
+  },
+);
 
 const styles = StyleSheet.create({
   shadowHost: {

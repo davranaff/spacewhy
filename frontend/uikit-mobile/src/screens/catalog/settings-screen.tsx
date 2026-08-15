@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import Slider from '@react-native-community/slider';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Monitor, Moon, RotateCcw, Sparkles, Sun } from 'lucide-react-native';
 
 import { useAppSettingsStore, type GlassSettings } from '@/shared/settings';
 import { useAppTheme, type ThemeMode } from '@/shared/theme';
-import { GlassView } from '@/shared/ui/glass-view';
+import { GlassSlider, GlassView } from '@/shared/ui';
 import {
   CatalogBackdrop,
   CatalogScreenHeader,
@@ -87,12 +86,15 @@ export function SettingsScreen() {
               onPress={resetSettings}
               style={[
                 styles.resetButton,
-                {
-                  borderColor: theme.colors.border,
-                  backgroundColor: theme.colors.surface,
-                },
+                styles.transparent,
+                { borderColor: theme.colors.border },
               ]}
             >
+              <GlassView
+                pointerEvents="none"
+                style={StyleSheet.absoluteFill}
+                variant="control"
+              />
               <RotateCcw color={theme.colors.text} size={19} />
             </Pressable>
           }
@@ -114,16 +116,22 @@ export function SettingsScreen() {
                   onPress={() => setThemeMode(value)}
                   style={[
                     styles.modeButton,
+                    styles.transparent,
+                    selected && { backgroundColor: theme.colors.accent },
                     {
-                      backgroundColor: selected
-                        ? theme.colors.accent
-                        : theme.colors.surfaceElevated,
                       borderColor: selected
                         ? theme.colors.accent
                         : theme.colors.border,
                     },
                   ]}
                 >
+                  {!selected ? (
+                    <GlassView
+                      pointerEvents="none"
+                      style={StyleSheet.absoluteFill}
+                      variant="control"
+                    />
+                  ) : null}
                   <Icon
                     color={
                       selected ? theme.colors.accentContrast : theme.colors.text
@@ -169,7 +177,7 @@ export function SettingsScreen() {
               style={[
                 styles.previewOrb,
                 styles.previewOrbTwo,
-                { backgroundColor: theme.colors.positive },
+                { backgroundColor: theme.colors.textMuted },
               ]}
             />
             <GlassView
@@ -222,14 +230,14 @@ export function SettingsScreen() {
                     {control.description}
                   </Text>
                 </View>
-                <View
+                <GlassView
                   style={[
                     styles.valuePill,
                     {
                       borderColor: theme.colors.border,
-                      backgroundColor: theme.colors.surfaceElevated,
                     },
                   ]}
+                  variant="control"
                 >
                   <Text
                     accessibilityLiveRegion="polite"
@@ -240,19 +248,11 @@ export function SettingsScreen() {
                   >
                     {Math.round(draftGlass[control.key])}%
                   </Text>
-                </View>
+                </GlassView>
               </View>
-              <Slider
+              <GlassSlider
                 accessibilityLabel={control.label}
-                accessibilityValue={{
-                  min: 0,
-                  max: 100,
-                  now: Math.round(draftGlass[control.key]),
-                  text: `${Math.round(draftGlass[control.key])} percent`,
-                }}
-                maximumTrackTintColor={theme.colors.border}
                 maximumValue={100}
-                minimumTrackTintColor={theme.colors.accent}
                 minimumValue={0}
                 onSlidingComplete={value =>
                   setGlassSettings({ [control.key]: value })
@@ -264,7 +264,6 @@ export function SettingsScreen() {
                   }))
                 }
                 step={1}
-                thumbTintColor={theme.colors.text}
                 value={draftGlass[control.key]}
               />
               <View style={styles.rangeLabels}>
@@ -316,6 +315,7 @@ export function SettingsScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  transparent: { backgroundColor: 'transparent' },
   resetButton: {
     width: 48,
     height: 48,

@@ -10,6 +10,7 @@ import {
 import { DockItem } from '@/widgets/dock/dock-item';
 import type { DockMode } from '@/widgets/dock/dock-state';
 import { DockSurface } from '@/widgets/dock/dock-surface';
+import { DockSelectionBlob } from '@/widgets/dock/dock-selection-blob';
 
 type TabDockProps = BottomTabBarProps & {
   mode?: Extract<DockMode, 'navigation' | 'compact'>;
@@ -48,6 +49,36 @@ export const TabDock = ({
     [navigation],
   );
 
+  const dockItems = DOCK_DESTINATIONS.map(destination => {
+    const routeIndex = state.routes.findIndex(
+      route => route.name === destination.route,
+    );
+
+    if (routeIndex < 0) return null;
+
+    const route = state.routes[routeIndex];
+    const descriptor = descriptors[route.key];
+    const configured = getDockDestination(route.name);
+
+    if (!configured || descriptor.options.tabBarButton === null) return null;
+
+    return {
+      configured,
+      route,
+      selected: state.index === routeIndex,
+    };
+  }).filter(item => item !== null);
+
+  const activeDockIndex = Math.max(
+    0,
+    dockItems.findIndex(item => item.selected),
+  );
+
+  const selectDockIndex = (index: number) => {
+    const item = dockItems[index];
+    if (item) pressRoute(item.route.key, item.route.name, item.selected);
+  };
+
   return (
     <DockSurface
       accessibilityLabel="Primary navigation"
@@ -56,25 +87,12 @@ export const TabDock = ({
       mode={mode}
     >
       <View style={[styles.items, compact && styles.itemsCompact]}>
-        {DOCK_DESTINATIONS.map(destination => {
-          const routeIndex = state.routes.findIndex(
-            route => route.name === destination.route,
-          );
-
-          if (routeIndex < 0) {
-            return null;
-          }
-
-          const route = state.routes[routeIndex];
-          const descriptor = descriptors[route.key];
-          const selected = state.index === routeIndex;
-          const configured = getDockDestination(route.name);
-
-          if (!configured || descriptor.options.tabBarButton === null) {
-            return null;
-          }
-
-          return (
+        <DockSelectionBlob
+          activeIndex={activeDockIndex}
+          itemCount={dockItems.length}
+          onSelect={selectDockIndex}
+        >
+          {dockItems.map(({ configured, route, selected }) => (
             <DockItem
               compact={compact}
               destination={configured}
@@ -83,8 +101,8 @@ export const TabDock = ({
               onPress={() => pressRoute(route.key, route.name, selected)}
               selected={selected}
             />
-          );
-        })}
+          ))}
+        </DockSelectionBlob>
       </View>
     </DockSurface>
   );
@@ -95,7 +113,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
-    gap: 2,
     paddingHorizontal: 6,
     paddingVertical: 6,
   },

@@ -105,7 +105,14 @@ export const DockSurface = ({
         ]}
       >
         <GlassView
+          effect="regular"
           interactive
+          materialSettings={{
+            opticalIntensity: 72,
+            transparency: 64,
+            surfaceLiquidity: 100,
+          }}
+          tone="dark"
           variant="floating"
           style={[styles.surface, style]}
         >
@@ -118,6 +125,7 @@ export const DockSurface = ({
 
 const styles = StyleSheet.create({
   reservedArea: {
+    backgroundColor: '#050505',
     justifyContent: 'flex-end',
     width: '100%',
   },
@@ -127,6 +135,9 @@ const styles = StyleSheet.create({
     right: DOCK_HORIZONTAL_GUTTER,
   },
   surface: {
+    backgroundColor: 'rgba(2,2,3,0.22)',
+    borderColor: 'rgba(255,255,255,0.24)',
+    borderRadius: 999,
     flex: 1,
   },
 });

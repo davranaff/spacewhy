@@ -10,10 +10,10 @@ export function ExpandedPlayerScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const topOrbStyle = {
-    backgroundColor: theme.isDark ? '#302019' : '#FFD8CE',
+    backgroundColor: theme.isDark ? '#2B2D32' : '#C5C8CE',
   };
   const bottomOrbStyle = {
-    backgroundColor: theme.isDark ? '#101D28' : '#DCEEFF',
+    backgroundColor: theme.isDark ? '#111419' : '#E0E2E6',
   };
 
   return (

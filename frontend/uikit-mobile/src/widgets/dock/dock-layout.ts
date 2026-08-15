@@ -9,6 +9,43 @@ export const DOCK_NAVIGATION_HEIGHT = 64;
 export const DOCK_COMPACT_HEIGHT = 52;
 export const DOCK_PLAYER_HEIGHT = 72;
 export const DOCK_EXPANDED_HEIGHT = 112;
+export const DOCK_BLOB_EDGE_INSET = 4;
+
+export type DockBlobLayout = {
+  slotWidth: number;
+  width: number;
+  x: number;
+};
+
+export const getDockBlobLayout = (
+  containerWidth: number,
+  itemCount: number,
+  activeIndex: number,
+): DockBlobLayout => {
+  const safeCount = Math.max(1, itemCount);
+  const safeWidth = Math.max(0, containerWidth);
+  const slotWidth = safeWidth / safeCount;
+  const width = Math.max(DOCK_MIN_TARGET, slotWidth - DOCK_BLOB_EDGE_INSET * 2);
+  const index = Math.min(safeCount - 1, Math.max(0, activeIndex));
+
+  return {
+    slotWidth,
+    width,
+    x: index * slotWidth + (slotWidth - width) / 2,
+  };
+};
+
+export const getNearestDockBlobIndex = (
+  containerWidth: number,
+  itemCount: number,
+  blobX: number,
+): number => {
+  const layout = getDockBlobLayout(containerWidth, itemCount, 0);
+  const offset = (layout.slotWidth - layout.width) / 2;
+  const rawIndex = Math.round((blobX - offset) / Math.max(1, layout.slotWidth));
+
+  return Math.min(Math.max(1, itemCount) - 1, Math.max(0, rawIndex));
+};
 
 export const getDockSurfaceHeight = (mode: DockMode): number => {
   switch (mode) {

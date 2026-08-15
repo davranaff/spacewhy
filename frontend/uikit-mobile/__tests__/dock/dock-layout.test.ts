@@ -1,6 +1,8 @@
 import {
   DOCK_EDGE_GAP,
+  getDockBlobLayout,
   getDockContentInset,
+  getNearestDockBlobIndex,
   getPlayerAwareDockContentInset,
   getDockSurfaceHeight,
 } from '../../src/widgets/dock/dock-layout';
@@ -42,5 +44,20 @@ describe('dock layout contracts', () => {
     expect(getPlayerAwareDockContentInset(34, false)).toBe(
       getDockContentInset('navigation', 34),
     );
+  });
+
+  it('maps the draggable glass blob to five equal dock slots', () => {
+    const first = getDockBlobLayout(350, 5, 0);
+    const last = getDockBlobLayout(350, 5, 4);
+
+    expect(first.width).toBeGreaterThanOrEqual(44);
+    expect(first.x).toBeGreaterThanOrEqual(0);
+    expect(last.x + last.width).toBeLessThanOrEqual(350);
+    expect(getNearestDockBlobIndex(350, 5, last.x)).toBe(4);
+  });
+
+  it('clamps dragged blob positions to reachable destinations', () => {
+    expect(getNearestDockBlobIndex(350, 5, -999)).toBe(0);
+    expect(getNearestDockBlobIndex(350, 5, 999)).toBe(4);
   });
 });

@@ -242,7 +242,7 @@ type DemoSurfaceProps = PropsWithChildren<{
 export function DemoSurface({
   title,
   description,
-  glass = false,
+  glass = true,
   style,
   children,
 }: DemoSurfaceProps) {
@@ -312,9 +312,7 @@ export function DemoButton({
     ? theme.colors.accent
     : isDanger
     ? theme.colors.negative
-    : variant === 'quiet'
-    ? 'transparent'
-    : theme.colors.surfaceElevated;
+    : 'transparent';
   const color =
     isPrimary || isDanger ? theme.colors.accentContrast : theme.colors.text;
 
@@ -332,6 +330,13 @@ export function DemoButton({
       ]}
       {...props}
     >
+      {variant === 'secondary' ? (
+        <GlassView
+          pointerEvents="none"
+          style={StyleSheet.absoluteFill}
+          variant="control"
+        />
+      ) : null}
       <Text style={[theme.typography.label, styles.demoButtonLabel, { color }]}>
         {label}
       </Text>
@@ -342,10 +347,10 @@ export function DemoButton({
 export function CatalogBackdrop({ children }: PropsWithChildren) {
   const theme = useAppTheme();
   const topOrbStyle = {
-    backgroundColor: theme.isDark ? '#322019' : '#FFD7CC',
+    backgroundColor: theme.isDark ? '#2B2D32' : '#C5C8CE',
   };
   const bottomOrbStyle = {
-    backgroundColor: theme.isDark ? '#111B25' : '#DCEEFF',
+    backgroundColor: theme.isDark ? '#111419' : '#E0E2E6',
   };
 
   return (

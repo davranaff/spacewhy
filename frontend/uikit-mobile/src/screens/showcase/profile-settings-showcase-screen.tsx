@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
-import Slider from '@react-native-community/slider';
 import { Bell, Moon, UserRound } from 'lucide-react-native';
 
 import {
@@ -9,7 +8,7 @@ import {
 } from '@/features/showcase/components/showcase-primitives';
 import { useAppSettingsStore } from '@/shared/settings';
 import { useAppTheme } from '@/shared/theme';
-import { GlassView } from '@/shared/ui/glass-view';
+import { GlassSlider, GlassView } from '@/shared/ui';
 
 export function ShowcaseProfileSettingsScreen({
   onSignOut,
@@ -110,17 +109,17 @@ export function ShowcaseProfileSettingsScreen({
                 {settings.glass[key]}%
               </Text>
             </View>
-            <Slider
+            <GlassSlider
               accessibilityLabel={label}
-              maximumTrackTintColor={theme.colors.border}
               maximumValue={100}
-              minimumTrackTintColor={theme.colors.accent}
               minimumValue={0}
+              onValueChange={value =>
+                setGlassSettings({ [key]: Math.round(value) })
+              }
               onSlidingComplete={value =>
                 setGlassSettings({ [key]: Math.round(value) })
               }
               step={1}
-              thumbTintColor={theme.colors.accent}
               value={settings.glass[key]}
             />
           </View>

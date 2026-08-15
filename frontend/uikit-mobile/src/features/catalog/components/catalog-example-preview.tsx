@@ -10,7 +10,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import Slider from '@react-native-community/slider';
 import {
   Bell,
   Check,
@@ -31,7 +30,7 @@ import {
 } from 'lucide-react-native';
 
 import { useAppTheme } from '@/shared/theme';
-import { GlassView } from '@/shared/ui/glass-view';
+import { GlassSlider, GlassView } from '@/shared/ui';
 import {
   ContextualDock,
   type ContextualDockActions,
@@ -567,15 +566,12 @@ function SliderPreview() {
           {Math.round(value)}%
         </Text>
       </View>
-      <Slider
+      <GlassSlider
         accessibilityLabel="Intensity"
-        maximumTrackTintColor={theme.colors.border}
         maximumValue={100}
-        minimumTrackTintColor={theme.colors.accent}
         minimumValue={0}
         onValueChange={setValue}
         step={1}
-        thumbTintColor={theme.colors.text}
         value={value}
       />
       <View
