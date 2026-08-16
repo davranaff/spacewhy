@@ -12,7 +12,8 @@ import { useAppTheme } from '@/shared/theme';
 
 import { GlassView } from './glass-view';
 
-const THUMB_SIZE = 48;
+const THUMB_TOUCH_SIZE = 48;
+const THUMB_VISUAL_SIZE = 36;
 const TRACK_HEIGHT = 6;
 
 export type GlassSliderProps = {
@@ -51,12 +52,12 @@ export function GlassSlider({
   const range = Math.max(1, maximumValue - minimumValue);
   const normalizedValue = clamp(value, minimumValue, maximumValue);
   const progress = (normalizedValue - minimumValue) / range;
-  const travel = Math.max(0, width - THUMB_SIZE);
+  const travel = Math.max(0, width - THUMB_TOUCH_SIZE);
   const thumbX = progress * travel;
 
   useEffect(() => {
     Animated.timing(thumbScale, {
-      toValue: dragging ? 1.08 : 1,
+      toValue: dragging ? 1.06 : 1,
       duration: theme.motion.quick,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
@@ -65,8 +66,8 @@ export function GlassSlider({
 
   const valueForX = useCallback(
     (x: number): number => {
-      const usableWidth = Math.max(1, width - THUMB_SIZE);
-      const rawProgress = clamp((x - THUMB_SIZE / 2) / usableWidth, 0, 1);
+      const usableWidth = Math.max(1, width - THUMB_TOUCH_SIZE);
+      const rawProgress = clamp((x - THUMB_TOUCH_SIZE / 2) / usableWidth, 0, 1);
       const rawValue = minimumValue + rawProgress * range;
       const steppedValue = Math.round(rawValue / step) * step;
       return clamp(steppedValue, minimumValue, maximumValue);
@@ -118,12 +119,7 @@ export function GlassSlider({
       .onFinalize(() => setDragging(false));
 
     return Gesture.Race(pan, tap);
-  }, [
-    disabled,
-    completeFromX,
-    onSlidingStart,
-    updateFromX,
-  ]);
+  }, [disabled, completeFromX, onSlidingStart, updateFromX]);
 
   const adjustValue = (direction: 1 | -1) => {
     if (disabled) return;
@@ -193,14 +189,18 @@ export function GlassSlider({
           ]}
         >
           <GlassView
+            effect="clear"
             interactive
             materialSettings={{
-              opticalIntensity: 78,
-              transparency: 68,
+              opticalIntensity: 68,
+              transparency: 90,
               surfaceLiquidity: 100,
             }}
             variant="control"
-            style={styles.thumbGlass}
+            style={[
+              styles.thumbGlass,
+              theme.isDark ? styles.thumbGlassDark : styles.thumbGlassLight,
+            ]}
           />
         </Animated.View>
       </View>
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   track: {
     borderRadius: TRACK_HEIGHT / 2,
     height: TRACK_HEIGHT,
-    marginHorizontal: THUMB_SIZE / 2,
+    marginHorizontal: THUMB_TOUCH_SIZE / 2,
     overflow: 'hidden',
   },
   trackDark: { backgroundColor: 'rgba(255,255,255,0.13)' },
@@ -227,14 +227,26 @@ const styles = StyleSheet.create({
     height: TRACK_HEIGHT,
   },
   thumb: {
-    height: THUMB_SIZE,
+    alignItems: 'center',
+    height: THUMB_TOUCH_SIZE,
+    justifyContent: 'center',
     position: 'absolute',
-    width: THUMB_SIZE,
+    width: THUMB_TOUCH_SIZE,
   },
   thumbGlass: {
-    borderColor: 'rgba(255,255,255,0.24)',
-    borderRadius: THUMB_SIZE / 2,
-    flex: 1,
+    borderRadius: THUMB_VISUAL_SIZE / 2,
+    height: THUMB_VISUAL_SIZE,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 10,
+    width: THUMB_VISUAL_SIZE,
+  },
+  thumbGlassDark: {
+    borderColor: 'rgba(255,255,255,0.36)',
+    shadowOpacity: 0.24,
+  },
+  thumbGlassLight: {
+    borderColor: 'rgba(17,18,22,0.20)',
+    shadowOpacity: 0.14,
   },
   disabled: { opacity: 0.45 },
 });

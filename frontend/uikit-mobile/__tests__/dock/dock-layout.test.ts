@@ -1,5 +1,8 @@
 import {
+  DOCK_BLOB_VERTICAL_INSET,
   DOCK_EDGE_GAP,
+  DOCK_NAVIGATION_HEIGHT,
+  DOCK_NAVIGATION_VERTICAL_INSET,
   getDockBlobLayout,
   getDockContentInset,
   getNearestDockBlobIndex,
@@ -54,6 +57,17 @@ describe('dock layout contracts', () => {
     expect(first.x).toBeGreaterThanOrEqual(0);
     expect(last.x + last.width).toBeLessThanOrEqual(350);
     expect(getNearestDockBlobIndex(350, 5, last.x)).toBe(4);
+  });
+
+  it('keeps the navigation blob nearly as tall as the dock', () => {
+    const blobHeight =
+      DOCK_NAVIGATION_HEIGHT -
+      DOCK_NAVIGATION_VERTICAL_INSET * 2 -
+      DOCK_BLOB_VERTICAL_INSET * 2;
+
+    expect(blobHeight).toBe(54);
+    expect(blobHeight).toBeGreaterThanOrEqual(44);
+    expect(blobHeight).toBeLessThan(DOCK_NAVIGATION_HEIGHT);
   });
 
   it('clamps dragged blob positions to reachable destinations', () => {

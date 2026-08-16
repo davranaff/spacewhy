@@ -10,6 +10,8 @@ export const DOCK_COMPACT_HEIGHT = 52;
 export const DOCK_PLAYER_HEIGHT = 72;
 export const DOCK_EXPANDED_HEIGHT = 112;
 export const DOCK_BLOB_EDGE_INSET = 4;
+export const DOCK_NAVIGATION_VERTICAL_INSET = 4;
+export const DOCK_BLOB_VERTICAL_INSET = 1;
 
 export type DockBlobLayout = {
   slotWidth: number;

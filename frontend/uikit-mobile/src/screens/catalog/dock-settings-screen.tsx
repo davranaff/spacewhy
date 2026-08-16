@@ -348,15 +348,15 @@ const styles = StyleSheet.create({
   previewSlot: {
     alignItems: 'center',
     flex: 1,
-    height: 52,
+    height: 56,
     justifyContent: 'center',
   },
   previewBlob: {
     alignSelf: 'center',
     borderRadius: 999,
-    bottom: 2,
+    bottom: 1,
     position: 'absolute',
-    top: 2,
+    top: 1,
   },
   toneRow: { flexDirection: 'row', gap: 8 },
   toneButton: { flex: 1, paddingHorizontal: 6 },

@@ -19,6 +19,7 @@ import { GlassView } from '@/shared/ui';
 import { useAppSettingsStore } from '@/shared/settings';
 import { useAppTheme } from '@/shared/theme';
 import {
+  DOCK_BLOB_VERTICAL_INSET,
   getDockBlobLayout,
   getNearestDockBlobIndex,
 } from '@/widgets/dock/dock-layout';
@@ -56,9 +57,9 @@ export function DockSelectionBlob({
   const tone = dock.tone === 'adaptive' ? 'theme' : dock.tone;
   const blobGlassStyle = {
     backgroundColor: dockIsDark
-      ? 'rgba(255,255,255,0.07)'
-      : 'rgba(255,255,255,0.34)',
-    borderColor: dockIsDark ? 'rgba(255,255,255,0.30)' : 'rgba(17,18,22,0.22)',
+      ? 'rgba(255,255,255,0.035)'
+      : 'rgba(255,255,255,0.12)',
+    borderColor: dockIsDark ? 'rgba(255,255,255,0.34)' : 'rgba(17,18,22,0.20)',
   };
 
   const moveTo = useCallback(
@@ -187,10 +188,10 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   blob: {
-    bottom: 3,
+    bottom: DOCK_BLOB_VERTICAL_INSET,
     left: 0,
     position: 'absolute',
-    top: 3,
+    top: DOCK_BLOB_VERTICAL_INSET,
     zIndex: 0,
   },
   blobGlass: {

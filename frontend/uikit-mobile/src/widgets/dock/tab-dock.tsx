@@ -11,6 +11,7 @@ import { DockItem } from '@/widgets/dock/dock-item';
 import type { DockMode } from '@/widgets/dock/dock-state';
 import { DockSurface } from '@/widgets/dock/dock-surface';
 import { DockSelectionBlob } from '@/widgets/dock/dock-selection-blob';
+import { DOCK_NAVIGATION_VERTICAL_INSET } from '@/widgets/dock/dock-layout';
 
 type TabDockProps = BottomTabBarProps & {
   mode?: Extract<DockMode, 'navigation' | 'compact'>;
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 6,
-    paddingVertical: 6,
+    paddingVertical: DOCK_NAVIGATION_VERTICAL_INSET,
   },
   itemsCompact: {
     justifyContent: 'space-evenly',
