@@ -1,22 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  Animated,
-  Easing,
-  StyleSheet,
-  View,
-  type LayoutChangeEvent,
-} from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Slider from '@react-native-community/slider';
 
 import { useAppTheme } from '@/shared/theme';
-
-import { GlassView } from './glass-view';
-
-const THUMB_TOUCH_WIDTH = 72;
-const THUMB_TOUCH_HEIGHT = 52;
-const THUMB_VISUAL_WIDTH = 68;
-const THUMB_VISUAL_HEIGHT = 46;
-const TRACK_HEIGHT = 6;
 
 export type GlassSliderProps = {
   accessibilityLabel: string;
@@ -31,10 +15,12 @@ export type GlassSliderProps = {
   onSlidingComplete?: (value: number) => void;
 };
 
-function clamp(value: number, minimum: number, maximum: number): number {
-  return Math.min(maximum, Math.max(minimum, value));
-}
-
+/**
+ * Keeps the native UISlider geometry and interaction material used by the
+ * original Spacewhy mobile build. On iOS 26 the system owns the idle thumb and
+ * its larger liquid-glass pressed state; drawing another thumb above it breaks
+ * both the proportions and the native transition.
+ */
 export function GlassSlider({
   accessibilityLabel,
   value,
@@ -48,229 +34,27 @@ export function GlassSlider({
   onSlidingComplete,
 }: GlassSliderProps) {
   const theme = useAppTheme();
-  const [width, setWidth] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  const thumbScale = useRef(new Animated.Value(1)).current;
-  const onValueChangeRef = useRef(onValueChange);
-  const onSlidingStartRef = useRef(onSlidingStart);
-  const onSlidingCompleteRef = useRef(onSlidingComplete);
-  onValueChangeRef.current = onValueChange;
-  onSlidingStartRef.current = onSlidingStart;
-  onSlidingCompleteRef.current = onSlidingComplete;
-  const range = Math.max(1, maximumValue - minimumValue);
-  const normalizedValue = clamp(value, minimumValue, maximumValue);
-  const progress = (normalizedValue - minimumValue) / range;
-  const travel = Math.max(0, width - THUMB_TOUCH_WIDTH);
-  const thumbX = progress * travel;
-
-  useEffect(() => {
-    Animated.timing(thumbScale, {
-      toValue: dragging ? 1.38 : 1,
-      duration: theme.motion.quick,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
-  }, [dragging, theme.motion.quick, thumbScale]);
-
-  const valueForX = useCallback(
-    (x: number): number => {
-      const usableWidth = Math.max(1, width - THUMB_TOUCH_WIDTH);
-      const rawProgress = clamp(
-        (x - THUMB_TOUCH_WIDTH / 2) / usableWidth,
-        0,
-        1,
-      );
-      const rawValue = minimumValue + rawProgress * range;
-      const steppedValue = Math.round(rawValue / step) * step;
-      return clamp(steppedValue, minimumValue, maximumValue);
-    },
-    [maximumValue, minimumValue, range, step, width],
-  );
-
-  const updateFromX = useCallback(
-    (x: number) => {
-      if (disabled) return;
-      onValueChangeRef.current?.(valueForX(x));
-    },
-    [disabled, valueForX],
-  );
-
-  const completeFromX = useCallback(
-    (x: number) => {
-      if (disabled) return;
-      const nextValue = valueForX(x);
-      onValueChangeRef.current?.(nextValue);
-      onSlidingCompleteRef.current?.(nextValue);
-    },
-    [disabled, valueForX],
-  );
-
-  const gesture = useMemo(() => {
-    const pan = Gesture.Pan()
-      .enabled(!disabled)
-      .minDistance(3)
-      .runOnJS(true)
-      .onBegin(event => {
-        setDragging(true);
-        onSlidingStartRef.current?.();
-        updateFromX(event.x);
-      })
-      .onUpdate(event => updateFromX(event.x))
-      .onEnd(event => completeFromX(event.x))
-      .onFinalize(() => setDragging(false));
-
-    const tap = Gesture.Tap()
-      .enabled(!disabled)
-      .maxDistance(8)
-      .runOnJS(true)
-      .onBegin(() => {
-        setDragging(true);
-        onSlidingStartRef.current?.();
-      })
-      .onEnd(event => completeFromX(event.x))
-      .onFinalize(() => setDragging(false));
-
-    return Gesture.Race(pan, tap);
-  }, [disabled, completeFromX, updateFromX]);
-
-  const adjustValue = (direction: 1 | -1) => {
-    if (disabled) return;
-    const nextValue = clamp(
-      normalizedValue + step * direction,
-      minimumValue,
-      maximumValue,
-    );
-    onValueChange?.(nextValue);
-    onSlidingComplete?.(nextValue);
-  };
-
-  const onLayout = (event: LayoutChangeEvent) => {
-    setWidth(event.nativeEvent.layout.width);
-  };
 
   return (
-    <GestureDetector gesture={gesture}>
-      <View
-        accessible
-        accessibilityActions={[
-          { name: 'increment', label: `Increase ${accessibilityLabel}` },
-          { name: 'decrement', label: `Decrease ${accessibilityLabel}` },
-        ]}
-        accessibilityLabel={accessibilityLabel}
-        accessibilityRole="adjustable"
-        accessibilityState={{ disabled }}
-        accessibilityValue={{
-          min: minimumValue,
-          max: maximumValue,
-          now: Math.round(normalizedValue),
-          text: accessibilityText ?? `${Math.round(normalizedValue)} percent`,
-        }}
-        onAccessibilityAction={event => {
-          if (event.nativeEvent.actionName === 'increment') adjustValue(1);
-          if (event.nativeEvent.actionName === 'decrement') adjustValue(-1);
-        }}
-        onLayout={onLayout}
-        style={[styles.root, disabled && styles.disabled]}
-      >
-        <View
-          pointerEvents="none"
-          style={[
-            styles.track,
-            theme.isDark ? styles.trackDark : styles.trackLight,
-          ]}
-        >
-          <View
-            style={[
-              styles.fill,
-              {
-                backgroundColor: theme.colors.accent,
-                width: `${progress * 100}%`,
-              },
-            ]}
-          />
-        </View>
-
-        <Animated.View
-          pointerEvents="box-none"
-          style={[
-            styles.thumb,
-            {
-              left: thumbX,
-              transform: [{ scale: thumbScale }],
-            },
-          ]}
-        >
-          <GlassView
-            effect={dragging ? 'clear' : 'regular'}
-            interactive
-            materialSettings={
-              dragging
-                ? {
-                    opticalIntensity: 72,
-                    transparency: 92,
-                    surfaceLiquidity: 100,
-                  }
-                : {
-                    opticalIntensity: 100,
-                    transparency: 55,
-                    surfaceLiquidity: 100,
-                  }
-            }
-            tintColor={
-              dragging ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.72)'
-            }
-            tone={dragging ? 'theme' : 'light'}
-            variant="control"
-            style={[
-              styles.thumbGlass,
-              dragging ? styles.thumbGlassActive : styles.thumbGlassIdle,
-            ]}
-          />
-        </Animated.View>
-      </View>
-    </GestureDetector>
+    <Slider
+      accessibilityLabel={accessibilityLabel}
+      accessibilityValue={{
+        min: minimumValue,
+        max: maximumValue,
+        now: Math.round(value),
+        text: accessibilityText ?? `${Math.round(value)} percent`,
+      }}
+      disabled={disabled}
+      maximumTrackTintColor={theme.colors.border}
+      maximumValue={maximumValue}
+      minimumTrackTintColor={theme.colors.accent}
+      minimumValue={minimumValue}
+      onSlidingComplete={onSlidingComplete}
+      onSlidingStart={onSlidingStart}
+      onValueChange={onValueChange}
+      step={step}
+      thumbTintColor={theme.colors.text}
+      value={value}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  root: {
-    height: 56,
-    justifyContent: 'center',
-    width: '100%',
-  },
-  track: {
-    borderRadius: TRACK_HEIGHT / 2,
-    height: TRACK_HEIGHT,
-    marginHorizontal: THUMB_TOUCH_WIDTH / 2,
-    overflow: 'hidden',
-  },
-  trackDark: { backgroundColor: 'rgba(255,255,255,0.13)' },
-  trackLight: { backgroundColor: 'rgba(7,8,10,0.18)' },
-  fill: {
-    borderRadius: TRACK_HEIGHT / 2,
-    height: TRACK_HEIGHT,
-  },
-  thumb: {
-    alignItems: 'center',
-    height: THUMB_TOUCH_HEIGHT,
-    justifyContent: 'center',
-    position: 'absolute',
-    width: THUMB_TOUCH_WIDTH,
-  },
-  thumbGlass: {
-    borderRadius: THUMB_VISUAL_HEIGHT / 2,
-    height: THUMB_VISUAL_HEIGHT,
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 12,
-    width: THUMB_VISUAL_WIDTH,
-  },
-  thumbGlassIdle: {
-    borderColor: 'rgba(255,255,255,0.50)',
-    shadowOpacity: 0.16,
-  },
-  thumbGlassActive: {
-    borderColor: 'rgba(255,255,255,0.30)',
-    shadowOpacity: 0.26,
-  },
-  disabled: { opacity: 0.45 },
-});
