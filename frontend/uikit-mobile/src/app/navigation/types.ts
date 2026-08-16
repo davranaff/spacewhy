@@ -8,6 +8,8 @@ export type CatalogPreviewParams = {
 export type OverviewStackParamList = {
   Overview: undefined;
   OverviewPreview: CatalogPreviewParams;
+  TemplateLibrary: undefined;
+  TemplatePreview: { templateId: string };
 };
 
 export type FoundationsStackParamList = {

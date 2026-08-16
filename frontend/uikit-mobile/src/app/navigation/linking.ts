@@ -11,7 +11,17 @@ import type { RootStackParamList } from '@/app/navigation/types';
 const tabPaths = Object.fromEntries(
   DOCK_DESTINATIONS.map(destination => [
     destination.route,
-    { path: destination.path },
+    destination.route === 'OverviewTab'
+      ? {
+          path: destination.path,
+          screens: {
+            Overview: '',
+            OverviewPreview: 'overview/:exampleId',
+            TemplateLibrary: 'templates',
+            TemplatePreview: 'templates/:templateId',
+          },
+        }
+      : { path: destination.path },
   ]),
 );
 

@@ -21,6 +21,10 @@ import {
   PatternsScreen,
   SettingsScreen,
 } from '@/screens/catalog';
+import {
+  TemplateLibraryScreen,
+  TemplatePreviewScreen,
+} from '@/screens/templates';
 
 const stackScreenOptions = {
   animation: 'slide_from_right',
@@ -42,6 +46,14 @@ const OverviewStackNavigator = () => (
     <OverviewStack.Screen
       component={CatalogPreviewScreen}
       name="OverviewPreview"
+    />
+    <OverviewStack.Screen
+      component={TemplateLibraryScreen}
+      name="TemplateLibrary"
+    />
+    <OverviewStack.Screen
+      component={TemplatePreviewScreen}
+      name="TemplatePreview"
     />
   </OverviewStack.Navigator>
 );

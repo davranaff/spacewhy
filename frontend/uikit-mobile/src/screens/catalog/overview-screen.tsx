@@ -51,6 +51,10 @@ export function OverviewScreen() {
     });
   }, [navigation]);
 
+  const openTemplates = useCallback(() => {
+    navigation.navigate('TemplateLibrary');
+  }, [navigation]);
+
   const renderSection: ListRenderItem<CatalogSection> = useCallback(
     ({ item }) => {
       const Icon = groupIcons[item.id];
@@ -144,11 +148,16 @@ export function OverviewScreen() {
                 the web catalog, adapted for touch and native platforms.
               </Text>
               <DemoButton label="Explore foundations" onPress={openFeatured} />
+              <DemoButton
+                label="Browse 41 dashboard templates"
+                onPress={openTemplates}
+                variant="secondary"
+              />
             </GlassView>
             <View style={styles.statsRow}>
               <Stat value={String(CATALOG_EXAMPLES.length)} label="examples" />
-              <Stat value="2" label="themes" />
-              <Stat value="44+" label="touch pt" />
+              <Stat value="41" label="templates" />
+              <Stat value="95" label="total demos" />
             </View>
             <ShowcaseRouteLauncher
               includePlayer

@@ -46,6 +46,10 @@ import {
 } from '@/features/catalog/components/catalog-primitives';
 import type { CatalogExampleId } from '@/features/catalog/types/catalog.types';
 import { CatalogParityPreview } from './catalog-parity-preview';
+import {
+  CatalogControlPreview,
+  CONTROL_PARITY_EXAMPLES,
+} from './catalog-control-preview';
 
 type Props = Readonly<{ exampleId: CatalogExampleId }>;
 
@@ -84,6 +88,10 @@ const people = [
 ] as const;
 
 export function CatalogExamplePreview({ exampleId }: Props) {
+  if (CONTROL_PARITY_EXAMPLES.has(exampleId)) {
+    return <CatalogControlPreview exampleId={exampleId} />;
+  }
+
   if (PARITY_EXAMPLES.has(exampleId)) {
     return <CatalogParityPreview exampleId={exampleId} />;
   }
