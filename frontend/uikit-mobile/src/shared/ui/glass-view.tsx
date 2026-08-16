@@ -8,6 +8,7 @@ import {
   Platform,
   StyleSheet,
   View,
+  type ColorValue,
   type StyleProp,
   type ViewProps,
   type ViewStyle,
@@ -28,6 +29,7 @@ export interface GlassViewProps extends ViewProps {
   tone?: 'theme' | 'light' | 'dark';
   interactive?: boolean;
   effect?: 'clear' | 'regular';
+  tintColor?: ColorValue;
   reducedTransparency?: boolean;
   materialSettings?: Partial<GlassSettings>;
 }
@@ -174,6 +176,7 @@ export const GlassView = forwardRef<View, PropsWithChildren<GlassViewProps>>(
       tone = 'theme',
       interactive = false,
       effect,
+      tintColor,
       reducedTransparency,
       materialSettings,
       style,
@@ -225,11 +228,12 @@ export const GlassView = forwardRef<View, PropsWithChildren<GlassViewProps>>(
           <LiquidGlassView
             colorScheme={materialTheme.mode}
             effect={
-              effect ?? resolveGlassEffect(resolvedGlassSettings.opticalIntensity)
+              effect ??
+              resolveGlassEffect(resolvedGlassSettings.opticalIntensity)
             }
             interactive={initialInteractive}
             style={sharedSurfaceStyle}
-            tintColor={material.nativeTintColor}
+            tintColor={tintColor ?? material.nativeTintColor}
           >
             {children}
           </LiquidGlassView>
@@ -266,6 +270,13 @@ export const GlassView = forwardRef<View, PropsWithChildren<GlassViewProps>>(
                 StyleSheet.absoluteFill,
                 { backgroundColor: material.matteColor },
               ]}
+            />
+          ) : null}
+
+          {tintColor ? (
+            <View
+              pointerEvents="none"
+              style={[StyleSheet.absoluteFill, { backgroundColor: tintColor }]}
             />
           ) : null}
 
