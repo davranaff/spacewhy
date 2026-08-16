@@ -12,8 +12,10 @@ import { useAppTheme } from '@/shared/theme';
 
 import { GlassView } from './glass-view';
 
-const THUMB_TOUCH_SIZE = 48;
-const THUMB_VISUAL_SIZE = 36;
+const THUMB_TOUCH_WIDTH = 72;
+const THUMB_TOUCH_HEIGHT = 52;
+const THUMB_VISUAL_WIDTH = 68;
+const THUMB_VISUAL_HEIGHT = 46;
 const TRACK_HEIGHT = 6;
 
 export type GlassSliderProps = {
@@ -52,12 +54,12 @@ export function GlassSlider({
   const range = Math.max(1, maximumValue - minimumValue);
   const normalizedValue = clamp(value, minimumValue, maximumValue);
   const progress = (normalizedValue - minimumValue) / range;
-  const travel = Math.max(0, width - THUMB_TOUCH_SIZE);
+  const travel = Math.max(0, width - THUMB_TOUCH_WIDTH);
   const thumbX = progress * travel;
 
   useEffect(() => {
     Animated.timing(thumbScale, {
-      toValue: dragging ? 1.06 : 1,
+      toValue: dragging ? 1.04 : 1,
       duration: theme.motion.quick,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
@@ -66,8 +68,12 @@ export function GlassSlider({
 
   const valueForX = useCallback(
     (x: number): number => {
-      const usableWidth = Math.max(1, width - THUMB_TOUCH_SIZE);
-      const rawProgress = clamp((x - THUMB_TOUCH_SIZE / 2) / usableWidth, 0, 1);
+      const usableWidth = Math.max(1, width - THUMB_TOUCH_WIDTH);
+      const rawProgress = clamp(
+        (x - THUMB_TOUCH_WIDTH / 2) / usableWidth,
+        0,
+        1,
+      );
       const rawValue = minimumValue + rawProgress * range;
       const steppedValue = Math.round(rawValue / step) * step;
       return clamp(steppedValue, minimumValue, maximumValue);
@@ -192,8 +198,8 @@ export function GlassSlider({
             effect="clear"
             interactive
             materialSettings={{
-              opticalIntensity: 68,
-              transparency: 90,
+              opticalIntensity: 72,
+              transparency: 92,
               surfaceLiquidity: 100,
             }}
             variant="control"
@@ -217,7 +223,7 @@ const styles = StyleSheet.create({
   track: {
     borderRadius: TRACK_HEIGHT / 2,
     height: TRACK_HEIGHT,
-    marginHorizontal: THUMB_TOUCH_SIZE / 2,
+    marginHorizontal: THUMB_TOUCH_WIDTH / 2,
     overflow: 'hidden',
   },
   trackDark: { backgroundColor: 'rgba(255,255,255,0.13)' },
@@ -228,25 +234,27 @@ const styles = StyleSheet.create({
   },
   thumb: {
     alignItems: 'center',
-    height: THUMB_TOUCH_SIZE,
+    height: THUMB_TOUCH_HEIGHT,
     justifyContent: 'center',
     position: 'absolute',
-    width: THUMB_TOUCH_SIZE,
+    width: THUMB_TOUCH_WIDTH,
   },
   thumbGlass: {
-    borderRadius: THUMB_VISUAL_SIZE / 2,
-    height: THUMB_VISUAL_SIZE,
+    borderRadius: THUMB_VISUAL_HEIGHT / 2,
+    height: THUMB_VISUAL_HEIGHT,
     shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 10,
-    width: THUMB_VISUAL_SIZE,
+    shadowRadius: 12,
+    width: THUMB_VISUAL_WIDTH,
   },
   thumbGlassDark: {
-    borderColor: 'rgba(255,255,255,0.36)',
-    shadowOpacity: 0.24,
+    backgroundColor: 'rgba(255,255,255,0.035)',
+    borderColor: 'rgba(255,255,255,0.34)',
+    shadowOpacity: 0.26,
   },
   thumbGlassLight: {
-    borderColor: 'rgba(17,18,22,0.20)',
-    shadowOpacity: 0.14,
+    backgroundColor: 'rgba(255,255,255,0.10)',
+    borderColor: 'rgba(17,18,22,0.22)',
+    shadowOpacity: 0.16,
   },
   disabled: { opacity: 0.45 },
 });
