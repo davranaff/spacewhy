@@ -18,7 +18,7 @@ security, memory, and verification rules remain mandatory in every scope.
 backend/                 ASGI-first FastAPI modular monolith
 deployment/              runtime configuration, compose files, and secret boundaries
 frontend/admin/          reserved admin frontend; no framework scaffold yet
-frontend/uikit/          reserved shared UI kit; no framework scaffold yet
+frontend/uikit/          established Next.js shared UI kit, owned by frontend work
 tools/obsidian-vault/    archived scaffold vault, not the active vault by default
 tools/skills/            project-local reusable agent skills
 
@@ -38,7 +38,8 @@ tools/skills/            project-local reusable agent skills
 
 ## Frontend rules
 
-- Keep frontend/admin and frontend/uikit as reserved empty directories until the user explicitly asks to initialize a framework.
+- Keep frontend/admin as a reserved empty directory until the user explicitly asks to initialize it.
+- Do not initialize, reinitialize, or modify frontend/uikit as part of backend or deployment work.
 - Do not run a Next.js, React, Vite, or other frontend initializer as part of backend or deployment work.
 
 ## Memory and verification
