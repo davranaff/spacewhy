@@ -1,0 +1,16 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: spacewhy 0.1.0\n"
+"Language: ru\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "platform.temporary_unavailable"
+msgstr "Сервис временно недоступен."
+
+msgid "platform.retry_after_seconds"
+msgid_plural "platform.retry_after_seconds_plural"
+msgstr[0] "Повторите попытку через {count} секунду."
+msgstr[1] "Повторите попытку через {count} секунды."
+msgstr[2] "Повторите попытку через {count} секунд."

@@ -1,0 +1,9 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: spacewhy-booking-bot\n"
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "bot.welcome"
+msgstr "Welcome to the booking assistant. Choose an action."

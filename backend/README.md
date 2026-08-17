@@ -1,44 +1,23 @@
 # Spacewhy backend
 
-This directory is the initial Django service boundary. It is deliberately a small ASGI-first skeleton: the product bounded context and first domain app have not been specified yet.
+This is a production-oriented FastAPI modular monolith. Its first bounded context is `booking`:
+tenant-scoped appointments through an isolated Telegram bot and future WebApps, staff workflows,
+cash, inventory, analytics, and an at-least-once notification outbox worker.
 
-## Runtime contract
+- Python 3.13, FastAPI, Pydantic v2, SQLAlchemy 2.x async, PostgreSQL, and Alembic.
+- The ASGI entry point is intentionally minimal; all assembly lives in bootstrap.
+- Uvicorn is the only HTTP server. Database connections are created in the FastAPI lifespan,
+  never at module import time.
+- The liveness route checks only process liveness; readiness checks PostgreSQL safely.
+- Booking owns the isolated `booking_bot` runtime and module Babel/gettext catalogs.
+- `make worker-booking` runs the separate polling worker for hold expiry, reminders, and staff
+  daily agendas.
 
-- Python 3.13 and Django 5.2 LTS baseline.
-- ASGI is the only HTTP deployment path (`config/asgi.py`); there is no `wsgi.py`.
-- Container/runtime settings default to `config.settings.production`; local management commands use `config.settings.local` and tests use isolated test settings.
-- New HTTP handlers are asynchronous. Use Django's async ORM methods where available and isolate unavoidable synchronous integrations behind an explicit `sync_to_async` bridge.
-- Uvicorn is the local/container server. Celery, RabbitMQ, Redis, PostgreSQL, authentication, storage, and observability are integration boundaries rather than hidden application globals.
-- `health/live` is process liveness. `health/ready` checks the service-owned database and returns `503` when it is unavailable.
-
-## Intended domain layout
-
-When the first bounded context is approved, add a broad domain app under `apps/<domain>/` and keep the RuFlo file-per-entity navigation:
-
-```text
-apps/<domain>/
-  models.py
-  views/<entity>.py
-  serializers/<entity>.py
-  querysets/<entity>.py
-  services/<use_case>.py
-  policies/<entity>.py       # only when needed
-  events/<aggregate>.py      # only when needed
-  consumers/<event>.py       # only when needed
-  clients/<provider>.py      # only when needed
-  tests/
-```
-
-Do not create empty architecture layers or a new app per endpoint/table/screen. Read `tools/skills/ruflo-django-backend/references/service-blueprint.md` before adding the first domain.
-
-## Local commands
-
-```bash
-python -m pip install -e '.[dev]'
-python manage.py check
-pytest
-ruff check .
-ruff format --check .
-```
-
-Generate and review a lock file before a deployable image is promoted; this scaffold intentionally does not contain credentials or a generated lock.
+Read [docs/booking.md](docs/booking.md) for domain and operational rules,
+[docs/architecture.md](docs/architecture.md) for boundaries,
+[docs/rbac-architecture.md](docs/rbac-architecture.md) for authorization design,
+[docs/rbac-access-matrix.md](docs/rbac-access-matrix.md) for endpoint permissions, and
+[docs/rbac-deployment.md](docs/rbac-deployment.md) for migration and rollout steps,
+[docs/bot-platform.md](docs/bot-platform.md) before registering another bot,
+[docs/i18n.md](docs/i18n.md) before adding catalogs, and
+[docs/development.md](docs/development.md) for local commands.

@@ -1,0 +1,330 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: spacewhy-booking\n"
+"Language: ru\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "bot.welcome"
+msgstr "Добро пожаловать. Выберите действие."
+
+msgid "language.choose"
+msgstr "Выберите язык."
+
+msgid "language.ru"
+msgstr "Русский"
+
+msgid "language.uz"
+msgstr "O'zbekcha"
+
+msgid "language.en"
+msgstr "English"
+
+msgid "language.changed"
+msgstr "Язык обновлён."
+
+msgid "contact.request"
+msgstr "Чтобы продолжить, поделитесь своим номером телефона."
+
+msgid "contact.share"
+msgstr "Поделиться номером"
+
+msgid "contact.saved"
+msgstr "Ваш номер телефона сохранён."
+
+msgid "menu.main"
+msgstr "Выберите действие."
+
+msgid "menu.book"
+msgstr "Записаться"
+
+msgid "menu.appointments"
+msgstr "Мои записи"
+
+msgid "menu.language"
+msgstr "Изменить язык"
+
+msgid "branch.choose"
+msgstr "Выберите филиал."
+
+msgid "branch.option"
+msgstr "{name}"
+
+msgid "service.choose"
+msgstr "Выберите услугу."
+
+msgid "service.option"
+msgstr "{name} — {price}"
+
+msgid "specialist.choose"
+msgstr "Выберите специалиста."
+
+msgid "specialist.any"
+msgstr "Любой свободный специалист"
+
+msgid "specialist.option"
+msgstr "{name}"
+
+msgid "date.choose"
+msgstr "Выберите дату."
+
+msgid "date.option"
+msgstr "{date}"
+
+msgid "slot.choose"
+msgstr "Выберите свободное время."
+
+msgid "slot.option"
+msgstr "{starts_at}"
+
+msgid "booking.review"
+msgstr "Вы выбрали время {starts_at}.\nУслуга: {service_name}\nСпециалист: {specialist_name}\nДлительность: {duration_minutes} мин\nЦена: {price} {currency}\nПодтвердите запись."
+
+msgid "booking.confirm"
+msgstr "Подтвердить запись"
+
+msgid "booking.created"
+msgstr "Запись {number} создана на {starts_at}."
+
+msgid "appointments.list"
+msgstr "Ваши ближайшие записи:\n{appointments}"
+
+msgid "appointments.empty"
+msgstr "У вас нет ближайших записей."
+
+msgid "appointment.option"
+msgstr "{number}"
+
+msgid "appointment.actions"
+msgstr "Запись {number} на {starts_at}. Выберите действие."
+
+msgid "appointment.cancel"
+msgstr "Отменить"
+
+msgid "appointment.reschedule"
+msgstr "Перенести"
+
+msgid "appointment.cancelled"
+msgstr "Запись {number} отменена."
+
+msgid "appointment.rescheduled"
+msgstr "Запись {number} перенесена на {starts_at}."
+
+msgid "staff.bind.usage"
+msgstr "Используйте /bind и одноразовый код от администратора."
+
+msgid "staff.bind.success"
+msgstr "Ваш Telegram-аккаунт привязан к сотруднику."
+
+msgid "staff.agenda"
+msgstr "Расписание на сегодня:\n{appointments}"
+
+msgid "staff.agenda.empty"
+msgstr "На сегодня записей нет."
+
+msgid "errors.callback_expired"
+msgstr "Эта кнопка больше не актуальна. Начните заново."
+
+msgid "errors.contact_owner_mismatch"
+msgstr "Поделитесь только контактом, который принадлежит вашему Telegram-аккаунту."
+
+msgid "errors.slot_taken"
+msgstr "Выбранное время уже занято."
+
+msgid "errors.hold_expired"
+msgstr "Временное удержание времени истекло."
+
+msgid "errors.hold_not_found"
+msgstr "Временное удержание не найдено."
+
+msgid "errors.hold_owner_mismatch"
+msgstr "Это удержание принадлежит другому клиенту."
+
+msgid "errors.outside_working_hours"
+msgstr "Выбранное время вне рабочего графика."
+
+msgid "errors.service_inactive"
+msgstr "Эта услуга недоступна."
+
+msgid "errors.specialist_inactive"
+msgstr "Этот специалист недоступен."
+
+msgid "errors.specialist_does_not_provide_service"
+msgstr "Этот специалист не оказывает выбранную услугу."
+
+msgid "errors.specialist_unavailable"
+msgstr "На это время нет свободного специалиста."
+
+msgid "errors.branch_inactive"
+msgstr "Этот филиал недоступен."
+
+msgid "errors.booking_too_early"
+msgstr "Для записи на это время ещё слишком рано."
+
+msgid "errors.booking_too_far_in_future"
+msgstr "Это время слишком далеко в будущем."
+
+msgid "errors.customer_booking_limit_reached"
+msgstr "Достигнут лимит ближайших записей."
+
+msgid "errors.customer_time_conflict"
+msgstr "У вас уже есть пересекающаяся запись."
+
+msgid "errors.appointment_not_found"
+msgstr "Запись не найдена."
+
+msgid "errors.invalid_appointment_status_transition"
+msgstr "Это действие сейчас недоступно для записи."
+
+msgid "errors.cancellation_window_closed"
+msgstr "Срок самостоятельной отмены записи истёк."
+
+msgid "errors.reschedule_not_allowed"
+msgstr "Эту запись нельзя перенести."
+
+msgid "errors.cash_shift_required"
+msgstr "Требуется открытая кассовая смена."
+
+msgid "errors.cash_shift_already_open"
+msgstr "Кассовая смена уже открыта."
+
+msgid "errors.cash_shift_not_open"
+msgstr "Открытая кассовая смена не найдена."
+
+msgid "errors.payment_exceeds_outstanding_amount"
+msgstr "Сумма оплаты превышает задолженность."
+
+msgid "errors.refund_exceeds_refundable_amount"
+msgstr "Сумма возврата превышает доступную для возврата сумму."
+
+msgid "errors.currency_mismatch"
+msgstr "Валюта не совпадает."
+
+msgid "errors.insufficient_stock"
+msgstr "Недостаточно остатков для завершения записи."
+
+msgid "errors.idempotency_conflict"
+msgstr "Этот ключ запроса уже использован с другими данными."
+
+msgid "errors.forbidden"
+msgstr "У вас нет прав на это действие."
+
+msgid "errors.invalid_telegram_init_data"
+msgstr "Данные авторизации Telegram недействительны."
+
+msgid "errors.staff_not_bound"
+msgstr "Ваш Telegram-аккаунт не привязан к сотруднику."
+
+msgid "errors.customer_blocked"
+msgstr "Вашему аккаунту запрещено создавать записи."
+
+msgid "errors.invalid_bind_code"
+msgstr "Код привязки сотрудника недействителен или истёк."
+
+msgid "errors.rate_limited"
+msgstr "Слишком много запросов. Попробуйте позже."
+
+msgid "errors.invalid_request"
+msgstr "Некорректный запрос. Начните заново."
+
+msgid "booking.booking_created.customer"
+msgstr "Запись {public_number} создана на {starts_at}."
+
+msgid "booking.booking_created.specialist"
+msgstr "Новая запись {public_number}: {service_name} на {starts_at}."
+
+msgid "booking.booking_confirmed.customer"
+msgstr "Запись {public_number} подтверждена на {starts_at}."
+
+msgid "booking.booking_confirmed.specialist"
+msgstr "Запись {public_number} подтверждена: {service_name} на {starts_at}."
+
+msgid "booking.booking_rescheduled.customer"
+msgstr "Запись {public_number} перенесена на {starts_at}."
+
+msgid "booking.booking_rescheduled.specialist"
+msgstr "Запись {public_number} перенесена на {starts_at}."
+
+msgid "booking.booking_cancelled.customer"
+msgstr "Запись {public_number} отменена."
+
+msgid "booking.booking_cancelled.specialist"
+msgstr "Запись {public_number} отменена."
+
+msgid "booking.booking_completed.customer"
+msgstr "Запись {public_number} завершена."
+
+msgid "booking.booking_completed.specialist"
+msgstr "Запись {public_number} завершена."
+
+msgid "booking.reminder.customer"
+msgstr "Напоминание: запись {public_number} состоится в {starts_at}."
+
+msgid "booking.low_stock"
+msgstr "Низкий остаток: {product_name}: {quantity}."
+
+msgid "booking.daily_agenda.specialist"
+msgstr "Расписание на сегодня — {branch_name}:\n{appointments}"
+
+msgid "booking.daily_agenda.empty"
+msgstr "На сегодня в филиале {branch_name} записей нет."
+
+msgid "menu.contacts"
+msgstr "Контакты"
+
+msgid "menu.help"
+msgstr "Помощь"
+
+msgid "contacts.list"
+msgstr "Контакты:\n{contacts}"
+
+msgid "contacts.empty"
+msgstr "Контакты филиалов пока недоступны."
+
+msgid "help.text"
+msgstr "Используйте меню, чтобы записаться, управлять своими записями или изменить язык. Сотрудники могут использовать /agenda, /agenda tomorrow и /bind КОД."
+
+msgid "category.choose"
+msgstr "Выберите категорию."
+
+msgid "category.option"
+msgstr "{name}"
+
+msgid "appointments.history"
+msgstr "История ваших записей:\n{appointments}"
+
+msgid "appointments.history.empty"
+msgstr "История записей пуста."
+
+msgid "appointments.history.show"
+msgstr "История"
+
+msgid "appointments.history.previous"
+msgstr "Назад"
+
+msgid "appointments.history.next"
+msgstr "Далее"
+
+msgid "staff.appointment.option"
+msgstr "{number}"
+
+msgid "staff.appointment.actions"
+msgstr "Запись {number}: {service_name} на {starts_at}. Выберите действие."
+
+msgid "staff.action.confirm"
+msgstr "Подтвердить"
+
+msgid "staff.action.check_in"
+msgstr "Отметить приход"
+
+msgid "staff.action.complete"
+msgstr "Завершить"
+
+msgid "staff.action.no_show"
+msgstr "Отметить неявку"
+
+msgid "staff.action.cancel"
+msgstr "Отменить с причиной"
+
+msgid "staff.cancel.reason.request"
+msgstr "Отправьте причину отмены следующим сообщением."

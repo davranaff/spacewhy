@@ -1,0 +1,330 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: spacewhy-booking\n"
+"Language: uz\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "bot.welcome"
+msgstr "Xush kelibsiz. Amalni tanlang."
+
+msgid "language.choose"
+msgstr "Tilni tanlang."
+
+msgid "language.ru"
+msgstr "Русский"
+
+msgid "language.uz"
+msgstr "O'zbekcha"
+
+msgid "language.en"
+msgstr "English"
+
+msgid "language.changed"
+msgstr "Til yangilandi."
+
+msgid "contact.request"
+msgstr "Davom etish uchun telefon raqamingizni ulashing."
+
+msgid "contact.share"
+msgstr "Telefon raqamimni ulashish"
+
+msgid "contact.saved"
+msgstr "Telefon raqamingiz saqlandi."
+
+msgid "menu.main"
+msgstr "Amalni tanlang."
+
+msgid "menu.book"
+msgstr "Xizmatga yozilish"
+
+msgid "menu.appointments"
+msgstr "Mening yozuvlarim"
+
+msgid "menu.language"
+msgstr "Tilni o'zgartirish"
+
+msgid "branch.choose"
+msgstr "Filialni tanlang."
+
+msgid "branch.option"
+msgstr "{name}"
+
+msgid "service.choose"
+msgstr "Xizmatni tanlang."
+
+msgid "service.option"
+msgstr "{name} — {price}"
+
+msgid "specialist.choose"
+msgstr "Mutaxassisni tanlang."
+
+msgid "specialist.any"
+msgstr "Istalgan bo'sh mutaxassis"
+
+msgid "specialist.option"
+msgstr "{name}"
+
+msgid "date.choose"
+msgstr "Sanani tanlang."
+
+msgid "date.option"
+msgstr "{date}"
+
+msgid "slot.choose"
+msgstr "Bo'sh vaqtni tanlang."
+
+msgid "slot.option"
+msgstr "{starts_at}"
+
+msgid "booking.review"
+msgstr "Siz {starts_at} vaqtini tanladingiz.\nXizmat: {service_name}\nMutaxassis: {specialist_name}\nDavomiyligi: {duration_minutes} daqiqa\nNarxi: {price} {currency}\nYozuvni tasdiqlang."
+
+msgid "booking.confirm"
+msgstr "Yozuvni tasdiqlash"
+
+msgid "booking.created"
+msgstr "{number} raqamli yozuv {starts_at} ga yaratildi."
+
+msgid "appointments.list"
+msgstr "Yaqin yozuvlaringiz:\n{appointments}"
+
+msgid "appointments.empty"
+msgstr "Sizda yaqin yozuvlar yo'q."
+
+msgid "appointment.option"
+msgstr "{number}"
+
+msgid "appointment.actions"
+msgstr "{number} raqamli yozuv {starts_at} ga. Amalni tanlang."
+
+msgid "appointment.cancel"
+msgstr "Bekor qilish"
+
+msgid "appointment.reschedule"
+msgstr "Ko'chirish"
+
+msgid "appointment.cancelled"
+msgstr "{number} raqamli yozuv bekor qilindi."
+
+msgid "appointment.rescheduled"
+msgstr "{number} raqamli yozuv {starts_at} ga ko'chirildi."
+
+msgid "staff.bind.usage"
+msgstr "Administrator bergan bir martalik kod bilan /bind buyrug'idan foydalaning."
+
+msgid "staff.bind.success"
+msgstr "Telegram akkauntingiz xodimga bog'landi."
+
+msgid "staff.agenda"
+msgstr "Bugungi jadval:\n{appointments}"
+
+msgid "staff.agenda.empty"
+msgstr "Bugun jadvalda yozuvlar yo'q."
+
+msgid "errors.callback_expired"
+msgstr "Bu tugma endi faol emas. Qaytadan boshlang."
+
+msgid "errors.contact_owner_mismatch"
+msgstr "Faqat Telegram akkauntingizga tegishli kontaktni ulashing."
+
+msgid "errors.slot_taken"
+msgstr "Tanlangan vaqt band."
+
+msgid "errors.hold_expired"
+msgstr "Vaqtni vaqtincha ushlab turish muddati tugadi."
+
+msgid "errors.hold_not_found"
+msgstr "Vaqtinchalik ushlab turish topilmadi."
+
+msgid "errors.hold_owner_mismatch"
+msgstr "Bu vaqtinchalik ushlab turish boshqa mijozga tegishli."
+
+msgid "errors.outside_working_hours"
+msgstr "Tanlangan vaqt ish jadvalidan tashqarida."
+
+msgid "errors.service_inactive"
+msgstr "Bu xizmat mavjud emas."
+
+msgid "errors.specialist_inactive"
+msgstr "Bu mutaxassis mavjud emas."
+
+msgid "errors.specialist_does_not_provide_service"
+msgstr "Bu mutaxassis tanlangan xizmatni ko'rsatmaydi."
+
+msgid "errors.specialist_unavailable"
+msgstr "Bu vaqtga bo'sh mutaxassis yo'q."
+
+msgid "errors.branch_inactive"
+msgstr "Bu filial mavjud emas."
+
+msgid "errors.booking_too_early"
+msgstr "Bu vaqtga yozilish uchun hali erta."
+
+msgid "errors.booking_too_far_in_future"
+msgstr "Bu vaqt juda uzoq kelajakda."
+
+msgid "errors.customer_booking_limit_reached"
+msgstr "Yaqin yozuvlar limiti tugadi."
+
+msgid "errors.customer_time_conflict"
+msgstr "Sizda vaqt bo'yicha kesishadigan yozuv bor."
+
+msgid "errors.appointment_not_found"
+msgstr "Yozuv topilmadi."
+
+msgid "errors.invalid_appointment_status_transition"
+msgstr "Bu amal hozir yozuv uchun mavjud emas."
+
+msgid "errors.cancellation_window_closed"
+msgstr "Yozuvni mustaqil bekor qilish muddati tugadi."
+
+msgid "errors.reschedule_not_allowed"
+msgstr "Bu yozuvni ko'chirib bo'lmaydi."
+
+msgid "errors.cash_shift_required"
+msgstr "Ochiq kassa smenasi kerak."
+
+msgid "errors.cash_shift_already_open"
+msgstr "Kassa smenasi allaqachon ochiq."
+
+msgid "errors.cash_shift_not_open"
+msgstr "Ochiq kassa smenasi topilmadi."
+
+msgid "errors.payment_exceeds_outstanding_amount"
+msgstr "To'lov summasi qarzdorlikdan oshib ketadi."
+
+msgid "errors.refund_exceeds_refundable_amount"
+msgstr "Qaytarish summasi ruxsat etilgan summadan oshib ketadi."
+
+msgid "errors.currency_mismatch"
+msgstr "Valyuta mos kelmaydi."
+
+msgid "errors.insufficient_stock"
+msgstr "Yozuvni yakunlash uchun qoldiq yetarli emas."
+
+msgid "errors.idempotency_conflict"
+msgstr "Bu so'rov kaliti boshqa ma'lumotlar bilan avval ishlatilgan."
+
+msgid "errors.forbidden"
+msgstr "Bu amalni bajarish huquqingiz yo'q."
+
+msgid "errors.invalid_telegram_init_data"
+msgstr "Telegram autentifikatsiya ma'lumotlari noto'g'ri."
+
+msgid "errors.staff_not_bound"
+msgstr "Telegram akkauntingiz xodimga bog'lanmagan."
+
+msgid "errors.customer_blocked"
+msgstr "Akkauntingiz yozuv yaratishi taqiqlangan."
+
+msgid "errors.invalid_bind_code"
+msgstr "Xodimni bog'lash kodi noto'g'ri yoki muddati tugagan."
+
+msgid "errors.rate_limited"
+msgstr "So'rovlar juda ko'p. Keyinroq urinib ko'ring."
+
+msgid "errors.invalid_request"
+msgstr "So'rov noto'g'ri. Qaytadan boshlang."
+
+msgid "booking.booking_created.customer"
+msgstr "{public_number} raqamli yozuv {starts_at} ga yaratildi."
+
+msgid "booking.booking_created.specialist"
+msgstr "Yangi {public_number} raqamli yozuv: {service_name}, {starts_at}."
+
+msgid "booking.booking_confirmed.customer"
+msgstr "{public_number} raqamli yozuv {starts_at} ga tasdiqlandi."
+
+msgid "booking.booking_confirmed.specialist"
+msgstr "{public_number} raqamli yozuv tasdiqlandi: {service_name}, {starts_at}."
+
+msgid "booking.booking_rescheduled.customer"
+msgstr "{public_number} raqamli yozuv {starts_at} ga ko'chirildi."
+
+msgid "booking.booking_rescheduled.specialist"
+msgstr "{public_number} raqamli yozuv {starts_at} ga ko'chirildi."
+
+msgid "booking.booking_cancelled.customer"
+msgstr "{public_number} raqamli yozuv bekor qilindi."
+
+msgid "booking.booking_cancelled.specialist"
+msgstr "{public_number} raqamli yozuv bekor qilindi."
+
+msgid "booking.booking_completed.customer"
+msgstr "{public_number} raqamli yozuv yakunlandi."
+
+msgid "booking.booking_completed.specialist"
+msgstr "{public_number} raqamli yozuv yakunlandi."
+
+msgid "booking.reminder.customer"
+msgstr "Eslatma: {public_number} raqamli yozuv {starts_at} da."
+
+msgid "booking.low_stock"
+msgstr "Qoldiq kam: {product_name}: {quantity}."
+
+msgid "booking.daily_agenda.specialist"
+msgstr "{branch_name} uchun bugungi jadval:\n{appointments}"
+
+msgid "booking.daily_agenda.empty"
+msgstr "Bugun {branch_name} filialida yozuvlar yo'q."
+
+msgid "menu.contacts"
+msgstr "Kontaktlar"
+
+msgid "menu.help"
+msgstr "Yordam"
+
+msgid "contacts.list"
+msgstr "Kontaktlar:\n{contacts}"
+
+msgid "contacts.empty"
+msgstr "Filial kontaktlari hali mavjud emas."
+
+msgid "help.text"
+msgstr "Xizmatga yozilish, yozuvlarni boshqarish yoki tilni o'zgartirish uchun menyudan foydalaning. Xodimlar /agenda, /agenda tomorrow va /bind KOD buyruqlaridan foydalanishi mumkin."
+
+msgid "category.choose"
+msgstr "Kategoriyani tanlang."
+
+msgid "category.option"
+msgstr "{name}"
+
+msgid "appointments.history"
+msgstr "Yozuvlaringiz tarixi:\n{appointments}"
+
+msgid "appointments.history.empty"
+msgstr "Yozuvlar tarixi bo'sh."
+
+msgid "appointments.history.show"
+msgstr "Tarix"
+
+msgid "appointments.history.previous"
+msgstr "Orqaga"
+
+msgid "appointments.history.next"
+msgstr "Keyingi"
+
+msgid "staff.appointment.option"
+msgstr "{number}"
+
+msgid "staff.appointment.actions"
+msgstr "{number} raqamli yozuv: {service_name}, {starts_at}. Amalni tanlang."
+
+msgid "staff.action.confirm"
+msgstr "Tasdiqlash"
+
+msgid "staff.action.check_in"
+msgstr "Mijoz keldi deb belgilash"
+
+msgid "staff.action.complete"
+msgstr "Yakunlash"
+
+msgid "staff.action.no_show"
+msgstr "Kelmagan deb belgilash"
+
+msgid "staff.action.cancel"
+msgstr "Sabab bilan bekor qilish"
+
+msgid "staff.cancel.reason.request"
+msgstr "Bekor qilish sababini keyingi xabaringizda yuboring."

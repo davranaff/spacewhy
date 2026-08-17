@@ -1,0 +1,15 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: spacewhy 0.1.0\n"
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "platform.temporary_unavailable"
+msgstr "Service temporarily unavailable."
+
+msgid "platform.retry_after_seconds"
+msgid_plural "platform.retry_after_seconds_plural"
+msgstr[0] "Try again in {count} second."
+msgstr[1] "Try again in {count} seconds."

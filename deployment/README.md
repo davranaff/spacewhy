@@ -15,4 +15,11 @@ deployment/
 
 Copy `env/.env.example` to `env/.env` and replace every placeholder through the approved secret-management path before starting local containers. Do not paste real values into `.env.example`, commits, logs, or task output.
 
-The compose file is a local infrastructure contract only. It does not authorize a deployment, expose secrets, or replace production identity, TLS, backups, migrations, monitoring, and rollback runbooks.
+The compose file runs only the FastAPI service and its service-owned PostgreSQL dependency for
+local development and integration tests. It does not authorize a deployment, expose secrets, or
+replace production identity, TLS, backups, migrations, monitoring, and rollback runbooks.
+
+The template also declares a disabled `booking_bot` and non-secret `BOOKING_*` tuning values.
+Provision a tenant only after the database migration has run, and enable that bot only after its
+token and distinct webhook secret have been supplied from the approved secret path. The booking
+outbox worker is a separate process (`make worker-booking` from `backend`).

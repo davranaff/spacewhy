@@ -1,0 +1,330 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: spacewhy-booking\n"
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "bot.welcome"
+msgstr "Welcome. Choose an action."
+
+msgid "language.choose"
+msgstr "Choose your language."
+
+msgid "language.ru"
+msgstr "Русский"
+
+msgid "language.uz"
+msgstr "O'zbekcha"
+
+msgid "language.en"
+msgstr "English"
+
+msgid "language.changed"
+msgstr "Language has been updated."
+
+msgid "contact.request"
+msgstr "Please share your own phone contact to continue."
+
+msgid "contact.share"
+msgstr "Share my contact"
+
+msgid "contact.saved"
+msgstr "Your contact has been saved."
+
+msgid "menu.main"
+msgstr "Choose an action."
+
+msgid "menu.book"
+msgstr "Book a service"
+
+msgid "menu.appointments"
+msgstr "My appointments"
+
+msgid "menu.language"
+msgstr "Change language"
+
+msgid "branch.choose"
+msgstr "Choose a branch."
+
+msgid "branch.option"
+msgstr "{name}"
+
+msgid "service.choose"
+msgstr "Choose a service."
+
+msgid "service.option"
+msgstr "{name} — {price}"
+
+msgid "specialist.choose"
+msgstr "Choose a specialist."
+
+msgid "specialist.any"
+msgstr "Any available specialist"
+
+msgid "specialist.option"
+msgstr "{name}"
+
+msgid "date.choose"
+msgstr "Choose a date."
+
+msgid "date.option"
+msgstr "{date}"
+
+msgid "slot.choose"
+msgstr "Choose an available time."
+
+msgid "slot.option"
+msgstr "{starts_at}"
+
+msgid "booking.review"
+msgstr "Your selected time is {starts_at}.\nService: {service_name}\nSpecialist: {specialist_name}\nDuration: {duration_minutes} min\nPrice: {price} {currency}\nConfirm the booking."
+
+msgid "booking.confirm"
+msgstr "Confirm booking"
+
+msgid "booking.created"
+msgstr "Appointment {number} is created for {starts_at}."
+
+msgid "appointments.list"
+msgstr "Your upcoming appointments:\n{appointments}"
+
+msgid "appointments.empty"
+msgstr "You have no upcoming appointments."
+
+msgid "appointment.option"
+msgstr "{number}"
+
+msgid "appointment.actions"
+msgstr "Appointment {number} at {starts_at}. Choose an action."
+
+msgid "appointment.cancel"
+msgstr "Cancel"
+
+msgid "appointment.reschedule"
+msgstr "Reschedule"
+
+msgid "appointment.cancelled"
+msgstr "Appointment {number} has been cancelled."
+
+msgid "appointment.rescheduled"
+msgstr "Appointment {number} has been moved to {starts_at}."
+
+msgid "staff.bind.usage"
+msgstr "Use /bind followed by the one-time code from an administrator."
+
+msgid "staff.bind.success"
+msgstr "Your staff account is now linked."
+
+msgid "staff.agenda"
+msgstr "Today's agenda:\n{appointments}"
+
+msgid "staff.agenda.empty"
+msgstr "There are no appointments in your agenda today."
+
+msgid "errors.callback_expired"
+msgstr "This button is no longer active. Please start again."
+
+msgid "errors.contact_owner_mismatch"
+msgstr "Please share only the contact that belongs to your Telegram account."
+
+msgid "errors.slot_taken"
+msgstr "The selected time is no longer available."
+
+msgid "errors.hold_expired"
+msgstr "Your temporary reservation has expired."
+
+msgid "errors.hold_not_found"
+msgstr "The temporary reservation was not found."
+
+msgid "errors.hold_owner_mismatch"
+msgstr "This temporary reservation belongs to another customer."
+
+msgid "errors.outside_working_hours"
+msgstr "The selected time is outside working hours."
+
+msgid "errors.service_inactive"
+msgstr "This service is unavailable."
+
+msgid "errors.specialist_inactive"
+msgstr "This specialist is unavailable."
+
+msgid "errors.specialist_does_not_provide_service"
+msgstr "This specialist does not provide the selected service."
+
+msgid "errors.specialist_unavailable"
+msgstr "No specialist is available at this time."
+
+msgid "errors.branch_inactive"
+msgstr "This branch is unavailable."
+
+msgid "errors.booking_too_early"
+msgstr "This time is too soon to book."
+
+msgid "errors.booking_too_far_in_future"
+msgstr "This time is too far in the future."
+
+msgid "errors.customer_booking_limit_reached"
+msgstr "You have reached the limit for upcoming appointments."
+
+msgid "errors.customer_time_conflict"
+msgstr "You already have an overlapping appointment."
+
+msgid "errors.appointment_not_found"
+msgstr "The appointment was not found."
+
+msgid "errors.invalid_appointment_status_transition"
+msgstr "This appointment action is not allowed now."
+
+msgid "errors.cancellation_window_closed"
+msgstr "The cancellation window has closed."
+
+msgid "errors.reschedule_not_allowed"
+msgstr "This appointment cannot be rescheduled."
+
+msgid "errors.cash_shift_required"
+msgstr "An open cash shift is required."
+
+msgid "errors.cash_shift_already_open"
+msgstr "A cash shift is already open."
+
+msgid "errors.cash_shift_not_open"
+msgstr "There is no open cash shift."
+
+msgid "errors.payment_exceeds_outstanding_amount"
+msgstr "The payment exceeds the outstanding amount."
+
+msgid "errors.refund_exceeds_refundable_amount"
+msgstr "The refund exceeds the refundable amount."
+
+msgid "errors.currency_mismatch"
+msgstr "The currency does not match."
+
+msgid "errors.insufficient_stock"
+msgstr "There is not enough stock to complete this appointment."
+
+msgid "errors.idempotency_conflict"
+msgstr "This request key was already used with different data."
+
+msgid "errors.forbidden"
+msgstr "You are not allowed to perform this action."
+
+msgid "errors.invalid_telegram_init_data"
+msgstr "Telegram authentication data is invalid."
+
+msgid "errors.staff_not_bound"
+msgstr "Your Telegram account is not linked to staff access."
+
+msgid "errors.customer_blocked"
+msgstr "Your account cannot create bookings."
+
+msgid "errors.invalid_bind_code"
+msgstr "The staff binding code is invalid or expired."
+
+msgid "errors.rate_limited"
+msgstr "Too many requests. Please try again later."
+
+msgid "errors.invalid_request"
+msgstr "This request is invalid. Please start again."
+
+msgid "booking.booking_created.customer"
+msgstr "Appointment {public_number} is created for {starts_at}."
+
+msgid "booking.booking_created.specialist"
+msgstr "New appointment {public_number}: {service_name} at {starts_at}."
+
+msgid "booking.booking_confirmed.customer"
+msgstr "Appointment {public_number} is confirmed for {starts_at}."
+
+msgid "booking.booking_confirmed.specialist"
+msgstr "Appointment {public_number} is confirmed: {service_name} at {starts_at}."
+
+msgid "booking.booking_rescheduled.customer"
+msgstr "Appointment {public_number} has been moved to {starts_at}."
+
+msgid "booking.booking_rescheduled.specialist"
+msgstr "Appointment {public_number} has been moved to {starts_at}."
+
+msgid "booking.booking_cancelled.customer"
+msgstr "Appointment {public_number} has been cancelled."
+
+msgid "booking.booking_cancelled.specialist"
+msgstr "Appointment {public_number} has been cancelled."
+
+msgid "booking.booking_completed.customer"
+msgstr "Appointment {public_number} has been completed."
+
+msgid "booking.booking_completed.specialist"
+msgstr "Appointment {public_number} has been completed."
+
+msgid "booking.reminder.customer"
+msgstr "Reminder: appointment {public_number} is at {starts_at}."
+
+msgid "booking.low_stock"
+msgstr "Low stock: {product_name}: {quantity}."
+
+msgid "booking.daily_agenda.specialist"
+msgstr "Today's agenda for {branch_name}:\n{appointments}"
+
+msgid "booking.daily_agenda.empty"
+msgstr "There are no appointments at {branch_name} in your agenda today."
+
+msgid "menu.contacts"
+msgstr "Contacts"
+
+msgid "menu.help"
+msgstr "Help"
+
+msgid "contacts.list"
+msgstr "Contacts:\n{contacts}"
+
+msgid "contacts.empty"
+msgstr "No branch contacts are available."
+
+msgid "help.text"
+msgstr "Use the menu to book a service, manage your appointments, or change the language. Staff can use /agenda, /agenda tomorrow, and /bind CODE."
+
+msgid "category.choose"
+msgstr "Choose a category."
+
+msgid "category.option"
+msgstr "{name}"
+
+msgid "appointments.history"
+msgstr "Your appointment history:\n{appointments}"
+
+msgid "appointments.history.empty"
+msgstr "You have no appointment history."
+
+msgid "appointments.history.show"
+msgstr "History"
+
+msgid "appointments.history.previous"
+msgstr "Previous"
+
+msgid "appointments.history.next"
+msgstr "Next"
+
+msgid "staff.appointment.option"
+msgstr "{number}"
+
+msgid "staff.appointment.actions"
+msgstr "Appointment {number}: {service_name} at {starts_at}. Choose an action."
+
+msgid "staff.action.confirm"
+msgstr "Confirm"
+
+msgid "staff.action.check_in"
+msgstr "Check in client"
+
+msgid "staff.action.complete"
+msgstr "Complete"
+
+msgid "staff.action.no_show"
+msgstr "Mark no-show"
+
+msgid "staff.action.cancel"
+msgstr "Cancel with reason"
+
+msgid "staff.cancel.reason.request"
+msgstr "Send the cancellation reason in your next message."

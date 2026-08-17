@@ -1,0 +1,1 @@
+"""Spacewhy FastAPI application package."""
