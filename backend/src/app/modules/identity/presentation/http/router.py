@@ -54,7 +54,7 @@ async def create_phone_challenge(
             await container.bot_platform.send_message(
                 app_id=container.identity_bot_app_id,
                 recipient_id=result.delivery.telegram_chat_id,
-                text=f"Spacewhy login code: {result.delivery.code}",
+                text=f"Код для входа в Space Drop: {result.delivery.code}",
             )
         except BotRuntimeError:
             logger.warning(

@@ -1,11 +1,12 @@
-# Identity and Finance
+# Space Drop authentication and Finance
 
 ## Ownership
 
-`identity` is the shared authentication owner for Spacewhy panel and SpaceDrop applications. It
+`identity` is the internal module name for the Telegram authentication mechanism used by the
+existing Space Drop panel. It is not a separate user-facing Spacewhy ID product. It
 owns principals, verified Telegram contacts, phone challenges and identity-only access tokens.
 `finance` owns personal workspaces, memberships, accounts, categories, ledger entries,
-idempotency, audit and Finance outbox facts. Finance references only the public Identity
+idempotency, audit and Finance outbox facts. Finance is a separate SpaceDrop domain and references only the public auth
 `principal_id`; it has no cross-module foreign key or ORM import.
 
 ## Telegram phone authentication

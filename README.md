@@ -1,7 +1,8 @@
 # spacewhy
 
 Spacewhy is a production-oriented FastAPI modular monolith. It includes three explicit bounded
-contexts: `booking`, shared Telegram-based `identity`, and personal `finance`. Identity owns
+contexts: `booking`, technical Telegram panel-auth (`identity` internally), and personal `finance`.
+The auth module is not a user-facing Spacewhy ID product. It owns
 verified phone binding and short-lived Spacewhy sessions; Finance owns personal workspaces,
 accounts, categories, an append-only income/expense ledger, idempotency, audit, and outbox facts.
 

@@ -10,9 +10,11 @@ updated: 2026-08-20
 
 - Architecture/specification: complete and pushed in `7a92a1f`.
 - Backend vertical slice: pushed in `b5e63e5`. Implemented verified-contact enrollment, phone OTP, Mini App `initData`, bearer principal, Finance bootstrap/accounts/categories/income-expense transactions/cursor list/summary, migration, audit, idempotency and outbox persistence.
-- Panel vertical slice: pushed to `Muxammad1106/spacewhy-panel` as `ea83ca2`.
+- Correct panel vertical slice: actual ready `Spacewhy/space-drop` UI, pushed to `Muxammad1106/spacewhy-panel` branch `codex/space-drop-auth-finance` as `254e716`. Earlier scaffold commit `ea83ca2` is obsolete.
 - Finance client: independent local repository commit `3fdd171`; remote not assigned.
 - The API tables below remain the target contract. Refresh/revoke, enrollment-link HTTP, handoff, transfers, reversals/corrections, category mutation, live frontend binding and cashflow endpoint are not yet implemented.
+
+`identity` is only the internal technical name of the auth module. It must not appear as a separate Spacewhy ID product. The bot authenticates entry into the existing Space Drop panel; Finance and every other SpaceDrop remain separate product/domain entities.
 
 ## Goal
 
