@@ -11,6 +11,7 @@ from uuid import UUID, uuid4
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import JSONB, ExcludeConstraint
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.schema import conv
 
 from app.core.db.base import Base
 from app.modules.booking.domain.enums import (
@@ -210,7 +211,7 @@ class BookingRateLimitBucket(TimestampMixin, Base):
         ),
         sa.CheckConstraint(
             "request_count >= 0",
-            name="booking_rate_limit_buckets_count_non_negative",
+            name=conv("ck_booking_rate_limit_buckets_booking_rate_limit_buckets_count_"),
         ),
         sa.Index("ix_booking_rate_limit_buckets_window", "scope", "window_started_at"),
     )
@@ -371,7 +372,7 @@ class BookingMembership(TimestampMixin, Base):
         ),
         sa.CheckConstraint(
             "access_version > 0",
-            name="booking_memberships_access_version_positive",
+            name=conv("ck_booking_memberships_booking_memberships_access_versi_2574"),
         ),
         sa.Index("ix_booking_memberships_organization_active", "organization_id", "is_active"),
         sa.Index("ix_booking_memberships_specialist", "organization_id", "specialist_id"),
@@ -478,7 +479,7 @@ class BookingPlatformAdministrator(TimestampMixin, Base):
     __table_args__ = (
         sa.CheckConstraint(
             "access_version > 0",
-            name="booking_platform_administrators_access_version_positive",
+            name=conv("ck_booking_platform_administrators_booking_platform_adm_ab89"),
         ),
     )
 
@@ -663,19 +664,19 @@ class SpecialistService(TimestampMixin, Base):
         ),
         sa.CheckConstraint(
             "custom_duration_minutes IS NULL OR custom_duration_minutes > 0",
-            name="booking_specialist_services_duration_positive",
+            name=conv("ck_booking_specialist_services_booking_specialist_servi_28e8"),
         ),
         sa.CheckConstraint(
             "custom_price IS NULL OR custom_price >= 0",
-            name="booking_specialist_services_price_non_negative",
+            name=conv("ck_booking_specialist_services_booking_specialist_servi_9a5c"),
         ),
         sa.CheckConstraint(
             "custom_buffer_before_minutes IS NULL OR custom_buffer_before_minutes >= 0",
-            name="booking_specialist_services_before_non_negative",
+            name=conv("ck_booking_specialist_services_booking_specialist_servi_07d1"),
         ),
         sa.CheckConstraint(
             "custom_buffer_after_minutes IS NULL OR custom_buffer_after_minutes >= 0",
-            name="booking_specialist_services_after_non_negative",
+            name=conv("ck_booking_specialist_services_booking_specialist_servi_777b"),
         ),
         sa.Index(
             "ix_booking_specialist_services_lookup",
@@ -780,7 +781,7 @@ class AvailabilityException(TimestampMixin, Base):
     __table_args__ = (
         sa.CheckConstraint(
             "ends_at > starts_at",
-            name="booking_availability_exceptions_interval",
+            name=conv("ck_booking_availability_exceptions_booking_availability_ebd5"),
         ),
         sa.Index(
             "ix_booking_availability_exceptions_lookup",
@@ -1008,19 +1009,22 @@ class SlotReservation(TimestampMixin, Base):
     idempotency_key: Mapped[str | None] = mapped_column(sa.String(128), nullable=True)
 
     __table_args__ = (
-        sa.CheckConstraint("ends_at > starts_at", name="booking_reservations_service_interval"),
+        sa.CheckConstraint(
+            "ends_at > starts_at",
+            name=conv("ck_booking_slot_reservations_booking_reservations_servi_baae"),
+        ),
         sa.CheckConstraint(
             "busy_ends_at > busy_starts_at",
             name="booking_reservations_busy_interval",
         ),
         sa.CheckConstraint(
             "busy_starts_at <= starts_at AND busy_ends_at >= ends_at",
-            name="booking_reservations_busy_contains_service",
+            name=conv("ck_booking_slot_reservations_booking_reservations_busy__7d17"),
         ),
         sa.CheckConstraint(
             "(type = 'hold' AND expires_at IS NOT NULL) OR "
             "(type = 'appointment' AND expires_at IS NULL)",
-            name="booking_reservations_expiry_by_type",
+            name=conv("ck_booking_slot_reservations_booking_reservations_expir_d40f"),
         ),
         ExcludeConstraint(
             ("organization_id", "="),
@@ -1230,7 +1234,7 @@ class BookingIdempotencyRecord(TimestampMixin, Base):
         ),
         sa.CheckConstraint(
             "response_status >= 200 AND response_status < 600",
-            name="booking_idempotency_response_status",
+            name=conv("ck_booking_idempotency_records_booking_idempotency_resp_145b"),
         ),
     )
 
@@ -1279,8 +1283,14 @@ class NotificationOutbox(TimestampMixin, Base):
             "dedupe_key",
             name="booking_notification_outbox_dedupe",
         ),
-        sa.CheckConstraint("attempts >= 0", name="booking_outbox_attempts_non_negative"),
-        sa.CheckConstraint("max_attempts > 0", name="booking_outbox_max_attempts_positive"),
+        sa.CheckConstraint(
+            "attempts >= 0",
+            name=conv("ck_booking_notification_outbox_booking_outbox_attempts__8962"),
+        ),
+        sa.CheckConstraint(
+            "max_attempts > 0",
+            name=conv("ck_booking_notification_outbox_booking_outbox_max_attem_56ad"),
+        ),
         sa.Index(
             "ix_booking_notification_outbox_poll",
             "status",
@@ -1613,7 +1623,10 @@ class StockBalance(TimestampMixin, Base):
 
     __table_args__ = (
         sa.UniqueConstraint("warehouse_id", "product_id", name="booking_stock_balances_scope"),
-        sa.CheckConstraint("version > 0", name="booking_stock_balances_version_positive"),
+        sa.CheckConstraint(
+            "version > 0",
+            name=conv("ck_booking_stock_balances_booking_stock_balances_versio_6824"),
+        ),
         sa.Index("ix_booking_stock_balances_product", "organization_id", "product_id"),
     )
 
@@ -1692,11 +1705,11 @@ class StockMovementItem(Base):
     __table_args__ = (
         sa.CheckConstraint(
             "quantity_delta <> 0",
-            name="booking_stock_movement_items_delta_non_zero",
+            name=conv("ck_booking_stock_movement_items_booking_stock_movement__9ac8"),
         ),
         sa.CheckConstraint(
             "unit_cost IS NULL OR unit_cost >= 0",
-            name="booking_stock_movement_items_cost_non_negative",
+            name=conv("ck_booking_stock_movement_items_booking_stock_movement__7a66"),
         ),
         sa.Index(
             "ix_booking_stock_movement_items_product",
@@ -1746,7 +1759,7 @@ class ServiceMaterial(TimestampMixin, Base):
         ),
         sa.CheckConstraint(
             "quantity_required > 0",
-            name="booking_service_materials_quantity_positive",
+            name=conv("ck_booking_service_materials_booking_service_materials__8ce6"),
         ),
     )
 
@@ -1789,7 +1802,7 @@ class AppointmentMaterialSnapshot(Base):
         ),
         sa.CheckConstraint(
             "quantity_required > 0",
-            name="booking_appointment_material_snapshots_quantity_positive",
+            name=conv("ck_booking_appointment_material_snapshots_booking_appoi_902c"),
         ),
     )
 

@@ -8,6 +8,7 @@ from uuid import UUID, uuid4
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.schema import conv
 
 from app.core.db.base import Base
 
@@ -93,7 +94,8 @@ class AuthChallenge(Base):
 
     __table_args__ = (
         sa.CheckConstraint(
-            "attempts_remaining >= 0", name="identity_auth_challenges_attempts_non_negative"
+            "attempts_remaining >= 0",
+            name=conv("ck_identity_auth_challenges_identity_auth_challenges_attempts_n"),
         ),
         sa.Index("ix_identity_auth_challenges_expiry", "expires_at", "consumed_at"),
     )
