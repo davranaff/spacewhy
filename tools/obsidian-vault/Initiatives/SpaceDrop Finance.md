@@ -6,6 +6,14 @@ updated: 2026-08-20
 
 # SpaceDrop Finance
 
+## Implementation state — 2026-08-20
+
+- Architecture/specification: complete and pushed in `7a92a1f`.
+- Backend vertical slice: pushed in `b5e63e5`. Implemented verified-contact enrollment, phone OTP, Mini App `initData`, bearer principal, Finance bootstrap/accounts/categories/income-expense transactions/cursor list/summary, migration, audit, idempotency and outbox persistence.
+- Panel vertical slice: pushed to `Muxammad1106/spacewhy-panel` as `ea83ca2`.
+- Finance client: independent local repository commit `3fdd171`; remote not assigned.
+- The API tables below remain the target contract. Refresh/revoke, enrollment-link HTTP, handoff, transfers, reversals/corrections, category mutation, live frontend binding and cashflow endpoint are not yet implemented.
+
 ## Goal
 
 Запустить первый сквозной SpaceDrop для личного финансового учёта: пользователь приходит с
@@ -127,6 +135,8 @@ Backend: Ruff format/lint, strict Pyright, unit, smoke, architecture, migration 
 PostgreSQL integration tests for constraints/idempotency/rollback. Frontend: unit tests, ESLint,
 TypeScript, production build, responsive browser QA and `git diff --check`. Secret scanning is
 mandatory before every push.
+
+Actual verification on 2026-08-20: Ruff, strict Pyright and 100 backend tests passed; 4 database integration tests were skipped because no PostgreSQL test runtime was available. Panel lint/type/build passed. Finance client 16 tests/lint/type/build passed. Production migration and deployment gates remain open.
 
 ## Out of MVP
 
