@@ -232,8 +232,16 @@ DROP TABLE identity_principals;
 
 
 def upgrade() -> None:
-    op.execute(_UPGRADE_SQL)
+    _execute_statements(_UPGRADE_SQL)
 
 
 def downgrade() -> None:
-    op.execute(_DOWNGRADE_SQL)
+    _execute_statements(_DOWNGRADE_SQL)
+
+
+def _execute_statements(script: str) -> None:
+    """Execute one statement at a time for asyncpg prepared-statement compatibility."""
+
+    for statement in script.split(";"):
+        if statement := statement.strip():
+            op.execute(statement)
