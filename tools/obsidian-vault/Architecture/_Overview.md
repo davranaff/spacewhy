@@ -1,37 +1,85 @@
 ---
 type: architecture
 tags: [project, architecture]
-updated: 2026-08-15
+updated: 2026-08-20
 ---
 
 # Architecture overview
 
-## Current boundaries
+## Текущее состояние
 
-- `backend/` is one deployable Django service boundary with an ASGI-only HTTP runtime.
-- `deployment/` owns infrastructure composition and configuration templates; real secret values are outside version control.
-- `frontend/admin/` remains a reserved empty frontend boundary.
-- `frontend/uikit/` now contains the complete Spacewhy liquid-glass UI kit, implemented as a standalone Next.js/TypeScript application derived from the Minimals component demo.
-- The UI kit uses an in-memory Axios demo adapter by default so catalog, blog, mail, chat, kanban and calendar surfaces do not depend on a remote demo backend. A real/remote demo API is explicit opt-in through `NEXT_PUBLIC_USE_REMOTE_DEMO_API=true`.
-- `tools/obsidian-vault/` is the explicitly requested project-scoped filesystem memory vault. Obsidian is not required or started.
-- `tools/skills/` contains the supplied RuFlo backend and project-memory instructions.
+- `backend/` — один deployable FastAPI modular monolith на Python 3.13, ASGI/Uvicorn,
+  Pydantic v2, async SQLAlchemy 2, PostgreSQL и Alembic. Актуальная архитектура
+  определяется `backend/AGENTS.md` и `backend/docs/`, а не устаревшими Django-заметками.
+- `backend/src/app/modules/booking/` — первый bounded context. Он владеет своей схемой,
+  tenant-scoped RBAC, Telegram bot/WebApp auth, booking, cash/inventory и outbox worker.
+- `backend/src/app/core/` — только общие технические primitives: configuration, database,
+  bot platform, i18n, errors, observability. Бизнес-сущности туда не переносятся.
+- `backend/src/app/modules/finance/` — новый владелец учёта доходов и расходов. Модуль
+  добавляется по шаблону `domain -> application -> infrastructure -> presentation`.
+- `backend/src/app/modules/identity/` — планируемый владелец общей идентичности Spacewhy,
+  Telegram phone binding и сессий. Finance хранит только opaque `principal_id` и не
+  импортирует ORM-модели Identity или Booking.
+- `deployment/` — compose и shape-only environment templates. Реальные `.env`, bot token,
+  signing keys и webhook secrets остаются вне Git.
+- `frontend/` в этом репозитории — UI-kit/reference boundary, не customer panel.
+- `tools/obsidian-vault/` — намеренно версионируемая проектная память без значений секретов.
 
-## Backend runtime
+## Продуктовые поверхности
 
-The initial service is Python 3.13 / Django 5.2 baseline, served through `config/asgi.py` by Uvicorn. New HTTP handlers are asynchronous. The only current endpoints are `health/live` and `health/ready`; the latter uses a narrow `sync_to_async` bridge for Django's database connection check. There is intentionally no `wsgi.py`.
+- `https://spacewhy.uz/` — публичный landing и вход в экосистему.
+- `Muxammad1106/spacewhy-panel` — центральная customer panel. Product code находится в
+  `frontend/`, рядом лежит независимый `uikit/` reference package.
+- `Muxammad1106/ui-kit-spacewhy` — GitHub Template Repository с полным Next.js/MUI
+  Liquid Glass UI kit. Из него создаётся отдельный `spacewhy-finance` web application.
+- `spacewhy-finance` — standalone responsive web app и Telegram Mini App. Он использует
+  общую авторизацию, Finance API и открывается как из panel, так и из Telegram bot.
 
-When a bounded context is approved, add a broad domain app under `backend/apps/<domain>/` and use the RuFlo file-per-entity layout: `views/`, `serializers/`, `querysets/`, `services/`, and only the additional policy/event/consumer/client layers that are actually needed. Commands must own authorization, invariants, short transactions, audit, outbox, idempotency, and concurrency behavior; reads must begin from explicit tenant/resource scope.
+## Dependency and ownership rules
+
+- FastAPI/Starlette существует только в presentation boundary.
+- Domain не импортирует FastAPI, SQLAlchemy, settings или container.
+- Application-use-cases владеют авторизацией, invariant checks и короткой транзакцией.
+- Infrastructure реализует persistence/integration adapters; repository не делает commit.
+- Другой модуль доступен только через `public.py` или versioned event contract.
+- Money всегда `Decimal` + ISO 4217 currency. Никаких `float`.
+- Финансовая история не удаляется: ошибка исправляется reversal/correction.
+- Повторяемые commands требуют idempotency key и request fingerprint.
+- State, audit и transactional outbox фиксируются атомарно.
+- Telegram/API вызовы выполняются вне database transaction.
+- Errors сохраняют общий RFC 9457 `application/problem+json` contract.
+
+## Identity boundary
+
+Telegram не позволяет боту первым найти пользователя только по номеру телефона. Поэтому
+phone auth работает лишь после явной привязки:
+
+1. Пользователь сам открывает Spacewhy auth bot.
+2. Бот просит native Telegram contact button.
+3. Backend принимает контакт только когда `contact.user_id == message.from.id`, нормализует
+   телефон в E.164 и создаёт verified binding.
+4. В обычной panel пользователь вводит телефон; backend отвечает одинаково для существующего
+   и неизвестного номера и, если binding существует, ставит отправку OTP в outbox.
+5. OTP короткоживущий, хранится только как keyed hash, имеет лимит попыток и rate limit.
+6. Telegram Mini App использует подписанный `initData` и не просит OTP повторно.
+7. После проверки Identity выдаёт короткую access-session и rotating refresh-session;
+   frontend не хранит refresh token в `localStorage`.
 
 ## Runtime dependencies
 
-The deployment composition reserves service-owned PostgreSQL 17, RabbitMQ 4.3, and Redis 8.8 boundaries. Authentication, storage, observability, migrations, backups, and production secret management remain explicit decisions rather than hidden defaults.
+PostgreSQL — durable state, audit, idempotency, inbox/outbox и ledger. Существующая bot
+platform изолирует bot apps и credentials. Redis допускается для распределённых rate limits,
+но authoritative challenge state остаётся в PostgreSQL. Отдельная очередь вводится только
+после ADR; до этого outbox обрабатывается bounded worker-процессом по существующему паттерну.
 
-## Initial architecture decisions
+## Architecture decisions
 
-1. No product domain or schema was invented before a feature contract and owner were supplied.
-2. The shared UI kit boundary was initialized only after the user's explicit request; the admin frontend remains deferred.
-3. The project memory vault is kept inside the repository because that location was explicitly requested; its secret notes must still never contain values in the repository.
-4. Client navigation uses one delegated progress listener and lightweight route feedback; DOM-wide mutation observers are prohibited for link instrumentation.
-5. App pages import their concrete view module instead of multi-view barrel indexes so unrelated editors, PDF renderers and detail screens do not enter the route graph.
-6. Internal links disable viewport-wide automatic prefetch and warm only on explicit pointer or keyboard intent; this prevents the dense component catalog and dashboard sidebar from saturating the preview with concurrent route downloads.
-7. Syntax highlighting uses `highlight.js/lib/core` with an explicit language set, while optional editors and calendar dialogs remain lazy boundaries.
+1. Актуальный backend остаётся FastAPI modular monolith; Django в проект не добавляется.
+2. Общая panel-авторизация не принадлежит Finance или Booking: owner — `identity`.
+3. Finance — отдельный bounded context с opaque external principal identifiers.
+4. Первый release — personal finance workspace. Organization/shared workspace закладывается
+   в модель membership, но shared access UI не входит в MVP.
+5. Суммы и валюты не конвертируются неявно; transfer между разными валютами требует явных
+   source amount, destination amount и rate metadata.
+6. UI kit копируется как clean template с новой Git-историей; исходный `.git` не переносится.
+7. В Git-памяти никогда не хранятся реальные bot tokens, OTP, signing keys или `.env`.
