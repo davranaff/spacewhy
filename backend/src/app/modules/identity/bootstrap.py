@@ -38,6 +38,7 @@ def create_identity_runtime(
             otp_ttl_seconds=module_settings.otp_ttl_seconds,
             otp_attempts=module_settings.otp_attempts,
             access_token_ttl_seconds=module_settings.access_token_ttl_seconds,
+            handoff_ttl_seconds=module_settings.handoff_ttl_seconds,
             web_app_verifiers=web_app_verifiers,
             webapp_max_age_seconds=module_settings.webapp_max_age_seconds,
         ),

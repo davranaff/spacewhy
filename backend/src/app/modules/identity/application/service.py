@@ -21,9 +21,14 @@ from app.modules.identity.infrastructure.persistence.models import (
     AuthChallenge,
     IdentityAudit,
     Principal,
+    SessionHandoff,
     TelegramBinding,
 )
-from app.modules.identity.infrastructure.security import IdentityOtpCodec, IdentitySessionCodec
+from app.modules.identity.infrastructure.security import (
+    IdentityHandoffCodec,
+    IdentityOtpCodec,
+    IdentitySessionCodec,
+)
 from app.modules.identity.public import IdentityPrincipal, IdentitySession
 
 
@@ -44,6 +49,14 @@ class ChallengeResult:
     delivery: ChallengeDelivery | None
 
 
+@dataclass(frozen=True, slots=True)
+class HandoffResult:
+    """Opaque one-time credential scoped to one SpaceDrop target."""
+
+    token: str
+    expires_at: datetime
+
+
 class IdentityService:
     """Own identity state transitions and strict session issuance."""
 
@@ -55,6 +68,7 @@ class IdentityService:
         otp_ttl_seconds: int,
         otp_attempts: int,
         access_token_ttl_seconds: int,
+        handoff_ttl_seconds: int,
         web_app_verifiers: Mapping[str, TelegramWebAppInitDataVerifier],
         webapp_max_age_seconds: int,
         clock: Clock | None = None,
@@ -62,12 +76,14 @@ class IdentityService:
         self._database = database
         self._secret = signing_secret.encode("utf-8")
         self._otp = IdentityOtpCodec(signing_secret)
+        self._handoffs = IdentityHandoffCodec(signing_secret)
         self._sessions = IdentitySessionCodec(
             signing_secret=signing_secret,
             ttl_seconds=access_token_ttl_seconds,
         )
         self._otp_ttl_seconds = otp_ttl_seconds
         self._otp_attempts = otp_attempts
+        self._handoff_ttl_seconds = handoff_ttl_seconds
         self._web_app_verifiers = web_app_verifiers
         self._webapp_max_age_seconds = webapp_max_age_seconds
         self._clock = clock or SystemClock()
@@ -323,10 +339,97 @@ class IdentityService:
             raise IdentityDomainError(IdentityErrorCode.SESSION_INVALID)
         return _public_principal(principal)
 
+    async def create_session_handoff(
+        self,
+        *,
+        principal: IdentityPrincipal,
+        target: str,
+        request_id: str | None,
+    ) -> HandoffResult:
+        """Issue a short-lived opaque credential for one independent SpaceDrop."""
+
+        _validate_handoff_target(target)
+        now = self._clock.now()
+        expires_at = now + timedelta(seconds=self._handoff_ttl_seconds)
+        token = self._handoffs.issue_token()
+        async with self._database.session() as session, session.begin():
+            current = await session.get(Principal, principal.id)
+            if current is None or not current.is_active:
+                raise IdentityDomainError(IdentityErrorCode.SESSION_INVALID)
+            session.add(
+                SessionHandoff(
+                    principal_id=current.id,
+                    target=target,
+                    token_digest=self._handoffs.digest(token),
+                    expires_at=expires_at,
+                )
+            )
+            session.add(
+                IdentityAudit(
+                    principal_id=current.id,
+                    action="session_handoff_created",
+                    request_id=request_id,
+                    metadata_json={"target": target},
+                )
+            )
+        return HandoffResult(token=token, expires_at=expires_at)
+
+    async def exchange_session_handoff(
+        self,
+        *,
+        token: str,
+        target: str,
+        request_id: str | None,
+    ) -> IdentitySession:
+        """Consume one target-bound handoff atomically and issue a normal session."""
+
+        _validate_handoff_target(target)
+        now = self._clock.now()
+        try:
+            token_digest = self._handoffs.digest(token)
+        except ValueError as error:
+            raise IdentityDomainError(IdentityErrorCode.HANDOFF_INVALID_OR_EXPIRED) from error
+        principal: Principal | None = None
+        async with self._database.session() as session, session.begin():
+            handoff = await session.scalar(
+                sa.select(SessionHandoff)
+                .where(
+                    SessionHandoff.token_digest == token_digest,
+                    SessionHandoff.target == target,
+                )
+                .with_for_update()
+            )
+            if handoff is None or handoff.consumed_at is not None or handoff.expires_at <= now:
+                raise IdentityDomainError(IdentityErrorCode.HANDOFF_INVALID_OR_EXPIRED)
+            principal = await session.get(Principal, handoff.principal_id)
+            if principal is None or not principal.is_active:
+                raise IdentityDomainError(IdentityErrorCode.HANDOFF_INVALID_OR_EXPIRED)
+            handoff.consumed_at = now
+            session.add(
+                IdentityAudit(
+                    principal_id=principal.id,
+                    action="session_handoff_consumed",
+                    request_id=request_id,
+                    metadata_json={"target": target},
+                )
+            )
+        public = _public_principal(principal)
+        access_token, expires_at = self._sessions.issue(public, now=now)
+        return IdentitySession(
+            access_token=access_token,
+            expires_at=expires_at,
+            principal=public,
+        )
+
 
 def _normalize_locale(value: str | None) -> str:
     normalized = value.lower().split("-", maxsplit=1)[0] if value else "ru"
     return normalized if normalized in {"ru", "uz", "en"} else "ru"
+
+
+def _validate_handoff_target(target: str) -> None:
+    if target != "finance":
+        raise IdentityDomainError(IdentityErrorCode.INVALID_REQUEST)
 
 
 def _public_principal(principal: Principal) -> IdentityPrincipal:

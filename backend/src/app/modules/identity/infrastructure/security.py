@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import json
+import secrets
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from hashlib import sha256
@@ -62,6 +63,23 @@ class IdentityOtpCodec:
 
     def verify(self, challenge_id: UUID, code: str, expected_digest: str) -> bool:
         return compare_digest(self.digest(challenge_id, code), expected_digest)
+
+
+class IdentityHandoffCodec:
+    """Create opaque one-time handoff tokens and persist only keyed digests."""
+
+    def __init__(self, signing_secret: str) -> None:
+        if len(signing_secret) < 32:
+            raise ValueError("Handoff secret is too short.")
+        self._secret = signing_secret.encode("utf-8")
+
+    def issue_token(self) -> str:
+        return secrets.token_urlsafe(32)
+
+    def digest(self, token: str) -> str:
+        if not token:
+            raise ValueError("Handoff token is required.")
+        return new(self._secret, f"handoff:{token}".encode(), sha256).hexdigest()
 
 
 @dataclass(frozen=True, slots=True)

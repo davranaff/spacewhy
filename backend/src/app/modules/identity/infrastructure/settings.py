@@ -19,4 +19,5 @@ class IdentityModuleSettings(BaseSettings):
     otp_ttl_seconds: int = Field(default=300, ge=60, le=900)
     otp_attempts: int = Field(default=5, ge=1, le=10)
     access_token_ttl_seconds: int = Field(default=900, ge=300, le=3_600)
+    handoff_ttl_seconds: int = Field(default=60, ge=30, le=300)
     webapp_max_age_seconds: int = Field(default=600, ge=60, le=3_600)

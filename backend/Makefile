@@ -1,5 +1,5 @@
 UV ?= python3 -m uv
-COMPOSE ?= docker compose -f ../deployment/docker/compose.yaml
+COMPOSE ?= docker compose --env-file ../deployment/env/.env -f ../deployment/docker/compose.yaml
 
 .PHONY: install format lint typecheck test test-unit test-integration test-architecture test-smoke test-bots test-i18n test-coverage migrate migration migration-check sync-rbac run worker-booking provision-booking docker-up docker-down
 

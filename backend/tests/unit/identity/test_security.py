@@ -5,7 +5,11 @@ from uuid import uuid4
 
 import pytest
 
-from app.modules.identity.infrastructure.security import IdentityOtpCodec, IdentitySessionCodec
+from app.modules.identity.infrastructure.security import (
+    IdentityHandoffCodec,
+    IdentityOtpCodec,
+    IdentitySessionCodec,
+)
 from app.modules.identity.public import IdentityPrincipal
 
 _SECRET = "test-identity-signing-secret-at-least-32-bytes"
@@ -48,3 +52,15 @@ def test_identity_session_rejects_tampering() -> None:
 
     with pytest.raises(ValueError, match="invalid"):
         codec.verify(f"{header}.{tampered_payload}.{signature}", now=now)
+
+
+def test_identity_handoff_tokens_are_opaque_and_digest_only() -> None:
+    codec = IdentityHandoffCodec(_SECRET)
+
+    first = codec.issue_token()
+    second = codec.issue_token()
+
+    assert first != second
+    assert len(first) >= 32
+    assert codec.digest(first) == codec.digest(first)
+    assert codec.digest(first) != codec.digest(second)

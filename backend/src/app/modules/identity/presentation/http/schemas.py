@@ -33,6 +33,20 @@ class TelegramWebAppRequest(_Schema):
     init_data: str = Field(min_length=1, max_length=16_384)
 
 
+class CreateHandoffRequest(_Schema):
+    target: Literal["finance"]
+
+
+class HandoffResponse(_Schema):
+    handoff_token: str
+    expires_at: datetime
+
+
+class ExchangeHandoffRequest(_Schema):
+    target: Literal["finance"]
+    handoff_token: str = Field(min_length=32, max_length=128)
+
+
 class PrincipalResponse(_Schema):
     id: UUID
     display_name: str | None

@@ -13,6 +13,9 @@ from app.core.bots.errors import BotRuntimeError
 from app.core.http.context import request_context_from_scope
 from app.modules.identity.presentation.http.dependencies import require_identity_principal
 from app.modules.identity.presentation.http.schemas import (
+    CreateHandoffRequest,
+    ExchangeHandoffRequest,
+    HandoffResponse,
     PhoneChallengeRequest,
     PhoneChallengeResponse,
     PrincipalResponse,
@@ -100,6 +103,46 @@ async def authenticate_webapp(
     session = await container.identity.service.authenticate_webapp(
         bot_app_id=container.identity.settings.bot_app_id,
         init_data=payload.init_data,
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return SessionResponse.from_session(session)
+
+
+@router.post(
+    "/session-handoffs",
+    response_model=HandoffResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a one-time authenticated handoff to an independent SpaceDrop",
+)
+async def create_session_handoff(
+    payload: CreateHandoffRequest,
+    request: Request,
+    response: Response,
+    principal: Annotated[IdentityPrincipal, Depends(require_identity_principal)],
+) -> HandoffResponse:
+    result = await get_container_from_app(request.app).identity.service.create_session_handoff(
+        principal=principal,
+        target=payload.target,
+        request_id=_request_id(request),
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return HandoffResponse(handoff_token=result.token, expires_at=result.expires_at)
+
+
+@router.post(
+    "/session-handoffs/exchange",
+    response_model=SessionResponse,
+    summary="Consume a one-time SpaceDrop handoff",
+)
+async def exchange_session_handoff(
+    payload: ExchangeHandoffRequest,
+    request: Request,
+    response: Response,
+) -> SessionResponse:
+    session = await get_container_from_app(request.app).identity.service.exchange_session_handoff(
+        token=payload.handoff_token,
+        target=payload.target,
+        request_id=_request_id(request),
     )
     response.headers["Cache-Control"] = "no-store"
     return SessionResponse.from_session(session)

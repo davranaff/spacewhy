@@ -31,6 +31,7 @@ def _status_for(code: IdentityErrorCode) -> int:
     if code in {
         IdentityErrorCode.SESSION_INVALID,
         IdentityErrorCode.INVALID_TELEGRAM_INIT_DATA,
+        IdentityErrorCode.HANDOFF_INVALID_OR_EXPIRED,
     }:
         return HTTPStatus.UNAUTHORIZED
     if code is IdentityErrorCode.ENROLLMENT_REQUIRED:

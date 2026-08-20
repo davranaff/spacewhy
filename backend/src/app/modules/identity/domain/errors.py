@@ -16,6 +16,7 @@ class IdentityErrorCode(StrEnum):
     INVALID_TELEGRAM_INIT_DATA = "IDENTITY_INVALID_TELEGRAM_INIT_DATA"
     PHONE_ALREADY_BOUND = "IDENTITY_PHONE_ALREADY_BOUND"
     SESSION_INVALID = "IDENTITY_SESSION_INVALID"
+    HANDOFF_INVALID_OR_EXPIRED = "IDENTITY_HANDOFF_INVALID_OR_EXPIRED"
     RATE_LIMITED = "IDENTITY_RATE_LIMITED"
     INVALID_REQUEST = "IDENTITY_INVALID_REQUEST"
 
@@ -28,6 +29,7 @@ _DETAILS: Final[dict[IdentityErrorCode, str]] = {
     IdentityErrorCode.INVALID_TELEGRAM_INIT_DATA: "Telegram authentication data is invalid.",
     IdentityErrorCode.PHONE_ALREADY_BOUND: "The phone is already bound to another account.",
     IdentityErrorCode.SESSION_INVALID: "The session is invalid or expired.",
+    IdentityErrorCode.HANDOFF_INVALID_OR_EXPIRED: "The handoff is invalid or expired.",
     IdentityErrorCode.RATE_LIMITED: "Too many requests were received.",
     IdentityErrorCode.INVALID_REQUEST: "The request is invalid.",
 }

@@ -101,6 +101,31 @@ class AuthChallenge(Base):
     )
 
 
+class SessionHandoff(Base):
+    """Short-lived one-time bridge into an independently deployed SpaceDrop."""
+
+    __tablename__ = "identity_session_handoffs"
+
+    id: Mapped[UUID] = mapped_column(_UUID, primary_key=True, default=_uuid)
+    principal_id: Mapped[UUID] = mapped_column(
+        _UUID,
+        sa.ForeignKey("identity_principals.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    target: Mapped[str] = mapped_column(sa.String(32), nullable=False)
+    token_digest: Mapped[str] = mapped_column(sa.String(64), nullable=False, unique=True)
+    expires_at: Mapped[datetime] = mapped_column(_UTC_DATETIME, nullable=False)
+    consumed_at: Mapped[datetime | None] = mapped_column(_UTC_DATETIME, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        _UTC_DATETIME, server_default=sa.func.now(), nullable=False
+    )
+
+    __table_args__ = (
+        sa.Index("ix_identity_session_handoffs_expiry", "expires_at", "consumed_at"),
+        sa.Index("ix_identity_session_handoffs_principal", "principal_id", "created_at"),
+    )
+
+
 class IdentityAudit(Base):
     """Append-only identity security audit without secrets."""
 
