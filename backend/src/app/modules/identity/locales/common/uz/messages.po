@@ -1,0 +1,18 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: spacewhy-identity\n"
+"Language: uz\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "enrollment.request"
+msgstr "Spacewhy hisobini ulash uchun Telegram'dagi o'z telefon raqamingizni yuboring."
+
+msgid "enrollment.share_contact"
+msgstr "Telefon raqamimni yuborish"
+
+msgid "enrollment.complete"
+msgstr "Spacewhy hisobi ulandi. Panelga qaytishingiz mumkin."
+
+msgid "enrollment.invalid_contact"
+msgstr "Faqat shu Telegram hisobiga tegishli kontaktni yuboring."

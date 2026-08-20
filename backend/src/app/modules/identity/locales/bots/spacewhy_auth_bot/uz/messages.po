@@ -1,0 +1,9 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: spacewhy-auth-bot\n"
+"Language: uz\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "enrollment.complete"
+msgstr "Spacewhy hisobi ulandi. Panelga qaytishingiz mumkin."

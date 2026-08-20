@@ -18,8 +18,10 @@ sys.path.insert(0, str(BACKEND_ROOT / "src"))
 from app.core.config.settings import Settings  # noqa: E402 - Alembic needs src on sys.path first.
 from app.core.db.metadata import metadata  # noqa: E402 - Alembic needs src on sys.path first.
 from app.modules.booking.infrastructure.persistence import models as booking_models  # noqa: E402
+from app.modules.finance.infrastructure.persistence import models as finance_models  # noqa: E402
+from app.modules.identity.infrastructure.persistence import models as identity_models  # noqa: E402
 
-del booking_models
+del booking_models, finance_models, identity_models
 
 config = context.config
 

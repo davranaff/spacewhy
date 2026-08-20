@@ -1,0 +1,1 @@
+"""Identity-owned database adapters."""

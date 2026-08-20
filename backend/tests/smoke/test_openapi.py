@@ -20,5 +20,8 @@ def test_openapi_schema_is_deterministic_and_documents_problem_details(
     assert first_schema == second_schema
     assert first_schema["paths"]["/health/live"]["get"]["operationId"] == "get_health_live"
     assert "/api/v1/access/me" in first_schema["paths"]
+    assert "/api/v1/identity/auth/telegram/challenges" in first_schema["paths"]
+    assert "/api/v1/finance/transactions" in first_schema["paths"]
+    assert "/api/v1/finance/dashboard/summary" in first_schema["paths"]
     assert "ProblemDetail" in first_schema["components"]["schemas"]
     assert "ProblemDetail" in first_schema["components"]["responses"]

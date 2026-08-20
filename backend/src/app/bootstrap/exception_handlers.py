@@ -25,6 +25,10 @@ from app.core.errors.exceptions import (
 from app.core.http.context import request_context_from_scope, route_template_from_scope
 from app.modules.booking.domain.errors import BookingDomainError
 from app.modules.booking.presentation.http.errors import booking_domain_error_handler
+from app.modules.finance.domain.errors import FinanceDomainError
+from app.modules.finance.presentation.http.errors import finance_domain_error_handler
+from app.modules.identity.domain.errors import IdentityDomainError
+from app.modules.identity.presentation.http.errors import identity_domain_error_handler
 
 logger = logging.getLogger("spacewhy")
 
@@ -175,6 +179,8 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     app.add_exception_handler(ApplicationError, application_error_handler)
     app.add_exception_handler(BookingDomainError, booking_domain_error_handler)
+    app.add_exception_handler(IdentityDomainError, identity_domain_error_handler)
+    app.add_exception_handler(FinanceDomainError, finance_domain_error_handler)
     app.add_exception_handler(RequestValidationError, request_validation_error_handler)
     app.add_exception_handler(StarletteHTTPException, http_exception_handler)
     app.add_exception_handler(Exception, unexpected_exception_handler)

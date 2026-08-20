@@ -1,0 +1,1 @@
+"""Finance-owned SQLAlchemy persistence."""

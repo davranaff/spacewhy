@@ -1,0 +1,18 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: spacewhy-identity\n"
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "enrollment.request"
+msgstr "Share your own Telegram phone contact to connect your Spacewhy account."
+
+msgid "enrollment.share_contact"
+msgstr "Share my phone number"
+
+msgid "enrollment.complete"
+msgstr "Your Spacewhy account is connected. You can return to the panel."
+
+msgid "enrollment.invalid_contact"
+msgstr "Share only the phone contact that belongs to this Telegram account."

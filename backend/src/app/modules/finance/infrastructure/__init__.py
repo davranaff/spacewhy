@@ -1,0 +1,1 @@
+"""Finance persistence adapters."""

@@ -3,8 +3,8 @@
 ## Shape and dependency direction
 
 Spacewhy is a modular monolith: one deployable FastAPI process with one service-owned PostgreSQL
-database and one Alembic migration stream. Its first owned business module is `booking`; future
-modules must preserve the same dependency and tenant-isolation boundaries.
+database and one Alembic migration stream. The owned modules are `booking`, shared `identity`, and
+personal `finance`; future modules must preserve the same dependency and scope-isolation boundaries.
 
 Dependencies point inward:
 
@@ -24,7 +24,8 @@ src/app/main.py only invokes create_app. The factory in bootstrap/app_factory.py
 new FastAPI instance for each call, adds a typed AppContainer to application state, then
 registers middleware, exception handlers, routes, and OpenAPI customization. The container holds
 long-lived technical resources plus explicitly assembled module runtimes: Settings, Database,
-Telemetry, LocalizationRuntime, BotPlatform, and BookingModuleRuntime. It is not a global service
+Telemetry, LocalizationRuntime, BotPlatform, BookingModuleRuntime, IdentityModuleRuntime, and
+FinanceModuleRuntime. It is not a global service
 locator: a module receives its own scoped dependencies through composition.
 
 ## Configuration
@@ -96,8 +97,9 @@ Global system routes are:
 - GET /health/live: process liveness only.
 - GET /health/ready: PostgreSQL readiness with a strict timeout.
 
-The `/api/v1/booking` router is mounted once from the booking presentation boundary. Its client,
-staff, administrator, and Telegram WebApp-auth subrouters are thin transport adapters. Future
+The `/api/v1/booking`, `/api/v1/identity`, and `/api/v1/finance` routers are mounted once from
+their presentation boundaries. Booking client, staff, administrator, and Telegram WebApp-auth
+subrouters remain thin transport adapters. Future
 business presentation routes belong in their own modules, not app/api.
 
 Middleware inbound order is request ID, optional trusted proxy headers, trusted host validation,
@@ -123,8 +125,9 @@ request spans supply trace IDs to logs.
 Bot applications remain internal modular-monolith runtimes. Bootstrap collects explicit module
 registrations, validates typed bot settings and gettext catalogs, creates one provider adapter per
 enabled app, injects only an app-bound gateway and localizer into its handler, and freezes the
-private runtime registry. The booking module registers only `booking_bot` when that app is
-configured. Telegram is the first provider through the infrastructure adapter; no domain or
+private runtime registry. Booking registers `booking_bot` and Identity registers
+`spacewhy_auth_bot` only when each app is configured. Telegram is the first provider through the
+infrastructure adapter; no domain or
 application layer imports its SDK.
 
 Each webhook uses POST /webhooks/telegram/{bot_app_id}. The public route ID selects one runtime,
