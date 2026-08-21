@@ -78,12 +78,15 @@ class AuthChallenge(Base):
     __tablename__ = "identity_auth_challenges"
 
     id: Mapped[UUID] = mapped_column(_UUID, primary_key=True, default=_uuid)
+    bot_app_id: Mapped[str] = mapped_column(sa.String(63), nullable=False)
     binding_id: Mapped[UUID | None] = mapped_column(
         _UUID,
         sa.ForeignKey("identity_telegram_bindings.id", ondelete="SET NULL"),
         nullable=True,
     )
     phone_digest: Mapped[str] = mapped_column(sa.String(64), nullable=False)
+    claimed_telegram_user_id: Mapped[str | None] = mapped_column(sa.String(128), nullable=True)
+    claimed_telegram_chat_id: Mapped[str | None] = mapped_column(sa.String(128), nullable=True)
     code_digest: Mapped[str] = mapped_column(sa.String(64), nullable=False)
     attempts_remaining: Mapped[int] = mapped_column(sa.SmallInteger, nullable=False)
     expires_at: Mapped[datetime] = mapped_column(_UTC_DATETIME, nullable=False)
@@ -98,6 +101,12 @@ class AuthChallenge(Base):
             name=conv("ck_identity_auth_challenges_identity_auth_challenges_attempts_n"),
         ),
         sa.Index("ix_identity_auth_challenges_expiry", "expires_at", "consumed_at"),
+        sa.Index(
+            "ix_identity_auth_challenges_telegram_claim",
+            "bot_app_id",
+            "claimed_telegram_user_id",
+            "expires_at",
+        ),
     )
 
 

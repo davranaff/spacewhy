@@ -17,6 +17,7 @@ from app.core.contracts.clock import Clock
 from app.core.db.database import Database
 from app.modules.identity.domain.errors import IdentityDomainError, IdentityErrorCode
 from app.modules.identity.domain.phone import normalize_phone
+from app.modules.identity.domain.start_payload import build_phone_challenge_start_parameter
 from app.modules.identity.infrastructure.persistence.models import (
     AuthChallenge,
     IdentityAudit,
@@ -46,6 +47,15 @@ class ChallengeResult:
 
     id: UUID
     expires_at: datetime
+    start_parameter: str
+    delivery: ChallengeDelivery | None
+
+
+@dataclass(frozen=True, slots=True)
+class EnrollmentResult:
+    """Verified principal plus an OTP unlocked by the matching deep-link contact."""
+
+    principal: IdentityPrincipal
     delivery: ChallengeDelivery | None
 
 
@@ -100,7 +110,7 @@ class IdentityService:
         last_name: str | None,
         language_code: str | None,
         request_id: str | None,
-    ) -> IdentityPrincipal:
+    ) -> EnrollmentResult:
         """Bind only the sender's own Telegram contact to one principal."""
 
         if (
@@ -114,12 +124,31 @@ class IdentityService:
         now = self._clock.now()
         display_name = " ".join(part for part in (first_name, last_name) if part).strip() or None
         locale = _normalize_locale(language_code)
+        claimed_challenge: AuthChallenge | None = None
         async with self._database.session() as session, session.begin():
             await session.execute(
                 sa.select(
                     sa.func.pg_advisory_xact_lock(sa.func.hashtext(f"identity:phone:{phone}"))
                 )
             )
+            claimed_challenge = await session.scalar(
+                sa.select(AuthChallenge)
+                .where(
+                    AuthChallenge.bot_app_id == bot_app_id,
+                    AuthChallenge.claimed_telegram_user_id == telegram_user_id,
+                    AuthChallenge.claimed_telegram_chat_id == telegram_chat_id,
+                    AuthChallenge.binding_id.is_(None),
+                    AuthChallenge.consumed_at.is_(None),
+                    AuthChallenge.expires_at > now,
+                )
+                .order_by(AuthChallenge.created_at.desc())
+                .limit(1)
+                .with_for_update()
+            )
+            if claimed_challenge is not None:
+                contact_digest = new(self._secret, phone.encode(), sha256).hexdigest()
+                if claimed_challenge.phone_digest != contact_digest:
+                    raise IdentityDomainError(IdentityErrorCode.INVALID_TELEGRAM_CONTACT)
             phone_owner = await session.scalar(
                 sa.select(TelegramBinding)
                 .where(
@@ -165,6 +194,17 @@ class IdentityService:
                 principal.display_name = display_name or principal.display_name
                 principal.locale = locale
                 principal.is_active = True
+            await session.flush()
+            if claimed_challenge is not None:
+                claimed_challenge.binding_id = binding.id
+                session.add(
+                    IdentityAudit(
+                        principal_id=principal.id,
+                        action="phone_challenge_contact_linked",
+                        request_id=request_id,
+                        metadata_json={"bot_app_id": bot_app_id},
+                    )
+                )
             session.add(
                 IdentityAudit(
                     principal_id=principal.id,
@@ -173,7 +213,81 @@ class IdentityService:
                     metadata_json={"bot_app_id": bot_app_id},
                 )
             )
-        return _public_principal(principal)
+        delivery = (
+            ChallengeDelivery(
+                telegram_chat_id=telegram_chat_id,
+                code=self._otp.code_for(claimed_challenge.id),
+            )
+            if claimed_challenge is not None
+            else None
+        )
+        return EnrollmentResult(principal=_public_principal(principal), delivery=delivery)
+
+    async def claim_phone_challenge(
+        self,
+        *,
+        challenge_id: UUID,
+        bot_app_id: str,
+        telegram_user_id: str | None,
+        telegram_chat_id: str | None,
+        request_id: str | None,
+    ) -> ChallengeDelivery | None:
+        """Bind a Telegram `/start` session to one active phone challenge."""
+
+        if telegram_user_id is None or telegram_chat_id is None:
+            raise IdentityDomainError(IdentityErrorCode.CHALLENGE_INVALID_OR_EXPIRED)
+        now = self._clock.now()
+        delivery: ChallengeDelivery | None = None
+        principal_id: UUID | None = None
+        async with self._database.session() as session, session.begin():
+            challenge = await session.scalar(
+                sa.select(AuthChallenge)
+                .where(
+                    AuthChallenge.id == challenge_id,
+                    AuthChallenge.bot_app_id == bot_app_id,
+                    AuthChallenge.consumed_at.is_(None),
+                    AuthChallenge.expires_at > now,
+                )
+                .with_for_update()
+            )
+            if challenge is None or (
+                challenge.claimed_telegram_user_id is not None
+                and challenge.claimed_telegram_user_id != telegram_user_id
+            ):
+                raise IdentityDomainError(IdentityErrorCode.CHALLENGE_INVALID_OR_EXPIRED)
+            challenge.claimed_telegram_user_id = telegram_user_id
+            challenge.claimed_telegram_chat_id = telegram_chat_id
+            if challenge.binding_id is not None:
+                binding = await session.scalar(
+                    sa.select(TelegramBinding)
+                    .where(
+                        TelegramBinding.id == challenge.binding_id,
+                        TelegramBinding.bot_app_id == bot_app_id,
+                        TelegramBinding.telegram_user_id == telegram_user_id,
+                        TelegramBinding.is_active.is_(True),
+                    )
+                    .with_for_update()
+                )
+                if binding is None:
+                    raise IdentityDomainError(IdentityErrorCode.CHALLENGE_INVALID_OR_EXPIRED)
+                binding.telegram_chat_id = telegram_chat_id
+                principal_id = binding.principal_id
+                delivery = ChallengeDelivery(
+                    telegram_chat_id=telegram_chat_id,
+                    code=self._otp.code_for(challenge.id),
+                )
+            session.add(
+                IdentityAudit(
+                    principal_id=principal_id,
+                    action="phone_challenge_telegram_claimed",
+                    request_id=request_id,
+                    metadata_json={
+                        "bot_app_id": bot_app_id,
+                        "delivery_available": delivery is not None,
+                    },
+                )
+            )
+        return delivery
 
     async def create_phone_challenge(
         self,
@@ -207,6 +321,7 @@ class IdentityService:
             )
             challenge = AuthChallenge(
                 id=challenge_id,
+                bot_app_id=bot_app_id,
                 binding_id=binding.id if binding is not None else None,
                 phone_digest=phone_digest,
                 code_digest=self._otp.digest(challenge_id, code),
@@ -227,7 +342,12 @@ class IdentityService:
             if binding is not None
             else None
         )
-        return ChallengeResult(id=challenge_id, expires_at=challenge.expires_at, delivery=delivery)
+        return ChallengeResult(
+            id=challenge_id,
+            expires_at=challenge.expires_at,
+            start_parameter=build_phone_challenge_start_parameter(challenge_id),
+            delivery=delivery,
+        )
 
     async def verify_phone_challenge(
         self,

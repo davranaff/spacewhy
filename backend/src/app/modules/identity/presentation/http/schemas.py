@@ -22,6 +22,7 @@ class PhoneChallengeRequest(_Schema):
 class PhoneChallengeResponse(_Schema):
     challenge_id: UUID
     expires_at: datetime
+    telegram_start_parameter: str = Field(pattern=r"^login_[0-9a-f]{32}$")
     status: Literal["accepted"] = "accepted"
 
 

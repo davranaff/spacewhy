@@ -65,7 +65,11 @@ async def create_phone_challenge(
                 extra={"request_id": _request_id(request), "result": "unavailable"},
             )
     response.headers["Cache-Control"] = "no-store"
-    return PhoneChallengeResponse(challenge_id=result.id, expires_at=result.expires_at)
+    return PhoneChallengeResponse(
+        challenge_id=result.id,
+        expires_at=result.expires_at,
+        telegram_start_parameter=result.start_parameter,
+    )
 
 
 @router.post(

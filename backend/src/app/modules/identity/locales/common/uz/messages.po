@@ -16,3 +16,9 @@ msgstr "Spacewhy hisobi ulandi. Panelga qaytishingiz mumkin."
 
 msgid "enrollment.invalid_contact"
 msgstr "Faqat shu Telegram hisobiga tegishli kontaktni yuboring."
+
+msgid "authentication.code"
+msgstr "Space Drop kirish kodi: {code}\n\nPanelga qayting va kodni kiriting."
+
+msgid "authentication.link_invalid"
+msgstr "Kirish havolasi yaroqsiz yoki muddati tugagan. Panelga qayting va yangisini so'rang."

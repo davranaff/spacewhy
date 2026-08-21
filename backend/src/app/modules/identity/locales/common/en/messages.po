@@ -16,3 +16,9 @@ msgstr "Your Spacewhy account is connected. You can return to the panel."
 
 msgid "enrollment.invalid_contact"
 msgstr "Share only the phone contact that belongs to this Telegram account."
+
+msgid "authentication.code"
+msgstr "Your Space Drop login code: {code}\n\nReturn to the panel and enter it."
+
+msgid "authentication.link_invalid"
+msgstr "This login link is invalid or expired. Return to the panel and request a new one."

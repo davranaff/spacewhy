@@ -16,3 +16,9 @@ msgstr "Аккаунт Spacewhy подключён. Можно вернутьс�
 
 msgid "enrollment.invalid_contact"
 msgstr "Поделитесь только контактом, который принадлежит этому Telegram-аккаунту."
+
+msgid "authentication.code"
+msgstr "Код для входа в Space Drop: {code}\n\nВернитесь в панель и введите его."
+
+msgid "authentication.link_invalid"
+msgstr "Ссылка для входа недействительна или истекла. Вернитесь в панель и запросите новую."
