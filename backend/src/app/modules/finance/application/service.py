@@ -13,6 +13,7 @@ from uuid import UUID
 
 import sqlalchemy as sa
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import aliased
 
 from app.core.clock import SystemClock
 from app.core.contracts.clock import Clock
@@ -23,6 +24,7 @@ from app.modules.finance.application.dto import (
     CurrencySummary,
     EntryPage,
     EntryResult,
+    TransferResult,
     WorkspaceResult,
 )
 from app.modules.finance.domain.enums import EntryDirection, EntryKind, WorkspaceRole
@@ -271,24 +273,16 @@ class FinanceService:
         now = self._clock.now()
         async with self._database.session() as session, session.begin():
             workspace_id = await self._workspace_id(session, principal_id)
-            lock_key = (
-                f"finance:idempotency:{workspace_id}:{principal_id}:create_entry:{idempotency_key}"
-            )
-            await session.execute(
-                sa.select(sa.func.pg_advisory_xact_lock(sa.func.hashtext(lock_key)))
-            )
-            replay = await session.scalar(
-                sa.select(FinanceIdempotency).where(
-                    FinanceIdempotency.workspace_id == workspace_id,
-                    FinanceIdempotency.principal_id == principal_id,
-                    FinanceIdempotency.operation == "create_entry",
-                    FinanceIdempotency.key == idempotency_key,
-                )
+            replay = await self._idempotency_replay(
+                session=session,
+                workspace_id=workspace_id,
+                principal_id=principal_id,
+                operation="create_entry",
+                idempotency_key=idempotency_key,
+                fingerprint=fingerprint,
             )
             if replay is not None:
-                if replay.request_fingerprint != fingerprint:
-                    raise FinanceDomainError(FinanceErrorCode.IDEMPOTENCY_CONFLICT)
-                return await self._entry_result(session, workspace_id, replay.response_entry_id)
+                return await self._entry_result(session, workspace_id, replay)
             account = await session.scalar(
                 sa.select(FinanceAccount).where(
                     FinanceAccount.id == account_id,
@@ -326,56 +320,247 @@ class FinanceService:
             )
             session.add(entry)
             await session.flush()
-            session.add(
-                FinanceIdempotency(
-                    workspace_id=workspace_id,
-                    principal_id=principal_id,
-                    operation="create_entry",
-                    key=idempotency_key,
-                    request_fingerprint=fingerprint,
-                    response_entry_id=entry.id,
-                )
+            self._record_idempotency(
+                session=session,
+                workspace_id=workspace_id,
+                principal_id=principal_id,
+                operation="create_entry",
+                idempotency_key=idempotency_key,
+                fingerprint=fingerprint,
+                response_entry_id=entry.id,
             )
-            session.add(
-                FinanceAudit(
-                    workspace_id=workspace_id,
-                    principal_id=principal_id,
-                    action="entry_created",
-                    resource_id=entry.id,
-                    request_id=request_id,
-                    metadata_json={"direction": direction.value, "currency": normalized_currency},
-                )
-            )
-            session.add(
-                FinanceOutbox(
-                    workspace_id=workspace_id,
-                    event_type="finance.entry.created",
-                    event_version=1,
-                    aggregate_id=entry.id,
-                    payload={
-                        "entry_id": str(entry.id),
-                        "workspace_id": str(workspace_id),
-                        "direction": direction.value,
-                        "amount": str(validated_amount),
-                        "currency": normalized_currency,
-                    },
-                    occurred_at=now,
-                )
+            self._record_entry_event(
+                session=session,
+                workspace_id=workspace_id,
+                principal_id=principal_id,
+                entry=entry,
+                action="entry_created",
+                event_type="finance.entry.created",
+                request_id=request_id,
+                occurred_at=now,
+                metadata={},
             )
             await session.flush()
-            result = EntryResult(
-                id=entry.id,
-                account_id=account.id,
-                account_name=account.name,
-                category_id=category.id,
-                category_name=category.name,
-                direction=entry.direction,
-                kind=entry.kind,
-                amount=entry.amount,
-                currency=entry.currency,
-                occurred_at=entry.occurred_at,
-                note=entry.note,
-                created_at=entry.created_at,
+            result = await self._entry_result(session, workspace_id, entry.id)
+        return result
+
+    async def reverse_entry(
+        self,
+        *,
+        principal_id: UUID,
+        entry_id: UUID,
+        idempotency_key: str,
+        request_id: str | None,
+    ) -> EntryResult:
+        """Append the exact opposite of a standard entry without mutating history."""
+
+        fingerprint = _fingerprint({"entry_id": str(entry_id)})
+        now = self._clock.now()
+        async with self._database.session() as session, session.begin():
+            workspace_id = await self._workspace_id(session, principal_id)
+            replay = await self._idempotency_replay(
+                session=session,
+                workspace_id=workspace_id,
+                principal_id=principal_id,
+                operation="reverse_entry",
+                idempotency_key=idempotency_key,
+                fingerprint=fingerprint,
+            )
+            if replay is not None:
+                return await self._entry_result(session, workspace_id, replay)
+
+            original = await session.scalar(
+                sa.select(FinanceEntry)
+                .where(
+                    FinanceEntry.id == entry_id,
+                    FinanceEntry.workspace_id == workspace_id,
+                )
+                .with_for_update()
+            )
+            if original is None:
+                raise FinanceDomainError(FinanceErrorCode.ENTRY_NOT_FOUND)
+            if original.kind is not EntryKind.STANDARD:
+                raise FinanceDomainError(FinanceErrorCode.ENTRY_NOT_REVERSIBLE)
+            existing_reversal = await session.scalar(
+                sa.select(FinanceEntry.id).where(FinanceEntry.reversal_of_id == original.id)
+            )
+            if existing_reversal is not None:
+                raise FinanceDomainError(FinanceErrorCode.ENTRY_ALREADY_REVERSED)
+
+            reversal = FinanceEntry(
+                workspace_id=workspace_id,
+                account_id=original.account_id,
+                category_id=original.category_id,
+                direction=(
+                    EntryDirection.EXPENSE
+                    if original.direction is EntryDirection.INCOME
+                    else EntryDirection.INCOME
+                ),
+                kind=EntryKind.REVERSAL,
+                amount=original.amount,
+                currency=original.currency,
+                occurred_at=now,
+                note=f"Reversal: {original.note}" if original.note else "Reversal",
+                created_by_principal_id=principal_id,
+                reversal_of_id=original.id,
+            )
+            session.add(reversal)
+            await session.flush()
+            self._record_idempotency(
+                session=session,
+                workspace_id=workspace_id,
+                principal_id=principal_id,
+                operation="reverse_entry",
+                idempotency_key=idempotency_key,
+                fingerprint=fingerprint,
+                response_entry_id=reversal.id,
+            )
+            self._record_entry_event(
+                session=session,
+                workspace_id=workspace_id,
+                principal_id=principal_id,
+                entry=reversal,
+                action="entry_reversed",
+                event_type="finance.entry.reversed",
+                request_id=request_id,
+                occurred_at=now,
+                metadata={"reversal_of_id": str(original.id)},
+            )
+            await session.flush()
+            result = await self._entry_result(session, workspace_id, reversal.id)
+        return result
+
+    async def create_transfer(
+        self,
+        *,
+        principal_id: UUID,
+        source_account_id: UUID,
+        destination_account_id: UUID,
+        amount: Decimal,
+        currency: str,
+        occurred_at: datetime,
+        note: str | None,
+        idempotency_key: str,
+        request_id: str | None,
+    ) -> TransferResult:
+        """Append balanced expense/income entries for an account transfer."""
+
+        if source_account_id == destination_account_id:
+            raise FinanceDomainError(FinanceErrorCode.TRANSFER_SAME_ACCOUNT)
+        validated_amount = validate_amount(amount)
+        normalized_currency = validate_currency(currency)
+        normalized_note = note.strip() if note else None
+        fingerprint = _fingerprint(
+            {
+                "source_account_id": str(source_account_id),
+                "destination_account_id": str(destination_account_id),
+                "amount": str(validated_amount),
+                "currency": normalized_currency,
+                "occurred_at": occurred_at.isoformat(),
+                "note": normalized_note,
+            }
+        )
+        now = self._clock.now()
+        async with self._database.session() as session, session.begin():
+            workspace_id = await self._workspace_id(session, principal_id)
+            replay = await self._idempotency_replay(
+                session=session,
+                workspace_id=workspace_id,
+                principal_id=principal_id,
+                operation="create_transfer",
+                idempotency_key=idempotency_key,
+                fingerprint=fingerprint,
+            )
+            if replay is not None:
+                return await self._transfer_result_from_source(session, workspace_id, replay)
+
+            rows = (
+                await session.scalars(
+                    sa.select(FinanceAccount)
+                    .where(
+                        FinanceAccount.workspace_id == workspace_id,
+                        FinanceAccount.id.in_([source_account_id, destination_account_id]),
+                    )
+                    .order_by(FinanceAccount.id)
+                    .with_for_update()
+                )
+            ).all()
+            accounts = {account.id: account for account in rows}
+            source = accounts.get(source_account_id)
+            destination = accounts.get(destination_account_id)
+            if source is None or destination is None:
+                raise FinanceDomainError(FinanceErrorCode.ACCOUNT_NOT_FOUND)
+            if source.is_archived or destination.is_archived:
+                raise FinanceDomainError(FinanceErrorCode.ACCOUNT_ARCHIVED)
+            if (
+                source.currency != normalized_currency
+                or destination.currency != normalized_currency
+            ):
+                raise FinanceDomainError(FinanceErrorCode.CURRENCY_MISMATCH)
+
+            transfer_id = UUID(
+                bytes=sha256(f"{workspace_id}:{principal_id}:{idempotency_key}".encode()).digest()[
+                    :16
+                ]
+            )
+            source_entry = FinanceEntry(
+                workspace_id=workspace_id,
+                account_id=source.id,
+                category_id=None,
+                direction=EntryDirection.EXPENSE,
+                kind=EntryKind.TRANSFER,
+                amount=validated_amount,
+                currency=normalized_currency,
+                occurred_at=occurred_at,
+                note=normalized_note or f"Transfer to {destination.name}",
+                created_by_principal_id=principal_id,
+                transfer_id=transfer_id,
+            )
+            destination_entry = FinanceEntry(
+                workspace_id=workspace_id,
+                account_id=destination.id,
+                category_id=None,
+                direction=EntryDirection.INCOME,
+                kind=EntryKind.TRANSFER,
+                amount=validated_amount,
+                currency=normalized_currency,
+                occurred_at=occurred_at,
+                note=normalized_note or f"Transfer from {source.name}",
+                created_by_principal_id=principal_id,
+                transfer_id=transfer_id,
+            )
+            session.add_all([source_entry, destination_entry])
+            await session.flush()
+            self._record_idempotency(
+                session=session,
+                workspace_id=workspace_id,
+                principal_id=principal_id,
+                operation="create_transfer",
+                idempotency_key=idempotency_key,
+                fingerprint=fingerprint,
+                response_entry_id=source_entry.id,
+            )
+            self._record_entry_event(
+                session=session,
+                workspace_id=workspace_id,
+                principal_id=principal_id,
+                entry=source_entry,
+                action="transfer_created",
+                event_type="finance.transfer.created",
+                request_id=request_id,
+                occurred_at=now,
+                metadata={
+                    "transfer_id": str(transfer_id),
+                    "destination_entry_id": str(destination_entry.id),
+                },
+            )
+            await session.flush()
+            result = TransferResult(
+                transfer_id=transfer_id,
+                source_entry=await self._entry_result(session, workspace_id, source_entry.id),
+                destination_entry=await self._entry_result(
+                    session, workspace_id, destination_entry.id
+                ),
             )
         return result
 
@@ -417,10 +602,35 @@ class FinanceService:
     async def summary(self, *, principal_id: UUID) -> tuple[CurrencySummary, ...]:
         async with self._database.session() as session:
             workspace_id = await self._workspace_id(session, principal_id)
-            income = sa.func.coalesce(
+            reversal = aliased(FinanceEntry)
+            is_active_standard = sa.and_(
+                FinanceEntry.kind == EntryKind.STANDARD,
+                ~sa.exists(
+                    sa.select(reversal.id).where(
+                        reversal.workspace_id == FinanceEntry.workspace_id,
+                        reversal.reversal_of_id == FinanceEntry.id,
+                    )
+                ),
+            )
+            balance = sa.func.coalesce(
                 sa.func.sum(
                     sa.case(
                         (FinanceEntry.direction == EntryDirection.INCOME, FinanceEntry.amount),
+                        else_=-FinanceEntry.amount,
+                    )
+                ),
+                0,
+            )
+            income = sa.func.coalesce(
+                sa.func.sum(
+                    sa.case(
+                        (
+                            sa.and_(
+                                is_active_standard,
+                                FinanceEntry.direction == EntryDirection.INCOME,
+                            ),
+                            FinanceEntry.amount,
+                        ),
                         else_=0,
                     )
                 ),
@@ -429,7 +639,13 @@ class FinanceService:
             expense = sa.func.coalesce(
                 sa.func.sum(
                     sa.case(
-                        (FinanceEntry.direction == EntryDirection.EXPENSE, FinanceEntry.amount),
+                        (
+                            sa.and_(
+                                is_active_standard,
+                                FinanceEntry.direction == EntryDirection.EXPENSE,
+                            ),
+                            FinanceEntry.amount,
+                        ),
                         else_=0,
                     )
                 ),
@@ -437,7 +653,7 @@ class FinanceService:
             )
             rows = (
                 await session.execute(
-                    sa.select(FinanceEntry.currency, income, expense)
+                    sa.select(FinanceEntry.currency, balance, income, expense)
                     .where(FinanceEntry.workspace_id == workspace_id)
                     .group_by(FinanceEntry.currency)
                     .order_by(FinanceEntry.currency)
@@ -446,11 +662,132 @@ class FinanceService:
         return tuple(
             CurrencySummary(
                 currency=currency,
-                balance=Decimal(income_value) - Decimal(expense_value),
+                balance=Decimal(balance_value),
                 income=Decimal(income_value),
                 expense=Decimal(expense_value),
             )
-            for currency, income_value, expense_value in rows
+            for currency, balance_value, income_value, expense_value in rows
+        )
+
+    async def _idempotency_replay(
+        self,
+        *,
+        session: AsyncSession,
+        workspace_id: UUID,
+        principal_id: UUID,
+        operation: str,
+        idempotency_key: str,
+        fingerprint: str,
+    ) -> UUID | None:
+        lock_key = (
+            f"finance:idempotency:{workspace_id}:{principal_id}:{operation}:{idempotency_key}"
+        )
+        await session.execute(sa.select(sa.func.pg_advisory_xact_lock(sa.func.hashtext(lock_key))))
+        replay = await session.scalar(
+            sa.select(FinanceIdempotency).where(
+                FinanceIdempotency.workspace_id == workspace_id,
+                FinanceIdempotency.principal_id == principal_id,
+                FinanceIdempotency.operation == operation,
+                FinanceIdempotency.key == idempotency_key,
+            )
+        )
+        if replay is None:
+            return None
+        if replay.request_fingerprint != fingerprint:
+            raise FinanceDomainError(FinanceErrorCode.IDEMPOTENCY_CONFLICT)
+        return replay.response_entry_id
+
+    @staticmethod
+    def _record_idempotency(
+        *,
+        session: AsyncSession,
+        workspace_id: UUID,
+        principal_id: UUID,
+        operation: str,
+        idempotency_key: str,
+        fingerprint: str,
+        response_entry_id: UUID,
+    ) -> None:
+        session.add(
+            FinanceIdempotency(
+                workspace_id=workspace_id,
+                principal_id=principal_id,
+                operation=operation,
+                key=idempotency_key,
+                request_fingerprint=fingerprint,
+                response_entry_id=response_entry_id,
+            )
+        )
+
+    @staticmethod
+    def _record_entry_event(
+        *,
+        session: AsyncSession,
+        workspace_id: UUID,
+        principal_id: UUID,
+        entry: FinanceEntry,
+        action: str,
+        event_type: str,
+        request_id: str | None,
+        occurred_at: datetime,
+        metadata: dict[str, object],
+    ) -> None:
+        session.add(
+            FinanceAudit(
+                workspace_id=workspace_id,
+                principal_id=principal_id,
+                action=action,
+                resource_id=entry.id,
+                request_id=request_id,
+                metadata_json=metadata,
+            )
+        )
+        session.add(
+            FinanceOutbox(
+                workspace_id=workspace_id,
+                event_type=event_type,
+                event_version=1,
+                aggregate_id=entry.transfer_id or entry.id,
+                payload={
+                    "entry_id": str(entry.id),
+                    "workspace_id": str(workspace_id),
+                    "direction": entry.direction.value,
+                    "amount": str(entry.amount),
+                    "currency": entry.currency,
+                    **metadata,
+                },
+                occurred_at=occurred_at,
+            )
+        )
+
+    async def _transfer_result_from_source(
+        self,
+        session: AsyncSession,
+        workspace_id: UUID,
+        source_entry_id: UUID,
+    ) -> TransferResult:
+        source = await session.scalar(
+            sa.select(FinanceEntry).where(
+                FinanceEntry.workspace_id == workspace_id,
+                FinanceEntry.id == source_entry_id,
+                FinanceEntry.kind == EntryKind.TRANSFER,
+            )
+        )
+        if source is None or source.transfer_id is None:
+            raise FinanceDomainError(FinanceErrorCode.IDEMPOTENCY_CONFLICT)
+        destination_entry_id = await session.scalar(
+            sa.select(FinanceEntry.id).where(
+                FinanceEntry.workspace_id == workspace_id,
+                FinanceEntry.transfer_id == source.transfer_id,
+                FinanceEntry.id != source.id,
+            )
+        )
+        if destination_entry_id is None:
+            raise FinanceDomainError(FinanceErrorCode.IDEMPOTENCY_CONFLICT)
+        return TransferResult(
+            transfer_id=source.transfer_id,
+            source_entry=await self._entry_result(session, workspace_id, source.id),
+            destination_entry=await self._entry_result(session, workspace_id, destination_entry_id),
         )
 
     async def _workspace_id(self, session: AsyncSession, principal_id: UUID) -> UUID:
@@ -533,6 +870,8 @@ def _entry_row_result(row: Sequence[object]) -> EntryResult:
         currency=entry.currency,
         occurred_at=entry.occurred_at,
         note=entry.note,
+        reversal_of_id=entry.reversal_of_id,
+        transfer_id=entry.transfer_id,
         created_at=entry.created_at,
     )
 

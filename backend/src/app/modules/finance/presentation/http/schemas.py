@@ -15,6 +15,7 @@ from app.modules.finance.application.dto import (
     CurrencySummary,
     EntryPage,
     EntryResult,
+    TransferResult,
     WorkspaceResult,
 )
 from app.modules.finance.domain.enums import EntryDirection, EntryKind
@@ -89,6 +90,22 @@ class CreateEntryRequest(_Schema):
         return value
 
 
+class CreateTransferRequest(_Schema):
+    source_account_id: UUID
+    destination_account_id: UUID
+    amount: Decimal = Field(max_digits=18, decimal_places=2, gt=0)
+    currency: str = Field(pattern=r"^[A-Za-z]{3}$")
+    occurred_at: datetime
+    note: str | None = Field(default=None, max_length=500)
+
+    @field_validator("occurred_at")
+    @classmethod
+    def require_timezone(cls, value: datetime) -> datetime:
+        if value.tzinfo is None or value.utcoffset() is None:
+            raise ValueError("occurred_at must be timezone-aware")
+        return value
+
+
 class EntryResponse(_Schema):
     id: UUID
     account_id: UUID
@@ -101,6 +118,8 @@ class EntryResponse(_Schema):
     currency: str
     occurred_at: datetime
     note: str | None
+    reversal_of_id: UUID | None
+    transfer_id: UUID | None
     created_at: datetime
 
     @classmethod
@@ -117,6 +136,20 @@ class EntryPageResponse(_Schema):
         return cls(
             items=[EntryResponse.from_result(item) for item in value.items],
             next_cursor=value.next_cursor,
+        )
+
+
+class TransferResponse(_Schema):
+    transfer_id: UUID
+    source_entry: EntryResponse
+    destination_entry: EntryResponse
+
+    @classmethod
+    def from_result(cls, value: TransferResult) -> TransferResponse:
+        return cls(
+            transfer_id=value.transfer_id,
+            source_entry=EntryResponse.from_result(value.source_entry),
+            destination_entry=EntryResponse.from_result(value.destination_entry),
         )
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, Header, Query, Request, status
 
@@ -16,10 +17,12 @@ from app.modules.finance.presentation.http.schemas import (
     CategoryResponse,
     CreateAccountRequest,
     CreateEntryRequest,
+    CreateTransferRequest,
     CurrencySummaryResponse,
     EntryPageResponse,
     EntryResponse,
     SummaryResponse,
+    TransferResponse,
     WorkspaceResponse,
 )
 from app.modules.identity.public import IdentityPrincipal
@@ -130,6 +133,53 @@ async def create_transaction(
         request_id=_request_id(request),
     )
     return EntryResponse.from_result(result)
+
+
+@router.post(
+    "/transactions/{entry_id}/reversal",
+    response_model=EntryResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Append an idempotent reversal for a standard ledger entry",
+)
+async def reverse_transaction(
+    entry_id: UUID,
+    request: Request,
+    principal: Annotated[IdentityPrincipal, Depends(require_finance_principal)],
+    idempotency_key: Annotated[str, Depends(require_idempotency_key)],
+) -> EntryResponse:
+    result = await get_container_from_app(request.app).finance.service.reverse_entry(
+        principal_id=principal.id,
+        entry_id=entry_id,
+        idempotency_key=idempotency_key,
+        request_id=_request_id(request),
+    )
+    return EntryResponse.from_result(result)
+
+
+@router.post(
+    "/transfers",
+    response_model=TransferResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Append an idempotent transfer between two scoped accounts",
+)
+async def create_transfer(
+    payload: CreateTransferRequest,
+    request: Request,
+    principal: Annotated[IdentityPrincipal, Depends(require_finance_principal)],
+    idempotency_key: Annotated[str, Depends(require_idempotency_key)],
+) -> TransferResponse:
+    result = await get_container_from_app(request.app).finance.service.create_transfer(
+        principal_id=principal.id,
+        source_account_id=payload.source_account_id,
+        destination_account_id=payload.destination_account_id,
+        amount=payload.amount,
+        currency=payload.currency,
+        occurred_at=payload.occurred_at,
+        note=payload.note,
+        idempotency_key=idempotency_key,
+        request_id=_request_id(request),
+    )
+    return TransferResponse.from_result(result)
 
 
 @router.get(

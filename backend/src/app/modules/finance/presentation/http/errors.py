@@ -12,12 +12,16 @@ from app.modules.finance.domain.errors import FinanceDomainError, FinanceErrorCo
 _NOT_FOUND = {
     FinanceErrorCode.ACCOUNT_NOT_FOUND,
     FinanceErrorCode.CATEGORY_NOT_FOUND,
+    FinanceErrorCode.ENTRY_NOT_FOUND,
 }
 _CONFLICT = {
     FinanceErrorCode.ACCOUNT_ARCHIVED,
     FinanceErrorCode.CATEGORY_DIRECTION_MISMATCH,
     FinanceErrorCode.CURRENCY_MISMATCH,
     FinanceErrorCode.IDEMPOTENCY_CONFLICT,
+    FinanceErrorCode.ENTRY_NOT_REVERSIBLE,
+    FinanceErrorCode.ENTRY_ALREADY_REVERSED,
+    FinanceErrorCode.TRANSFER_SAME_ACCOUNT,
 }
 
 

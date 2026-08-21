@@ -49,6 +49,8 @@ class EntryResult:
     currency: str
     occurred_at: datetime
     note: str | None
+    reversal_of_id: UUID | None
+    transfer_id: UUID | None
     created_at: datetime
 
 
@@ -56,6 +58,13 @@ class EntryResult:
 class EntryPage:
     items: tuple[EntryResult, ...]
     next_cursor: str | None
+
+
+@dataclass(frozen=True, slots=True)
+class TransferResult:
+    transfer_id: UUID
+    source_entry: EntryResult
+    destination_entry: EntryResult
 
 
 @dataclass(frozen=True, slots=True)
