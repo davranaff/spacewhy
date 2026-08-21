@@ -13,12 +13,14 @@ export const liquidGlass = ({
   interactive = false,
   blurred = false,
   blurStrength = 'full',
+  positioned = true,
 }: {
   theme: Theme;
   elevated?: boolean;
   interactive?: boolean;
   blurred?: boolean;
   blurStrength?: 'full' | 'surface' | 'control';
+  positioned?: boolean;
 }) => {
   const isDark = theme.palette.mode === 'dark';
 
@@ -28,20 +30,36 @@ export const liquidGlass = ({
     control: 'var(--spacewhy-glass-control-blur)',
   }[blurStrength];
 
+  const alphaVariable = {
+    full: isDark
+      ? 'var(--spacewhy-glass-floating-alpha)'
+      : 'var(--spacewhy-glass-floating-alpha-light)',
+    surface: isDark ? 'var(--spacewhy-glass-alpha)' : 'var(--spacewhy-glass-alpha-light)',
+    control: isDark
+      ? 'var(--spacewhy-glass-control-alpha)'
+      : 'var(--spacewhy-glass-control-alpha-light)',
+  }[blurStrength];
+
+  const radiusVariable = {
+    full: 'var(--spacewhy-glass-floating-radius)',
+    surface: 'var(--spacewhy-glass-surface-radius)',
+    control: 'var(--spacewhy-glass-control-radius)',
+  }[blurStrength];
+
   const elevatedShadow = isDark
-    ? '0 var(--spacewhy-glass-shadow-offset) var(--spacewhy-glass-shadow-blur) rgba(0,0,0,var(--spacewhy-glass-shadow-alpha-dark))'
-    : '0 var(--spacewhy-glass-shadow-offset) var(--spacewhy-glass-shadow-blur) rgba(26,32,44,var(--spacewhy-glass-shadow-alpha-light))';
+    ? '0 var(--spacewhy-glass-shadow-offset) var(--spacewhy-glass-shadow-blur) var(--spacewhy-glass-shadow-spread) rgba(0,0,0,var(--spacewhy-glass-shadow-alpha-dark))'
+    : '0 var(--spacewhy-glass-shadow-offset) var(--spacewhy-glass-shadow-blur) var(--spacewhy-glass-shadow-spread) rgba(26,32,44,var(--spacewhy-glass-shadow-alpha-light))';
 
   return {
-    position: 'relative',
+    ...(positioned && { position: 'relative' }),
     overflow: 'hidden',
     border: isDark
       ? '1px solid rgba(255,255,255,var(--spacewhy-glass-edge-alpha-dark))'
       : '1px solid rgba(18,24,33,var(--spacewhy-glass-edge-alpha-light))',
-    borderRadius: 'var(--spacewhy-glass-radius)',
+    borderRadius: radiusVariable,
     backgroundColor: isDark
-      ? 'rgba(9, 9, 12, var(--spacewhy-glass-alpha))'
-      : 'rgba(255, 255, 255, var(--spacewhy-glass-alpha-light))',
+      ? `rgba(9, 9, 12, ${alphaVariable})`
+      : `rgba(255, 255, 255, ${alphaVariable})`,
     backgroundImage: 'none',
     ...(blurred && {
       backdropFilter: `blur(${blurVariable}) saturate(var(--spacewhy-glass-saturation))`,
@@ -49,16 +67,20 @@ export const liquidGlass = ({
     }),
     boxShadow: elevated ? elevatedShadow : 'none',
     ...(interactive && {
-      transition: theme.transitions.create(['transform', 'border-color'], {
-        duration: 180,
-        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-      }),
-      '&:hover': {
-        borderColor: isDark ? 'rgba(255,255,255,0.20)' : 'rgba(18,24,33,0.18)',
-        transform: 'translateY(-1px) scale(1.006)',
+      transition:
+        'transform var(--spacewhy-glass-motion-duration) cubic-bezier(0.16, 1, 0.3, 1), border-color 160ms ease',
+      '@media (hover: hover) and (pointer: fine)': {
+        '&:hover': {
+          borderColor: isDark ? 'rgba(255,255,255,0.20)' : 'rgba(18,24,33,0.18)',
+          transform: 'translateY(-1px) scale(1.006)',
+        },
       },
       '&:active': {
         transform: 'translateY(0) scale(0.985)',
+      },
+      '&:focus-visible': {
+        outline: `2px solid ${theme.palette.primary.main}`,
+        outlineOffset: 2,
       },
     }),
   } as const;

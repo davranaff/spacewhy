@@ -2,6 +2,8 @@ import dynamic from 'next/dynamic';
 // @mui
 import { alpha } from '@mui/material/styles';
 import Skeleton from '@mui/material/Skeleton';
+// brand
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
 //
 import { EditorProps } from './types';
 import { StyledEditor } from './styles';
@@ -33,7 +35,7 @@ const ReactQuill = dynamic(
 // ----------------------------------------------------------------------
 
 export default function Editor({
-  id = 'minimal-quill',
+  id = SPACEWHY_BRAND.editorId,
   error,
   simple = false,
   helperText,

@@ -25,10 +25,11 @@ import {
 // ----------------------------------------------------------------------
 
 type Props = {
+  openNav?: boolean;
   onOpenNav?: VoidFunction;
 };
 
-export default function Header({ onOpenNav }: Props) {
+export default function Header({ openNav, onOpenNav }: Props) {
   const theme = useTheme();
 
   const settings = useSettingsContext();
@@ -48,7 +49,12 @@ export default function Header({ onOpenNav }: Props) {
       {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />}
 
       {!lgUp && (
-        <IconButton onClick={onOpenNav}>
+        <IconButton
+          aria-label="Open navigation"
+          aria-expanded={openNav}
+          aria-controls="dashboard-navigation-drawer"
+          onClick={onOpenNav}
+        >
           <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
         </IconButton>
       )}
@@ -78,6 +84,8 @@ export default function Header({ onOpenNav }: Props) {
   return (
     <AppBar
       sx={{
+        top: 0,
+        position: 'fixed',
         height: HEADER.H_MOBILE,
         zIndex: theme.zIndex.appBar + 1,
         borderBottom: '1px solid',
@@ -94,19 +102,24 @@ export default function Header({ onOpenNav }: Props) {
           duration: theme.transitions.duration.shorter,
         }),
         ...(lgUp && {
-          width: `calc(100% - ${NAV.W_VERTICAL + 1}px)`,
+          width: 'auto',
+          left: theme.direction === 'ltr' ? NAV.W_VERTICAL + 1 : 0,
+          right: theme.direction === 'ltr' ? 0 : NAV.W_VERTICAL + 1,
           height: HEADER.H_DESKTOP,
           ...(offsetTop && {
             height: HEADER.H_DESKTOP_OFFSET,
           }),
           ...(isNavHorizontal && {
             width: 1,
+            left: 0,
+            right: 0,
             bgcolor: 'transparent',
             height: HEADER.H_DESKTOP_OFFSET,
             borderBottom: `dashed 1px ${theme.palette.divider}`,
           }),
           ...(isNavMini && {
-            width: `calc(100% - ${NAV.W_MINI + 1}px)`,
+            left: theme.direction === 'ltr' ? NAV.W_MINI + 1 : 0,
+            right: theme.direction === 'ltr' ? 0 : NAV.W_MINI + 1,
           }),
         }),
       }}

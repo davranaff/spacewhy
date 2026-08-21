@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, AnchorHTMLAttributes } from 'react';
+import { forwardRef, useRef, AnchorHTMLAttributes } from 'react';
 import Link, { LinkProps } from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -11,11 +11,23 @@ type RouterLinkProps = LinkProps & Omit<AnchorHTMLAttributes<HTMLAnchorElement>,
 const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
   ({ href, prefetch = false, onFocus, onMouseEnter, onPointerDown, ...other }, ref) => {
     const router = useRouter();
+    const prefetchedRoute = useRef<string | null>(null);
 
-    const prefetchOnIntent = () => {
+    const prefetchOnIntent = (defaultPrevented: boolean) => {
       const route = typeof href === 'string' ? href : href.pathname;
+      const normalizedRoute =
+        typeof route === 'string' ? route.split(/[?#]/)[0].replace(/\/+$/, '') || '/' : '';
+      const normalizedPathname = window.location.pathname.replace(/\/+$/, '') || '/';
 
-      if (prefetch !== true && typeof route === 'string' && route.startsWith('/')) {
+      if (
+        !defaultPrevented &&
+        prefetch !== true &&
+        typeof route === 'string' &&
+        route.startsWith('/') &&
+        prefetchedRoute.current !== route &&
+        normalizedRoute !== normalizedPathname
+      ) {
+        prefetchedRoute.current = route;
         router.prefetch(route);
       }
     };
@@ -27,15 +39,17 @@ const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
         prefetch={prefetch}
         onFocus={(event) => {
           onFocus?.(event);
-          prefetchOnIntent();
+          prefetchOnIntent(event.defaultPrevented);
         }}
         onMouseEnter={(event) => {
           onMouseEnter?.(event);
-          prefetchOnIntent();
+          prefetchOnIntent(event.defaultPrevented);
         }}
         onPointerDown={(event) => {
           onPointerDown?.(event);
-          prefetchOnIntent();
+          if (event.button === 0) {
+            prefetchOnIntent(event.defaultPrevented);
+          }
         }}
         {...other}
       />

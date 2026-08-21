@@ -6,7 +6,12 @@ import { NavItemMobileProps } from '../types';
 
 // ----------------------------------------------------------------------
 
-type ListItemProps = Omit<NavItemMobileProps, 'item'>;
+type ListItemProps = Omit<NavItemMobileProps, 'item'> & {
+  component?: React.ElementType;
+  href?: string;
+  target?: React.HTMLAttributeAnchorTarget;
+  rel?: string;
+};
 
 export const ListItem = styled(ListItemButton, {
   shouldForwardProp: (prop) => prop !== 'active',

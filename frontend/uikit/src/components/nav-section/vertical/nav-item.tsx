@@ -1,6 +1,5 @@
 // @mui
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Tooltip from '@mui/material/Tooltip';
 import ListItemText from '@mui/material/ListItemText';
 // routes
@@ -31,14 +30,7 @@ export default function NavItem({
   const subItem = depth !== 1;
 
   const renderContent = (
-    <StyledItem
-      disableGutters
-      disabled={disabled}
-      active={active}
-      depth={depth}
-      config={config}
-      {...other}
-    >
+    <>
       <>
         {icon && <StyledIcon size={config.iconSize}>{icon}</StyledIcon>}
 
@@ -87,7 +79,7 @@ export default function NavItem({
           sx={{ ml: 1, flexShrink: 0 }}
         />
       )}
-    </StyledItem>
+    </>
   );
 
   // Hidden item by role
@@ -95,44 +87,39 @@ export default function NavItem({
     return null;
   }
 
+  const itemProps = {
+    disableGutters: true,
+    disabled,
+    active,
+    depth,
+    config,
+    ...other,
+  };
+
+  // Items with children are disclosure buttons, never links.
+  if (children) {
+    return <StyledItem {...itemProps}>{renderContent}</StyledItem>;
+  }
+
   // External link
-  if (externalLink)
+  if (externalLink) {
     return (
-      <Link
+      <StyledItem
+        {...itemProps}
+        component="a"
         href={path}
         target="_blank"
-        rel="noopener"
-        underline="none"
-        color="inherit"
-        sx={{
-          ...(disabled && {
-            cursor: 'default',
-          }),
-        }}
+        rel="noopener noreferrer"
       >
         {renderContent}
-      </Link>
+      </StyledItem>
     );
-
-  // Has child
-  if (children) {
-    return renderContent;
   }
 
   // Default
   return (
-    <Link
-      component={RouterLink}
-      href={path}
-      underline="none"
-      color="inherit"
-      sx={{
-        ...(disabled && {
-          cursor: 'default',
-        }),
-      }}
-    >
+    <StyledItem {...itemProps} component={RouterLink} href={path}>
       {renderContent}
-    </Link>
+    </StyledItem>
   );
 }

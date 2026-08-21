@@ -6,8 +6,8 @@ import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 // components
-import Image from 'src/components/image';
 import { MotionViewport, varFade } from 'src/components/animate';
+import HomeInterfacePreview from './home-interface-preview';
 
 // ----------------------------------------------------------------------
 
@@ -46,27 +46,33 @@ export default function HomeCleanInterfaces() {
   );
 
   const renderContent = (
-    <Box sx={{ position: 'relative' }}>
-      {[...Array(10)].map((_, index) => (
-        <Box
-          key={index}
-          component={m.div}
-          variants={varFade().inUp}
-          sx={{
-            top: 0,
-            left: 0,
+    <Box sx={{ position: 'relative', pt: { xs: 6, md: 12 }, px: { xs: 0, md: 4 } }}>
+      <Box
+        component={m.div}
+        variants={varFade().inUp}
+        sx={{
+          maxWidth: 1040,
+          mx: 'auto',
+          position: 'relative',
+          isolation: 'isolate',
+          '&::before, &::after': {
+            content: "''",
+            inset: 0,
+            zIndex: -1,
             position: 'absolute',
-            ...(index === 0 && { zIndex: 8 }),
-            ...(index === 9 && { position: 'relative', zIndex: 9 }),
-          }}
-        >
-          <Image
-            disabledEffect
-            alt={`clean-${index + 1}`}
-            src={`/assets/images/home/clean/page_${index + 1}.webp`}
-          />
-        </Box>
-      ))}
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 3,
+          },
+          '&::before': { transform: 'translate3d(-18px, 18px, 0)', opacity: 0.48 },
+          '&::after': { transform: 'translate3d(18px, 36px, 0)', opacity: 0.24 },
+        }}
+      >
+        <HomeInterfacePreview
+          variant="catalog"
+          label="Spacewhy component catalog interface preview"
+        />
+      </Box>
     </Box>
   );
 

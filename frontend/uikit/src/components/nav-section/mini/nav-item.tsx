@@ -1,7 +1,6 @@
 import { forwardRef } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import Link from '@mui/material/Link';
 import Tooltip from '@mui/material/Tooltip';
 import ListItemText from '@mui/material/ListItemText';
 // routes
@@ -27,16 +26,7 @@ const NavItem = forwardRef<HTMLDivElement, Props>(
     const subItem = depth !== 1;
 
     const renderContent = (
-      <StyledItem
-        disableGutters
-        ref={ref}
-        open={open}
-        depth={depth}
-        active={active}
-        disabled={disabled}
-        config={config}
-        {...other}
-      >
+      <>
         {icon && <StyledIcon size={config.iconSize}>{icon}</StyledIcon>}
 
         {!(config.hiddenLabel && !subItem) && (
@@ -95,7 +85,7 @@ const NavItem = forwardRef<HTMLDivElement, Props>(
             }}
           />
         )}
-      </StyledItem>
+      </>
     );
 
     // Hidden item by role
@@ -103,40 +93,42 @@ const NavItem = forwardRef<HTMLDivElement, Props>(
       return null;
     }
 
+    const itemProps = {
+      disableGutters: true,
+      ref,
+      open,
+      depth,
+      active,
+      disabled,
+      config,
+      ...other,
+    };
+
+    // Items with children are disclosure buttons, never links.
+    if (children) {
+      return <StyledItem {...itemProps}>{renderContent}</StyledItem>;
+    }
+
     // External link
-    if (externalLink)
+    if (externalLink) {
       return (
-        <Link
+        <StyledItem
+          {...itemProps}
+          component="a"
           href={path}
           target="_blank"
-          rel="noopener"
-          underline="none"
-          sx={{
-            width: 1,
-            ...(disabled && {
-              cursor: 'default',
-            }),
-          }}
+          rel="noopener noreferrer"
         >
           {renderContent}
-        </Link>
+        </StyledItem>
       );
+    }
 
     // Default
     return (
-      <Link
-        component={RouterLink}
-        href={path}
-        underline="none"
-        sx={{
-          width: 1,
-          ...(disabled && {
-            cursor: 'default',
-          }),
-        }}
-      >
+      <StyledItem {...itemProps} component={RouterLink} href={path}>
         {renderContent}
-      </Link>
+      </StyledItem>
     );
   }
 );

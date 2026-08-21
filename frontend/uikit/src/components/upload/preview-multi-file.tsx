@@ -53,9 +53,12 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
 
               {onRemove && (
                 <IconButton
+                  aria-label={`Remove ${name || 'file'}`}
                   size="small"
                   onClick={() => onRemove(file)}
                   sx={{
+                    width: 24,
+                    height: 24,
                     p: 0.5,
                     top: 4,
                     right: 4,
@@ -103,7 +106,11 @@ export default function MultiFilePreview({ thumbnail, files, onRemove, sx }: Upl
             />
 
             {onRemove && (
-              <IconButton size="small" onClick={() => onRemove(file)}>
+              <IconButton
+                aria-label={`Remove ${isNotFormatFile ? file : name || 'file'}`}
+                size="small"
+                onClick={() => onRemove(file)}
+              >
                 <Iconify icon="mingcute:close-line" width={16} />
               </IconButton>
             )}

@@ -1,13 +1,30 @@
-## NODE.JS
+# Spacewhy Web UI Kit
 
-- Node 16.x || 18.x
+Next.js App Router, React, TypeScript and MUI web UI kit with Spacewhy Liquid
+Glass, public pages, auth variants, dashboard templates and a complete component
+catalog.
 
-## USING YARN (Recommend)
+The agent-facing documentation starts at [docs/README.md](docs/README.md).
+Cross-platform rules shared with the React Native kit are documented in
+[../docs/README.md](../docs/README.md).
 
-- yarn install
-- yarn dev
+## Run locally
 
-## USING NPM
+```sh
+npm install
+npm run dev
+```
 
-- npm i OR npm i --legacy-peer-deps
-- npm run dev
+The development server uses `http://localhost:8081`.
+
+## Required checks
+
+```sh
+npm test
+npm run lint -- --no-cache
+npx tsc --noEmit --incremental false
+npm run build
+```
+
+Do not remove routes or component variants during visual refactors. The web kit
+is the source of truth for shared component anatomy and parity inventory.

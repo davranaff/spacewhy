@@ -132,7 +132,11 @@ export default function FirebaseLoginView() {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={password.onToggle} edge="end">
+              <IconButton
+                aria-label={password.value ? 'Hide password' : 'Show password'}
+                onClick={password.onToggle}
+                edge="end"
+              >
                 <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
               </IconButton>
             </InputAdornment>
@@ -180,15 +184,15 @@ export default function FirebaseLoginView() {
       </Divider>
 
       <Stack direction="row" justifyContent="center" spacing={2}>
-        <IconButton onClick={handleGoogleLogin}>
+        <IconButton aria-label="Continue with Google" onClick={handleGoogleLogin}>
           <Iconify icon="eva:google-fill" color="#DF3E30" />
         </IconButton>
 
-        <IconButton color="inherit" onClick={handleGithubLogin}>
+        <IconButton aria-label="Continue with GitHub" color="inherit" onClick={handleGithubLogin}>
           <Iconify icon="eva:github-fill" />
         </IconButton>
 
-        <IconButton onClick={handleTwitterLogin}>
+        <IconButton aria-label="Continue with Twitter" onClick={handleTwitterLogin}>
           <Iconify icon="eva:twitter-fill" color="#1C9CEA" />
         </IconButton>
       </Stack>

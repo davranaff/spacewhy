@@ -10,6 +10,10 @@ import { NavItemProps, NavConfigProps } from '../types';
 
 type StyledItemProps = Omit<NavItemProps, 'item'> & {
   config: NavConfigProps;
+  component?: React.ElementType;
+  href?: string;
+  target?: React.HTMLAttributeAnchorTarget;
+  rel?: string;
 };
 
 export const StyledItem = styled(ListItemButton, {

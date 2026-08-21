@@ -64,7 +64,12 @@ export default function SnackbarProvider({ children }: Props) {
       }}
       // with close as default
       action={(snackbarId) => (
-        <IconButton size="small" onClick={() => closeSnackbar(snackbarId)} sx={{ p: 0.5 }}>
+        <IconButton
+          aria-label="Dismiss notification"
+          size="small"
+          onClick={() => closeSnackbar(snackbarId)}
+          sx={{ p: 0.5 }}
+        >
           <Iconify width={16} icon="mingcute:close-line" />
         </IconButton>
       )}

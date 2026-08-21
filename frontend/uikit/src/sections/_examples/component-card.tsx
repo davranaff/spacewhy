@@ -1,9 +1,9 @@
 import { m } from 'framer-motion';
 // @mui
 import { alpha } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import CardActionArea from '@mui/material/CardActionArea';
 // components
 import Image from 'src/components/image';
 import { RouterLink } from 'src/routes/components';
@@ -33,7 +33,7 @@ export default function ComponentCard({ item }: Props) {
         borderColor: (theme) => alpha(theme.palette.grey[500], 0.08),
       }}
     >
-      <CardActionArea
+      <Box
         component={m.div}
         whileHover="hover"
         sx={{
@@ -46,7 +46,7 @@ export default function ComponentCard({ item }: Props) {
         <m.div variants={varHover(1.1)} transition={varTranHover()}>
           <Image alt={name} src={icon} />
         </m.div>
-      </CardActionArea>
+      </Box>
 
       <Typography variant="subtitle2" sx={{ p: 2, textAlign: 'center' }}>
         {name}

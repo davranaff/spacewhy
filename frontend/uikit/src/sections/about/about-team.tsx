@@ -42,13 +42,13 @@ export default function AboutTeam() {
     <Container component={MotionViewport} sx={{ textAlign: 'center', py: { xs: 10, md: 15 } }}>
       <m.div variants={varFade().inDown}>
         <Typography variant="overline" sx={{ color: 'text.disabled' }}>
-          Dream team
+          Spacewhy team
         </Typography>
       </m.div>
 
       <m.div variants={varFade().inUp}>
         <Typography variant="h2" sx={{ my: 3 }}>
-          Great team is the key
+          People behind the system
         </Typography>
       </m.div>
 
@@ -60,8 +60,8 @@ export default function AboutTeam() {
             color: 'text.secondary',
           }}
         >
-          Spacewhy will provide you support if you have any problems, our support team will reply
-          within a day and we also have detailed documentation.
+          Product designers and engineers shaping one shared language across web and native
+          experiences.
         </Typography>
       </m.div>
 
@@ -109,7 +109,7 @@ export default function AboutTeam() {
         endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={24} />}
         sx={{ mx: 'auto' }}
       >
-        All Members
+        Meet the team
       </Button>
     </Container>
   );

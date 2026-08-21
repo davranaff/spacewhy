@@ -26,10 +26,10 @@ export default function HomeLookingFor() {
       variant="outlined"
       target="_blank"
       rel="noopener"
-      href={paths.zoneUI}
+      href={paths.website}
       endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
     >
-      Visit Zone Landing Page
+      Visit Spacewhy
     </Button>
   );
 
@@ -44,7 +44,7 @@ export default function HomeLookingFor() {
     >
       <m.div variants={varFade().inDown}>
         <Typography variant="overline" component="div" sx={{ color: 'text.disabled' }}>
-          Looking For a
+          Built for ambitious
         </Typography>
       </m.div>
 
@@ -56,7 +56,7 @@ export default function HomeLookingFor() {
             mb: { md: 5 },
           }}
         >
-          Landing Page Template?
+          Product teams
         </Typography>
       </m.div>
 
@@ -78,7 +78,11 @@ export default function HomeLookingFor() {
 
         <Grid xs={12} md={7}>
           <m.div variants={varFade().inUp}>
-            <Image disabledEffect alt="rocket" src="/assets/images/home/zone_landing.webp" />
+            <Image
+              disabledEffect
+              alt="Spacewhy interface system across desktop, tablet and mobile"
+              src="/assets/images/home/spacewhy_ecosystem.webp"
+            />
           </m.div>
         </Grid>
 

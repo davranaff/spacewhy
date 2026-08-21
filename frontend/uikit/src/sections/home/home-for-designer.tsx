@@ -14,6 +14,7 @@ import { textGradient, bgGradient } from 'src/theme/css';
 import { paths } from 'src/routes/paths';
 // components
 import Iconify from 'src/components/iconify';
+import { RouterLink } from 'src/routes/components';
 import { MotionViewport, varFade } from 'src/components/animate';
 
 // ----------------------------------------------------------------------
@@ -27,7 +28,7 @@ export default function HomeForDesigner() {
     <Box sx={{ textAlign: { xs: 'center', md: 'unset' }, mt: { xs: 10, md: 20 } }}>
       <m.div variants={varFade().inUp}>
         <Typography component="div" variant="overline" sx={{ color: 'text.disabled' }}>
-          Professional Kit
+          Spacewhy design workspace
         </Typography>
       </m.div>
 
@@ -42,21 +43,20 @@ export default function HomeForDesigner() {
             ),
           }}
         >
-          For Designer
+          For product designers
         </Typography>
       </m.div>
 
       <m.div variants={varFade().inUp}>
         <Button
+          component={RouterLink}
           color="inherit"
           size="large"
           variant="contained"
           endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
-          target="_blank"
-          rel="noopener"
-          href={paths.figma}
+          href={paths.designSystem}
         >
-          Figma Workspace
+          Explore Design System
         </Button>
       </m.div>
     </Box>
@@ -65,7 +65,7 @@ export default function HomeForDesigner() {
   const renderImg = (
     <Box
       component={m.img}
-      src="/assets/images/home/for_designer.webp"
+      src="/assets/images/home/spacewhy_design_system.webp"
       variants={varFade().in}
       sx={{
         height: 1,
@@ -90,7 +90,7 @@ export default function HomeForDesigner() {
         ...bgGradient({
           startColor: `${theme.palette.grey[900]} 25%`,
           endColor: alpha(theme.palette.grey[900], 0),
-          imgUrl: '/assets/images/home/for_designer.webp',
+          imgUrl: '/assets/images/home/spacewhy_design_system.webp',
         }),
         ...(upMd && {
           ...bgGradient({

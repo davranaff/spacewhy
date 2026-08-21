@@ -107,7 +107,11 @@ export default function AmplifyLoginView() {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={password.onToggle} edge="end">
+              <IconButton
+                aria-label={password.value ? 'Hide password' : 'Show password'}
+                onClick={password.onToggle}
+                edge="end"
+              >
                 <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
               </IconButton>
             </InputAdornment>

@@ -25,22 +25,18 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(
           alignItems: 'center',
           justifyContent: 'center',
           color: 'text.primary',
-          border: '1px solid',
-          borderColor: 'divider',
-          borderRadius: 'calc(var(--spacewhy-glass-radius) * 0.62)',
-          bgcolor: 'background.neutral',
           backgroundImage: 'none',
           boxShadow: 'none',
           ...sx,
         }}
         {...other}
       >
-        <svg width="18" height="26" viewBox="0 0 48 64" aria-hidden="true">
+        <svg width="25" height="34" viewBox="0 0 48 64" aria-hidden="true">
           <path
             d="M24 3 C29.5 9 33 18.5 33 28 C33 33.5 33 38 33 41 C36 44 39.5 46.5 41.5 50 C37.5 48.5 34.5 47.5 33 46 C33 47.5 33 48.5 32.5 49 L15.5 49 C15 48.5 15 47.5 15 46 C13.5 47.5 10.5 48.5 6.5 50 C8.5 46.5 12 44 15 41 C15 38 15 33.5 15 28 C15 18.5 18.5 9 24 3 Z"
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth="1.4"
             strokeLinejoin="round"
           />
           <path

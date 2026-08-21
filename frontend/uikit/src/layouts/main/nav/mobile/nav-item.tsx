@@ -1,5 +1,4 @@
 // @mui
-import Link from '@mui/material/Link';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 // routes
@@ -22,7 +21,7 @@ export default function NavItem({
   const { title, path, icon, children } = item;
 
   const renderContent = (
-    <ListItem active={active} {...other}>
+    <>
       <ListItemIcon> {icon} </ListItemIcon>
 
       <ListItemText disableTypography primary={title} />
@@ -34,27 +33,29 @@ export default function NavItem({
           sx={{ ml: 1 }}
         />
       )}
-    </ListItem>
+    </>
   );
+
+  const itemProps = { active, ...other };
 
   // External link
   if (externalLink) {
     return (
-      <Link href={path} target="_blank" rel="noopener" underline="none">
+      <ListItem {...itemProps} component="a" href={path} target="_blank" rel="noopener noreferrer">
         {renderContent}
-      </Link>
+      </ListItem>
     );
   }
 
   // Has child
   if (children) {
-    return renderContent;
+    return <ListItem {...itemProps}>{renderContent}</ListItem>;
   }
 
   // Default
   return (
-    <Link component={RouterLink} href={path} underline="none">
+    <ListItem {...itemProps} component={RouterLink} href={path}>
       {renderContent}
-    </Link>
+    </ListItem>
   );
 }

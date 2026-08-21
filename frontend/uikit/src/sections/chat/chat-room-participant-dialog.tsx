@@ -21,8 +21,18 @@ type Props = {
 
 export default function ChatRoomParticipantDialog({ participant, open, onClose }: Props) {
   return (
-    <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose}>
-      <IconButton onClick={onClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+    <Dialog
+      fullWidth
+      maxWidth="xs"
+      open={open}
+      onClose={onClose}
+      aria-labelledby="chat-participant-dialog-title"
+    >
+      <IconButton
+        aria-label="Close participant details"
+        onClick={onClose}
+        sx={{ position: 'absolute', right: 8, top: 8 }}
+      >
         <Iconify icon="mingcute:close-line" />
       </IconButton>
 
@@ -38,7 +48,9 @@ export default function ChatRoomParticipantDialog({ participant, open, onClose }
             {participant.role}
           </Typography>
 
-          <Typography variant="subtitle1">{participant.name}</Typography>
+          <Typography id="chat-participant-dialog-title" variant="subtitle1">
+            {participant.name}
+          </Typography>
 
           <Stack direction="row" sx={{ typography: 'caption', color: 'text.disabled' }}>
             <Iconify
@@ -51,6 +63,7 @@ export default function ChatRoomParticipantDialog({ participant, open, onClose }
 
           <Stack spacing={1} direction="row" sx={{ pt: 1.5 }}>
             <IconButton
+              aria-label={`Call ${participant.name}`}
               size="small"
               color="error"
               sx={{
@@ -65,6 +78,7 @@ export default function ChatRoomParticipantDialog({ participant, open, onClose }
             </IconButton>
 
             <IconButton
+              aria-label={`Message ${participant.name}`}
               size="small"
               color="info"
               sx={{
@@ -79,6 +93,7 @@ export default function ChatRoomParticipantDialog({ participant, open, onClose }
             </IconButton>
 
             <IconButton
+              aria-label={`Email ${participant.name}`}
               size="small"
               color="primary"
               sx={{
@@ -93,6 +108,7 @@ export default function ChatRoomParticipantDialog({ participant, open, onClose }
             </IconButton>
 
             <IconButton
+              aria-label={`Video call ${participant.name}`}
               size="small"
               color="secondary"
               sx={{

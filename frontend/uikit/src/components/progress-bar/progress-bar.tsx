@@ -1,12 +1,15 @@
 'use client';
 
-import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { useEffect, useRef } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 import NProgress from 'nprogress';
 import StyledProgressBar from './styles';
 
 export default function ProgressBar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const search = searchParams.toString();
+  const committedRoute = useRef(`${pathname}${search ? `?${search}` : ''}`);
 
   useEffect(() => {
     NProgress.configure({
@@ -31,7 +34,14 @@ export default function ProgressBar() {
       const target = event.target instanceof Element ? event.target : null;
       const anchor = target?.closest<HTMLAnchorElement>('a[href]');
 
-      if (!anchor || anchor.target === '_blank' || anchor.hasAttribute('download')) {
+      const targetName = anchor?.getAttribute('target');
+
+      if (
+        !anchor ||
+        (targetName && targetName !== '_self') ||
+        anchor.hasAttribute('download') ||
+        anchor.getAttribute('aria-disabled') === 'true'
+      ) {
         return;
       }
 
@@ -46,21 +56,28 @@ export default function ProgressBar() {
       }
     };
 
-    const handleHistoryNavigation = () => NProgress.start();
+    const handleHistoryNavigation = () => {
+      const nextRoute = `${window.location.pathname}${window.location.search}`;
 
-    document.addEventListener('click', handleAnchorClick, true);
+      if (nextRoute !== committedRoute.current) {
+        NProgress.start();
+      }
+    };
+
+    document.addEventListener('click', handleAnchorClick);
     window.addEventListener('popstate', handleHistoryNavigation);
 
     return () => {
-      document.removeEventListener('click', handleAnchorClick, true);
+      document.removeEventListener('click', handleAnchorClick);
       window.removeEventListener('popstate', handleHistoryNavigation);
       NProgress.remove();
     };
   }, []);
 
   useEffect(() => {
+    committedRoute.current = `${pathname}${search ? `?${search}` : ''}`;
     NProgress.done();
-  }, [pathname]);
+  }, [pathname, search]);
 
   return <StyledProgressBar />;
 }

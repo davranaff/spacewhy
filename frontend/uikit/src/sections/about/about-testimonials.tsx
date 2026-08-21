@@ -32,7 +32,7 @@ export default function AboutTestimonials() {
 
   const renderLink = (
     <Button color="primary" endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}>
-      Read more testimonials
+      Read product stories
     </Button>
   );
 
@@ -51,16 +51,15 @@ export default function AboutTestimonials() {
 
       <m.div variants={varFade().inUp}>
         <Typography variant="h2" sx={{ my: 3, color: 'common.white' }}>
-          Who love <br />
-          my work
+          Built for teams <br />
+          that ship
         </Typography>
       </m.div>
 
       <m.div variants={varFade().inUp}>
         <Typography sx={{ color: 'common.white' }}>
-          Our goal is to create a product and service that you’re satisfied with and use it every
-          day. This is why we’re constantly working on our services to make it better every day and
-          really listen to what our users has to say.
+          The catalog is structured for real delivery: predictable component contracts, production
+          routes and an interface language that stays coherent as a product grows.
         </Typography>
       </m.div>
 

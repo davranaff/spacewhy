@@ -28,21 +28,27 @@ export default function RHFRadioGroup({
 }: Props) {
   const { control } = useFormContext();
 
-  const labelledby = label ? `${name}-${label}` : '';
+  const labelId = label ? `${name}-label` : undefined;
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <FormControl component="fieldset">
+        <FormControl component="fieldset" error={!!error}>
           {label && (
-            <FormLabel component="legend" id={labelledby} sx={{ typography: 'body2' }}>
+            <FormLabel component="legend" id={labelId} sx={{ typography: 'body2' }}>
               {label}
             </FormLabel>
           )}
 
-          <RadioGroup {...field} aria-labelledby={labelledby} row={row} {...other}>
+          <RadioGroup
+            {...field}
+            aria-labelledby={labelId}
+            aria-describedby={error || helperText ? `${name}-helper-text` : undefined}
+            row={row}
+            {...other}
+          >
             {options.map((option) => (
               <FormControlLabel
                 key={option.value}
@@ -65,7 +71,7 @@ export default function RHFRadioGroup({
           </RadioGroup>
 
           {(!!error || helperText) && (
-            <FormHelperText error={!!error} sx={{ mx: 0 }}>
+            <FormHelperText id={`${name}-helper-text`} error={!!error} sx={{ mx: 0 }}>
               {error ? error?.message : helperText}
             </FormHelperText>
           )}

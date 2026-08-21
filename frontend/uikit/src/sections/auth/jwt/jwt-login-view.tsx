@@ -18,6 +18,7 @@ import { useRouter, useSearchParams } from 'src/routes/hook';
 import { RouterLink } from 'src/routes/components';
 // config
 import { PATH_AFTER_LOGIN } from 'src/config-global';
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // auth
@@ -52,7 +53,7 @@ export default function JwtLoginView() {
   });
 
   const defaultValues = {
-    email: 'demo@minimals.cc',
+    email: SPACEWHY_BRAND.demoEmail,
     password: 'demo1234',
   };
 
@@ -113,7 +114,11 @@ export default function JwtLoginView() {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={password.onToggle} edge="end">
+              <IconButton
+                aria-label={password.value ? 'Hide password' : 'Show password'}
+                onClick={password.onToggle}
+                edge="end"
+              >
                 <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
               </IconButton>
             </InputAdornment>
@@ -121,9 +126,9 @@ export default function JwtLoginView() {
         }}
       />
 
-      <Link variant="body2" color="inherit" underline="always" sx={{ alignSelf: 'flex-end' }}>
-        Forgot password?
-      </Link>
+      <Typography variant="body2" color="text.secondary" sx={{ alignSelf: 'flex-end' }}>
+        Local demo access uses the credentials below.
+      </Typography>
 
       <LoadingButton
         fullWidth
@@ -143,7 +148,8 @@ export default function JwtLoginView() {
       {renderHead}
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        Use email : <strong>demo@minimals.cc</strong> / password :<strong> demo1234</strong>
+        Use email : <strong>{SPACEWHY_BRAND.demoEmail}</strong> / password :
+        <strong> demo1234</strong>
       </Alert>
 
       {renderForm}

@@ -24,11 +24,14 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 
 // ----------------------------------------------------------------------
 
+import { Suspense } from 'react';
+
 // locales
 import { LocalizationProvider } from 'src/locales';
 // theme
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
 // components
 import ProgressBar from 'src/components/progress-bar';
 import MotionLazy from 'src/components/animate/motion-lazy';
@@ -43,7 +46,7 @@ import { AuthProvider } from 'src/auth/context/jwt';
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Spacewhy UI Kit',
+  title: SPACEWHY_BRAND.productName,
   description:
     'Spacewhy Liquid Glass UI Kit — a complete light and dark Material UI dashboard and component system.',
   keywords: 'spacewhy,react,material,ui kit,liquid glass,dashboard,admin,template',
@@ -106,7 +109,9 @@ export default function RootLayout({ children }: Props) {
                 <MotionLazy>
                   <SnackbarProvider>
                     <LazySettingsDrawer />
-                    <ProgressBar />
+                    <Suspense fallback={null}>
+                      <ProgressBar />
+                    </Suspense>
                     {children}
                   </SnackbarProvider>
                 </MotionLazy>

@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useId, useState, useEffect, useRef, useCallback } from 'react';
 // @mui
+import { useTheme } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
-import { appBarClasses } from '@mui/material/AppBar';
 import Popover, { popoverClasses } from '@mui/material/Popover';
 // routes
 import { usePathname } from 'src/routes/hook';
@@ -20,6 +20,10 @@ type NavListRootProps = {
 };
 
 export default function NavList({ data, depth, hasChild, config }: NavListRootProps) {
+  const theme = useTheme();
+
+  const popoverId = useId();
+
   const navRef = useRef(null);
 
   const pathname = usePathname();
@@ -37,35 +41,31 @@ export default function NavList({ data, depth, hasChild, config }: NavListRootPr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  useEffect(() => {
-    const appBarEl = Array.from(
-      document.querySelectorAll(`.${appBarClasses.root}`)
-    ) as Array<HTMLElement>;
-
-    // Reset styles when hover
-    const styles = () => {
-      document.body.style.overflow = '';
-      document.body.style.padding = '';
-      // Apply for Window
-      appBarEl.forEach((elem) => {
-        elem.style.padding = '';
-      });
-    };
-
-    if (open) {
-      styles();
-    } else {
-      styles();
+  const handleOpen = useCallback(() => {
+    if (hasChild) {
+      setOpen(true);
     }
-  }, [open]);
+  }, [hasChild]);
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, []);
+
+  const handleToggle = useCallback(() => {
+    if (hasChild) {
+      setOpen((currentOpen) => !currentOpen);
+    }
+  }, [hasChild]);
+
+  const isRtl = theme.direction === 'rtl';
+
+  const transformHorizontal = isRtl ? 'right' : 'left';
+
+  let anchorHorizontal: 'left' | 'right' = isRtl ? 'left' : 'right';
+
+  if (depth === 1) {
+    anchorHorizontal = transformHorizontal;
+  }
 
   return (
     <>
@@ -76,6 +76,15 @@ export default function NavList({ data, depth, hasChild, config }: NavListRootPr
         open={open}
         active={active}
         externalLink={externalLink}
+        aria-controls={hasChild && open ? popoverId : undefined}
+        aria-expanded={hasChild ? open : undefined}
+        aria-haspopup={hasChild ? true : undefined}
+        onClick={hasChild ? handleToggle : undefined}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') {
+            handleClose();
+          }
+        }}
         onMouseEnter={handleOpen}
         onMouseLeave={handleClose}
         config={config}
@@ -83,19 +92,24 @@ export default function NavList({ data, depth, hasChild, config }: NavListRootPr
 
       {hasChild && (
         <Popover
+          id={popoverId}
           open={open}
+          onClose={handleClose}
+          disableScrollLock
           anchorEl={navRef.current}
           anchorOrigin={
             depth === 1
-              ? { vertical: 'bottom', horizontal: 'left' }
-              : { vertical: 'center', horizontal: 'right' }
+              ? { vertical: 'bottom', horizontal: anchorHorizontal }
+              : { vertical: 'center', horizontal: anchorHorizontal }
           }
           transformOrigin={
             depth === 1
-              ? { vertical: 'top', horizontal: 'left' }
-              : { vertical: 'center', horizontal: 'left' }
+              ? { vertical: 'top', horizontal: transformHorizontal }
+              : { vertical: 'center', horizontal: transformHorizontal }
           }
           PaperProps={{
+            role: 'region',
+            'aria-label': `${data.title} navigation`,
             onMouseEnter: handleOpen,
             onMouseLeave: handleClose,
           }}

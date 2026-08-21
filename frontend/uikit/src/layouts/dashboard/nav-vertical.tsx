@@ -83,6 +83,8 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           sx={{
             height: 1,
             position: 'fixed',
+            top: 0,
+            insetInlineStart: 0,
             width: NAV.W_VERTICAL,
             borderRight: '1px solid',
             borderColor: 'divider',
@@ -108,6 +110,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           open={openNav}
           onClose={onCloseNav}
           PaperProps={{
+            id: 'dashboard-navigation-drawer',
             sx: {
               width: NAV.W_VERTICAL,
             },

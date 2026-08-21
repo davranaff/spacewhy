@@ -2,13 +2,16 @@
   "name": "ui-kit-spacewhy",
   "author": "Spacewhy",
   "version": "5.0.0",
-  "description": "Complete Spacewhy Liquid Glass UI Kit based on the Minimals demo structure",
+  "description": "Complete Spacewhy Liquid Glass dashboard and component system",
   "private": true,
   "scripts": {
     "dev": "next dev -p 8081",
     "start": "next start",
+    "preview": "next start -p 8081",
+    "preview:build": "npm run build && npm run preview",
     "build": "next build",
     "export": "yarn build && next export -o _static",
+    "test": "tsx --test tests/*.test.ts",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:fix": "eslint --fix --ext .ts,.tsx .",
     "prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
@@ -79,6 +82,7 @@
     "slick-carousel": "^1.8.1",
     "stylis": "^4.2.0",
     "stylis-plugin-rtl": "^2.1.1",
+    "tslib": "2.5.2",
     "yet-another-react-lightbox": "^3.10.1",
     "yup": "^1.2.0"
   },
@@ -115,6 +119,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "prettier": "^2.8.8",
+    "tsx": "4.23.12",
     "typescript": "^5.1.3"
   }
 }

@@ -226,7 +226,7 @@ function SeoIllustration({ ...other }: BoxProps) {
         </linearGradient>
       </defs>
 
-      <image href="/assets/illustrations/characters/character_3.png" height="300" x="312" y="30" />
+      <image href="/assets/illustrations/spacewhy/signal-node.svg" height="300" x="312" y="30" />
     </Box>
   );
 }

@@ -1,5 +1,6 @@
 // assets
 import { countries } from 'src/assets/data';
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
 //
 import { _mock } from './_mock';
 
@@ -25,10 +26,10 @@ export const _userAbout = {
   quote:
     'Tart I love sugar plum I love oat cake. Sweet roll caramels I love jujubes. Topping cake wafer..',
   socialLinks: {
-    facebook: `https://www.facebook.com/caitlyn.kerluke`,
-    instagram: `https://www.instagram.com/caitlyn.kerluke`,
-    linkedin: `https://www.linkedin.com/in/caitlyn.kerluke`,
-    twitter: `https://www.twitter.com/caitlyn.kerluke`,
+    facebook: SPACEWHY_BRAND.websiteUrl,
+    instagram: SPACEWHY_BRAND.websiteUrl,
+    linkedin: SPACEWHY_BRAND.websiteUrl,
+    twitter: SPACEWHY_BRAND.websiteUrl,
   },
 };
 

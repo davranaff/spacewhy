@@ -95,6 +95,9 @@ export function RHFMultiSelect({
 }: RHFMultiSelectProps) {
   const { control } = useFormContext();
 
+  const labelId = `${name}-label`;
+  const helperTextId = `${name}-helper-text`;
+
   const renderValues = (selectedIds: string[]) => {
     const selectedItems = options.filter((item) => selectedIds.includes(item.value));
 
@@ -124,14 +127,15 @@ export function RHFMultiSelect({
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <FormControl sx={sx}>
-          {label && <InputLabel id={name}> {label} </InputLabel>}
+        <FormControl error={!!error} sx={sx}>
+          {label && <InputLabel id={labelId}> {label} </InputLabel>}
 
           <Select
             {...field}
             multiple
             displayEmpty={!!placeholder}
-            labelId={name}
+            labelId={label ? labelId : undefined}
+            aria-describedby={error || helperText ? helperTextId : undefined}
             input={<OutlinedInput fullWidth label={label} error={!!error} />}
             renderValue={renderValues}
             {...other}
@@ -156,7 +160,9 @@ export function RHFMultiSelect({
           </Select>
 
           {(!!error || helperText) && (
-            <FormHelperText error={!!error}>{error ? error?.message : helperText}</FormHelperText>
+            <FormHelperText id={helperTextId} error={!!error}>
+              {error ? error?.message : helperText}
+            </FormHelperText>
           )}
         </FormControl>
       )}

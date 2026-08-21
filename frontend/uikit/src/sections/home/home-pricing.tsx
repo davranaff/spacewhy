@@ -17,6 +17,8 @@ import { varFade, MotionViewport } from 'src/components/animate';
 import { useResponsive } from 'src/hooks/use-responsive';
 // routes
 import { paths } from 'src/routes/paths';
+// brand
+import { SPACEWHY_BRAND } from 'src/brand/brand-config';
 // _mock
 import { _homePlans } from 'src/_mock';
 
@@ -122,7 +124,7 @@ export default function HomePricing() {
               color="inherit"
               size="large"
               variant="contained"
-              href="mailto:hello@spacewhy.com?subject=[Feedback] from Customer"
+              href={`mailto:${SPACEWHY_BRAND.contactEmail}?subject=[Feedback] from Customer`}
             >
               Contact us
             </Button>
@@ -253,7 +255,7 @@ function PlanCard({ plan, sx, ...other }: PlanCardProps) {
           size="small"
           target="_blank"
           rel="noopener"
-          href={paths.minimalUI}
+          href={paths.website}
           endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
         >
           Learn more

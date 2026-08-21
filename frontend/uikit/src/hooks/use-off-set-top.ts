@@ -1,7 +1,7 @@
 'use client';
 
 import { useScroll } from 'framer-motion';
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -17,23 +17,15 @@ export function useOffSetTop(top = 0, options?: UseScrollOptions): ReturnType {
 
   const [value, setValue] = useState(false);
 
-  const onOffSetTop = useCallback(() => {
-    scrollY.on('change', (scrollHeight) => {
-      if (scrollHeight > top) {
-        setValue(true);
-      } else {
-        setValue(false);
-      }
+  useEffect(() => {
+    setValue(scrollY.get() > top);
+
+    return scrollY.on('change', (scrollHeight) => {
+      setValue(scrollHeight > top);
     });
   }, [scrollY, top]);
 
-  useEffect(() => {
-    onOffSetTop();
-  }, [onOffSetTop]);
-
-  const memoizedValue = useMemo(() => value, [value]);
-
-  return memoizedValue;
+  return value;
 }
 
 // Usage

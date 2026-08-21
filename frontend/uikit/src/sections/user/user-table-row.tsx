@@ -37,7 +37,7 @@ export default function UserTableRow({
   onSelectRow,
   onDeleteRow,
 }: Props) {
-  const { name, avatarUrl, company, role, status, email, phoneNumber } = row;
+  const { id, name, avatarUrl, company, role, status, email, phoneNumber } = row;
 
   const confirm = useBoolean();
 
@@ -49,7 +49,11 @@ export default function UserTableRow({
     <>
       <TableRow hover selected={selected}>
         <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
+          <Checkbox
+            checked={selected}
+            onClick={onSelectRow}
+            inputProps={{ 'aria-label': `Select ${name}` }}
+          />
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
@@ -85,12 +89,23 @@ export default function UserTableRow({
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <Tooltip title="Quick Edit" placement="top" arrow>
-            <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
+            <IconButton
+              aria-label={`Quick edit ${name}`}
+              color={quickEdit.value ? 'inherit' : 'default'}
+              onClick={quickEdit.onTrue}
+            >
               <Iconify icon="solar:pen-bold" />
             </IconButton>
           </Tooltip>
 
-          <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+          <IconButton
+            aria-label={`Open actions for ${name}`}
+            aria-haspopup="menu"
+            aria-controls={popover.open ? `user-${id}-actions` : undefined}
+            aria-expanded={popover.open ? true : undefined}
+            color={popover.open ? 'inherit' : 'default'}
+            onClick={popover.onOpen}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -102,6 +117,11 @@ export default function UserTableRow({
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
+        PaperProps={{
+          id: `user-${id}-actions`,
+          role: 'menu',
+          'aria-label': `Actions for ${name}`,
+        }}
         sx={{ width: 140 }}
       >
         <MenuItem

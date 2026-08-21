@@ -45,6 +45,7 @@ export default function Main({ children, sx, ...other }: BoxProps) {
     <Box
       component="main"
       sx={{
+        minWidth: 0,
         flexGrow: 1,
         py: `${HEADER.H_MOBILE + SPACING}px`,
         ...(lgUp && {

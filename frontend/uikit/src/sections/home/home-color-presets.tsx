@@ -5,13 +5,12 @@ import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
-// components
 import { primaryPresets } from 'src/theme/options/presets';
 // components
-import Image from 'src/components/image';
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
 import { MotionViewport, varFade } from 'src/components/animate';
+import HomeInterfacePreview from './home-interface-preview';
 
 // ----------------------------------------------------------------------
 
@@ -22,6 +21,8 @@ export default function HomeColorPresets() {
     name: color.name,
     value: color.main,
   }));
+
+  const selectedColor = options.find((color) => color.name === settings.themeColorPresets)?.value;
 
   const renderDescription = (
     <Stack spacing={3} sx={{ textAlign: 'center' }}>
@@ -44,54 +45,12 @@ export default function HomeColorPresets() {
   );
 
   const renderContent = (
-    <Box sx={{ position: 'relative' }}>
-      <Image disabledEffect alt="grid" src="/assets/images/home/presets/grid.webp" />
-
-      <Box sx={{ position: 'absolute', top: 0 }}>
-        <m.div variants={varFade().inUp}>
-          <Image
-            disabledEffect
-            alt="screen"
-            src={`/assets/images/home/presets/screen_${settings.themeColorPresets}.webp`}
-          />
-        </m.div>
-      </Box>
-
-      <Box sx={{ position: 'absolute', top: 0 }}>
-        <m.div variants={varFade().inDown}>
-          <m.div animate={{ y: [0, -15, 0] }} transition={{ duration: 8, repeat: Infinity }}>
-            <Image
-              disabledEffect
-              alt="sidebar"
-              src={`/assets/images/home/presets/block_${settings.themeColorPresets}.webp`}
-            />
-          </m.div>
-        </m.div>
-      </Box>
-
-      <Box sx={{ position: 'absolute', top: 0 }}>
-        <m.div variants={varFade().inDown}>
-          <m.div animate={{ y: [-5, 10, -5] }} transition={{ duration: 8, repeat: Infinity }}>
-            <Image
-              disabledEffect
-              alt="chart"
-              src={`/assets/images/home/presets/chart_${settings.themeColorPresets}.webp`}
-            />
-          </m.div>
-        </m.div>
-      </Box>
-
-      <Box sx={{ position: 'absolute', top: 0 }}>
-        <m.div variants={varFade().inDown}>
-          <m.div animate={{ y: [-25, 5, -25] }} transition={{ duration: 10, repeat: Infinity }}>
-            <Image
-              disabledEffect
-              alt="sidebar"
-              src={`/assets/images/home/presets/sidebar_${settings.themeColorPresets}.webp`}
-            />
-          </m.div>
-        </m.div>
-      </Box>
+    <Box component={m.div} variants={varFade().inUp} sx={{ maxWidth: 1040, mx: 'auto' }}>
+      <HomeInterfacePreview
+        accent={selectedColor}
+        variant="analytics"
+        label={`Spacewhy analytics interface with the ${settings.themeColorPresets} color preset`}
+      />
     </Box>
   );
 
@@ -116,6 +75,8 @@ export default function HomeColorPresets() {
           return (
             <CardActionArea
               key={name}
+              aria-label={`Use ${name} color preset`}
+              aria-pressed={selected}
               onClick={() => settings.onUpdate('themeColorPresets', name)}
               sx={{
                 width: 24,

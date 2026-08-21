@@ -14,24 +14,20 @@ import { MotionContainer, varFade } from 'src/components/animate';
 
 const CONTACTS = [
   {
-    country: 'Bali',
-    address: '508 Bridle Avenue Newnan, GA 30263',
-    phoneNumber: '(239) 555-0108',
+    country: 'Product studio',
+    address: 'Samarkand, Uzbekistan',
   },
   {
-    country: 'London',
-    address: '508 Bridle Avenue Newnan, GA 30263',
-    phoneNumber: '(319) 555-0115',
+    country: 'Developer preview',
+    address: 'spacewhy.uz',
   },
   {
-    country: 'Prague',
-    address: '508 Bridle Avenue Newnan, GA 30263',
-    phoneNumber: '(252) 555-0126',
+    country: 'Partnerships',
+    address: 'hello@spacewhy.uz',
   },
   {
-    country: 'Moscow',
-    address: '508 Bridle',
-    phoneNumber: '(307) 555-0133',
+    country: 'Collaboration',
+    address: 'Remote-first worldwide',
   },
 ];
 

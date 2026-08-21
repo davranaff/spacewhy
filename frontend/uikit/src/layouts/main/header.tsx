@@ -15,6 +15,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { bgBlur } from 'src/theme/css';
 // routes
 import { paths } from 'src/routes/paths';
+import { RouterLink } from 'src/routes/components';
 // components
 import Logo from 'src/components/logo';
 import Label from 'src/components/label';
@@ -67,13 +68,7 @@ export default function Header() {
               },
             }}
             badgeContent={
-              <Link
-                href={paths.changelog}
-                target="_blank"
-                rel="noopener"
-                underline="none"
-                sx={{ ml: 1 }}
-              >
+              <Link component={RouterLink} href={paths.changelog} underline="none" sx={{ ml: 1 }}>
                 <Label color="info" sx={{ textTransform: 'unset', height: 22, px: 0.5 }}>
                   v5.0.0
                 </Label>
@@ -88,8 +83,8 @@ export default function Header() {
           {mdUp && <NavDesktop offsetTop={offsetTop} data={navConfig} />}
 
           <Stack alignItems="center" direction={{ xs: 'row', md: 'row-reverse' }}>
-            <Button variant="contained" target="_blank" rel="noopener" href={paths.minimalUI}>
-              Purchase Now
+            <Button variant="contained" target="_blank" rel="noopener" href={paths.website}>
+              Visit Spacewhy
             </Button>
 
             {mdUp && <LoginButton />}

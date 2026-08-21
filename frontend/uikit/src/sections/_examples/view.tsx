@@ -21,7 +21,27 @@ export default function ComponentsView() {
       <ComponentHero />
 
       <Container sx={{ pt: 10, pb: 15 }}>
-        <Stack spacing={3}>
+        <Stack
+          id="release-notes"
+          direction={{ xs: 'column', md: 'row' }}
+          spacing={2}
+          justifyContent="space-between"
+          sx={{ mb: 8, scrollMarginTop: 96 }}
+        >
+          <Box>
+            <Typography variant="overline" sx={{ color: 'text.secondary' }}>
+              Current release
+            </Typography>
+            <Typography variant="h4">Spacewhy UI Kit v5.0.0</Typography>
+          </Box>
+
+          <Typography variant="body2" sx={{ color: 'text.secondary', maxWidth: 560 }}>
+            Spacewhy identity, responsive navigation, local-first demo data, accessible interaction
+            states, light and dark themes, and adjustable liquid-glass materials.
+          </Typography>
+        </Stack>
+
+        <Stack id="foundations" spacing={3} sx={{ scrollMarginTop: 96 }}>
           <Stack spacing={1}>
             <Typography variant="h5">Foundation</Typography>
 

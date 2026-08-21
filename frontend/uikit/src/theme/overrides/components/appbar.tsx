@@ -12,7 +12,7 @@ export default function AppBar(theme: Theme) {
 
       styleOverrides: {
         root: {
-          ...liquidGlass({ theme, elevated: false, blurred: true }),
+          ...liquidGlass({ theme, elevated: false, blurred: true, positioned: false }),
           borderRadius: 0,
           borderTop: 0,
           borderLeft: 0,

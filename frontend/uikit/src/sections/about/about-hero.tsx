@@ -52,8 +52,8 @@ export default function AboutHero() {
                 fontWeight: 'fontWeightSemiBold',
               }}
             >
-              Let&apos;s work together and
-              <br /> make awesome site easily
+              We build precise digital systems
+              <br /> for ambitious product teams
             </Typography>
           </m.div>
         </Box>
